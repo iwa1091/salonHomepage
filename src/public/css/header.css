@@ -1,0 +1,230 @@
+/* header.css */
+
+/*
+  ==========================================
+  ヘッダー全体のレイアウトとスタイル
+  ==========================================
+*/
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+}
+
+.header-container {
+    max-width: 1280px;
+    /* PCでのコンテンツの最大幅 */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.header-content {
+    display: flex;
+    height: 4rem;
+    /* 64px */
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*
+  ==========================================
+  ロゴとサイトタイトルのスタイル
+  ==========================================
+*/
+.header-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    /* 12px */
+    transition: opacity 0.15s ease-in-out;
+}
+
+.header-logo-link:hover {
+    opacity: 0.8;
+}
+
+.header-logo {
+    height: 2.5rem;
+    /* 40px */
+    width: auto;
+    object-fit: contain;
+}
+
+.site-title {
+    font-family: 'ハンドライティングフォント名', cursive;
+    font-size: 1.5rem;
+    /* 24px */
+    color: #b28b58;
+    /* サロンのゴールドカラー */
+    transition: color 0.15s ease-in-out;
+}
+
+.header-logo-link:hover .site-title {
+    color: #6a492f;
+    /* サロンのブラウンカラー */
+}
+
+/*
+  ==========================================
+  デスクトップナビゲーション
+  ==========================================
+*/
+.desktop-nav {
+    display: none;
+    /* 初期状態では非表示 */
+    gap: 2rem;
+    /* 32px */
+}
+
+@media (min-width: 768px) {
+    .desktop-nav {
+        display: flex;
+        /* 768px以上で表示 */
+        align-items: center;
+    }
+}
+
+.nav-link {
+    font-size: 0.875rem;
+    /* 14px */
+    color: #333333;
+    /* デフォルトのテキスト色 */
+    text-decoration: none;
+    /* 下線をなくす */
+    transition: color 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #b28b58;
+    /* ホバーでゴールドに */
+}
+
+/* アクティブなナビゲーションリンク */
+.nav-link.is-active {
+    color: #b28b58;
+    font-weight: 500;
+}
+
+/*
+  ==========================================
+  モバイルナビゲーション
+  ==========================================
+*/
+.mobile-menu-wrapper {
+    display: block;
+    /* 初期状態では表示 */
+}
+
+@media (min-width: 768px) {
+    .mobile-menu-wrapper {
+        display: none;
+        /* 768px以上で非表示 */
+    }
+}
+
+.menu-toggle-button,
+.menu-close-button {
+    padding: 0.5rem;
+    /* 8px */
+    border-radius: 0.375rem;
+    /* 6px */
+    outline: none;
+    /* フォーカス時のアウトラインをなくす */
+}
+
+.menu-toggle-button:focus,
+.menu-close-button:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    /* フォーカスリングの例 */
+}
+
+.mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    /* top: 0, right: 0, bottom: 0, left: 0 */
+    z-index: 50;
+    overflow-y: auto;
+    transform: translateX(100%);
+    /* 初期状態は画面外 */
+    transition: transform 0.3s ease-out;
+}
+
+.mobile-menu-overlay[x-show="true"] {
+    transform: translateX(0);
+    /* 表示時に画面内へ */
+}
+
+.mobile-menu {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 100%;
+    max-width: 20rem;
+    /* 320px */
+    background-color: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.mobile-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* 16px */
+    margin-top: 2rem;
+}
+
+.mobile-logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.mobile-logo {
+    height: 2rem;
+    /* 32px */
+    width: auto;
+    object-fit: contain;
+}
+
+.site-title-mobile {
+    font-family: 'ハンドライティングフォント名', cursive;
+    font-size: 1.25rem;
+    /* 20px */
+    color: #b28b58;
+}
+
+.mobile-nav-link {
+    text-align: left;
+    padding: 0.5rem;
+    /* 8px */
+    border-radius: 0.25rem;
+    /* 4px */
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    color: #333333;
+    text-decoration: none;
+}
+
+.mobile-nav-link:hover {
+    background-color: #f7f2ea;
+    /* サロンのベージュカラー */
+}
+
+.mobile-nav-link.is-active {
+    color: #b28b58;
+    font-weight: 500;
+    background-color: #f7f2ea;
+}

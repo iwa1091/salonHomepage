@@ -1,0 +1,260 @@
+/* ===========================
+   gallery.css
+   lash-brow-ohana ギャラリー用
+   =========================== */
+
+/* ページ全体 */
+.gallery-page-container {
+    background-color: var(--salon-beige);
+    padding: 40px 20px;
+    font-family: var(--font-base);
+    color: var(--salon-brown);
+}
+
+/* ページヘッダー */
+.header-section {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.page-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--salon-brown);
+}
+
+/* カード共通 */
+.card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--salon-brown);
+}
+
+.card-description {
+    font-size: 0.95rem;
+    color: var(--salon-brown);
+}
+
+/* ===========================
+   Before / After
+   =========================== */
+.grid-case {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.card-grid-images {
+    display: flex;
+    gap: 10px;
+}
+
+.image-container {
+    position: relative;
+    flex: 1;
+}
+
+.image-card {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--white);
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.badge-before {
+    left: 10px;
+    background: var(--salon-brown);
+}
+
+.badge-after {
+    right: 10px;
+    background: var(--salon-gold);
+}
+
+/* ===========================
+   Gallery
+   =========================== */
+.grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.badge-category {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--white);
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.badge-lash {
+    background: var(--salon-gold);
+}
+
+.badge-brow {
+    background: var(--salon-brown);
+}
+
+/* ===========================
+   Reviews
+   =========================== */
+.grid-reviews {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.card-review {
+    padding: 20px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.review-name-age {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--salon-brown);
+    font-family: 'Shippori Mincho', serif;
+}
+
+.review-age {
+    margin-left: 6px;
+    font-weight: normal;
+    color: var(--salon-brown);
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.review-rating {
+    margin-top: 4px;
+}
+
+.star {
+    width: 18px;
+    height: 18px;
+}
+
+.quote {
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+}
+
+.review-comment {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    color: var(--salon-brown);
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.review-details {
+    font-size: 0.8rem;
+    color: var(--salon-brown);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+/* ===========================
+   Stats
+   =========================== */
+.section-stats {
+    background: var(--salon-brown);
+    color: var(--white);
+    padding: 60px 20px;
+    margin-top: 60px;
+    border-radius: 16px;
+}
+
+.stats-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.stat-item {
+    text-align: center;
+    font-family: 'Shippori Mincho', serif;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+/* ===========================
+   レスポンシブ対応
+   =========================== */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.6rem;
+    }
+
+    .section-title,
+    .section-title-white {
+        font-size: 1.4rem;
+    }
+
+    .stats-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+}

@@ -1,0 +1,270 @@
+/*
+  ==========================================
+  ホームページ固有のスタイル
+  ==========================================
+*/
+
+/* ヒーローセクション */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('/img/top-img.png');
+    /* HTMLで背景画像を指定する場合、ここは不要 */
+}
+
+
+.hero-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.hero-content-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 2rem;
+}
+
+@media (min-width: 768px) {
+    .hero-content-container {
+        max-width: 768px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-content-container {
+        max-width: 1024px;
+    }
+}
+
+.hero-text-wrapper {
+    width: 100%;
+    padding-left: 1rem;
+}
+
+@media (min-width: 768px) {
+    .hero-text-wrapper {
+        width: 66.666667%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-text-wrapper {
+        width: 33.333333%;
+    }
+}
+
+.hero-text-group {
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    line-height: 1.25;
+    font-family: 'Shippori Mincho', serif;
+    /* フォント名を確認して修正 */
+    color: var(--salon-brown);
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    text-align: left;
+}
+
+@media (min-width: 1024px) {
+    .hero-title {
+        font-size: 4rem;
+    }
+}
+
+.highlight-text {
+    color: var(--salon-gold);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.625;
+    color: var(--white);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+@media (min-width: 1024px) {
+    .hero-subtitle {
+        font-size: 1.5rem;
+    }
+}
+
+.hero-buttons-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1.5rem;
+}
+
+/* 特集セクション */
+.features-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: var(--white);
+}
+
+.features-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .features-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.feature-card {
+    border-radius: 0.5rem;
+    border: 1px solid var(--salon-pink);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.feature-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.card-content {
+    padding: 2rem;
+    text-align: center;
+}
+
+.feature-icon-wrapper {
+    width: 4rem;
+    height: 4rem;
+    background-color: var(--salon-pink);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+}
+
+/* お客様の声セクション */
+.reviews-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: var(--salon-beige);
+}
+
+.reviews-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .reviews-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .reviews-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.review-card {
+    background-color: var(--white);
+    border: 1px solid var(--salon-pink);
+    border-radius: 0.5rem;
+}
+
+.review-rating-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.star-icons-wrapper {
+    display: flex;
+}
+
+.star-icon {
+    width: 1.2rem;
+    /* アイコンのサイズを調整 */
+    height: auto;
+}
+
+.review-author {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--salon-brown);
+}
+
+.review-comment {
+    color: var(--salon-brown);
+    font-size: 0.875rem;
+    line-height: 1.625;
+}
+
+.button-wrapper {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.outline-button {
+    border: 1px solid var(--salon-gold);
+    color: var(--salon-gold);
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+}
+
+.outline-button:hover {
+    background-color: var(--salon-gold);
+    color: var(--white);
+}
+
+/* CTAセクション */
+.cta-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: var(--salon-gold);
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 1.875rem;
+    font-family: 'Shippori Mincho', serif;
+    /* フォント名を確認して修正 */
+    color: var(--white);
+    margin-bottom: 1rem;
+}
+
+.cta-description {
+    color: var(--white-90);
+    margin-bottom: 2rem;
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.white-button {
+    background-color: var(--white);
+    color: var(--salon-gold);
+    padding: 1.5rem 2rem;
+    font-size: 1.125rem;
+}
+
+.white-button:hover {
+    background-color: var(--white-90);
+}

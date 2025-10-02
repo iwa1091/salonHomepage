@@ -1,0 +1,99 @@
+/* ===========================
+    verify.css - メール認証ページ用
+    =========================== */
+
+/* カラースキーム */
+:root {
+    --salon-beige: #EAD7CC;
+    --salon-brown: #5A4B4B;
+    --salon-gold: #C29F5C;
+    --white: #ffffff;
+    --success-color: #4CAF50;
+    --success-bg: #E8F5E9;
+}
+
+/* ページ全体 */
+.verify-page {
+    background-color: var(--salon-beige);
+    padding: 6rem 1rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    color: var(--salon-brown);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.verify-container {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    background-color: var(--white);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    text-align: center;
+}
+
+/* タイトル */
+.page__title {
+    font-size: 2rem;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: bold;
+    color: var(--salon-brown);
+    margin-bottom: 1.5rem;
+}
+
+/* コンテンツ */
+.verify-content {
+    margin-top: 2rem;
+}
+
+.verify-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+/* ボタン */
+.btn--big {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: var(--salon-gold);
+    color: var(--white);
+    transition: background-color 0.2s ease;
+}
+
+.btn--big:hover {
+    background-color: #a38147;
+}
+
+/* アラートメッセージ */
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.alert--success {
+    background-color: var(--success-bg);
+    color: var(--success-color);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 576px) {
+    .verify-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .page__title {
+        font-size: 1.75rem;
+    }
+}
