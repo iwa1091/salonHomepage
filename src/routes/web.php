@@ -5,10 +5,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
-// ★ 修正点1: App\Http\Middleware\Authenticate をインポートする
 use App\Http\Middleware\Authenticate;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\StoreController;
@@ -20,15 +18,16 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Admin\AdminReservationController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\LoginController as AdminLoginController; 
-use App\Http\Controllers\Admin\UserController as AdminUserController; 
-use App\Http\Controllers\Admin\ServiceController; // ★ 追加
+use App\Http\Controllers\Admin\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\CategoryController; // ← 追加
 use App\Http\Controllers\Admin\ScheduleController;
 
 /*
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 | Web Routes
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------- 
 */
 
 // ======================
@@ -39,7 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
     // 管理者ログイン処理実行 (POST /admin/login)
     Route::post('/login', [AdminLoginController::class, 'login']);
-    // 管理者ログアウト
+    // 管理者ログアウト (POST /admin/logout)
     Route::post('/logout', [AdminLoginController::class, 'logout'])
         ->middleware('auth:admin')
         ->name('logout');
@@ -49,36 +48,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ダッシュボード
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // 予約管理
+        // 予約管理（既存）
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/{id}/edit', [AdminReservationController::class, 'edit'])->name('reservations.edit');
         Route::post('/reservations/{id}/delete', [AdminReservationController::class, 'destroy'])->name('reservations.destroy');
 
-        // ユーザー管理
-        Route::get('/users', function () {
-            return redirect()->route('admin.dashboard');
-        })->name('users.index');
+        // ユーザー管理（既存のままリダイレクト等）
+        Route::get('/users', fn() => redirect()->route('admin.dashboard'))->name('users.index');
 
         // 分析 (Analytics)
-        Route::get('/analytics', function () {
-            return redirect()->route('admin.dashboard');
-        })->name('analytics');
+        Route::get('/analytics', fn() => redirect()->route('admin.dashboard'))->name('analytics');
 
-        // 設定 (Settings) 💡 スケジュール管理ページへリダイレクト
-        Route::get('/settings', function () {
-            return redirect()->route('admin.schedule.index');
-        })->name('settings');
+        // 設定 (Settings) → スケジュール管理へリダイレクト
+        Route::get('/settings', fn() => redirect()->route('admin.schedule.index'))->name('settings');
 
-        // 💡 新規追加: スケジュール管理 (営業時間・例外日の設定)
+        // スケジュール管理
         Route::prefix('schedule')->name('schedule.')->group(function () {
-            Route::get('/', [ScheduleController::class, 'index'])->name('index'); 
+            Route::get('/', [ScheduleController::class, 'index'])->name('index');
             Route::get('/data', [ScheduleController::class, 'getData'])->name('data');
-            Route::post('/weekly', [ScheduleController::class, 'storeOrUpdateWeekly'])->name('store.weekly'); 
+            Route::post('/weekly', [ScheduleController::class, 'storeOrUpdateWeekly'])->name('store.weekly');
             Route::post('/exception', [ScheduleController::class, 'storeOrUpdateException'])->name('store.exception');
             Route::delete('/exception', [ScheduleController::class, 'destroyException'])->name('destroy.exception');
         });
 
-        // 商品管理
+        // 商品管理（既存のまま）
         Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
         Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
         Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
@@ -87,19 +80,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 
         // ======================
-        // サービス管理
+        // サービス管理 (Admin) - resource を使用
         // ======================
-        Route::prefix('services')->name('services.')->group(function () {
-            Route::get('/', [ServiceController::class, 'index'])->name('index');
-            Route::get('/create', [ServiceController::class, 'create'])->name('create');
-            Route::post('/', [ServiceController::class, 'store'])->name('store');
-            Route::get('/{service}/edit', [ServiceController::class, 'edit'])->name('edit');
-            Route::patch('/{service}', [ServiceController::class, 'update'])->name('update');
-            Route::delete('/{service}', [ServiceController::class, 'destroy'])->name('destroy');
+        // resource で index/create/store/edit/update/destroy を自動生成（show は不要なため除外）
+        Route::resource('services', ServiceController::class)->except(['show']);
+        // 公開/非公開切替など、resource にないカスタムルートは個別に維持
+        Route::patch('services/{service}/toggle', [ServiceController::class, 'toggleActive'])->name('services.toggle');
 
-            // 公開/非公開切替
-            Route::patch('/{service}/toggle', [ServiceController::class, 'toggleActive'])->name('toggle');
-        });
+        // ======================
+        // カテゴリ管理 (Admin) - resource を追加
+        // ======================
+        // categories の CRUD を resource で一括定義（show は不要なら除外）
+        Route::resource('categories', CategoryController::class)->except(['show']);
     });
 });
 
@@ -113,11 +105,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/email/verification-notification', [EmailVerificationPromptController::class, 'store'])
         ->middleware(['throttle:6,1'])
         ->name('verification.send');
-    
+
     Route::get('/email/verify/{id}/{hash}', [Laravel\Fortify\Http\Controllers\VerifyEmailController::class, '__invoke'])
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
-    
+
     Route::get('/home', fn() => redirect()->route('online-store.index'))->name('home');
     Route::get('/dashboard', fn() => redirect()->route('online-store.index'))->name('dashboard');
 
@@ -143,11 +135,11 @@ Route::middleware(['guest'])->group(function () {
 // ======================
 // 一般ユーザー向けページ
 // ======================
-Route::get('/', function () {
-    return view('home');
-})->name('top');
+Route::get('/', fn() => view('home'))->name('top');
 
-Route::get('/menu_price', [MenuController::class, 'index'])->name('menu_price');
+// 旧 MenuController → ServiceController に置き換え（公開用）
+Route::get('/menu_price', [ServiceController::class, 'publicIndex'])->name('menu_price');
+
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 
 // オンラインストア
@@ -167,7 +159,5 @@ Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.fo
 Route::post('/contact', [ContactController::class, 'sendEmail'])->name('contact.send');
 
 // 予約機能
-Route::get('/reservation', fn() => Inertia::render('Reservation/ReservationForm'))
-    ->name('reservation.form');
-Route::post('/reservation/store', [ReservationController::class, 'store'])
-    ->name('reservation.store');
+Route::get('/reservation', fn() => Inertia::render('Reservation/ReservationForm'))->name('reservation.form');
+Route::post('/reservation/store', [ReservationController::class, 'store'])->name('reservation.store');

@@ -8,7 +8,6 @@
     },
     "devDependencies": {
         "@headlessui/react": "^2.1.6",
-        "@inertiajs/react": "^2.1.10",
         "@tailwindcss/forms": "^0.5.9",
         "@tailwindcss/vite": "^4.0.0",
         "@vitejs/plugin-react": "^4.3.0",
@@ -29,7 +28,10 @@
         "@fullcalendar/react": "^6.1.19",
         "@fullcalendar/timegrid": "^6.1.19",
         "@inertiajs/core": "^1.0.14",
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/react": "^2.1.10",
         "date-fns": "^4.1.0",
+        "framer-motion": "^12.23.22",
         "lucide-react": "^0.544.0",
         "react-calendar": "^6.0.0",
         "ziggy-js": "^2.6.0"

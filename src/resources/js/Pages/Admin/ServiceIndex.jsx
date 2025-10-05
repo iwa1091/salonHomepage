@@ -1,52 +1,122 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { usePage, Link } from '@inertiajs/react';
 import { Inertia } from '@inertiajs/inertia';
-import { Link, usePage } from '@inertiajs/inertia-react';
+import { route } from 'ziggy-js';
 
 export default function ServiceIndex() {
-    const { services } = usePage().props;
+    const { services: initialServices, categories } = usePage().props;
+    const [filterCategory, setFilterCategory] = useState('');
+    const [services, setServices] = useState(initialServices);
 
     const handleDelete = (id) => {
-        if (confirm('削除してもよろしいですか？')) {
-            Inertia.delete(route('admin.services.destroy', id));
+        if (confirm('本当に削除しますか？')) {
+            Inertia.delete(route('admin.services.destroy', id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setServices(services.filter((s) => s.id !== id));
+                },
+            });
         }
     };
 
-    const handleToggle = (id) => {
-        Inertia.post(route('admin.services.toggle', id));
+    const toggleActive = (serviceId) => {
+        Inertia.post(
+            route('admin.services.toggleActive', serviceId),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    // サーバーから返ってきた最新状態に反映
+                    const updatedService = page.props.services.find((s) => s.id === serviceId);
+                    setServices(
+                        services.map((s) => (s.id === serviceId ? updatedService : s))
+                    );
+                },
+            }
+        );
     };
+
+    const filteredServices = filterCategory
+        ? services.filter((s) => s.category_id === parseInt(filterCategory))
+        : services;
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-4">サービス管理</h1>
-            <Link
-                href={route('admin.services.create')}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4 inline-block"
-            >
-                新規作成
-            </Link>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">サービス一覧</h1>
+                <Link
+                    href={route('admin.services.create')}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                >
+                    新規作成
+                </Link>
+            </div>
 
-            <table className="min-w-full border">
-                <thead>
-                    <tr className="bg-gray-100">
-                        <th className="px-4 py-2 border">ID</th>
-                        <th className="px-4 py-2 border">名前</th>
-                        <th className="px-4 py-2 border">価格</th>
-                        <th className="px-4 py-2 border">時間</th>
-                        <th className="px-4 py-2 border">公開</th>
-                        <th className="px-4 py-2 border">操作</th>
+            {/* カテゴリフィルタ */}
+            <div className="mb-4">
+                <label className="mr-2 font-medium">カテゴリで絞り込み:</label>
+                <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="border px-3 py-2 rounded"
+                >
+                    <option value="">すべて</option>
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <table className="w-full border text-sm">
+                <thead className="bg-gray-100">
+                    <tr>
+                        <th className="border px-4 py-2">ID</th>
+                        <th className="border px-4 py-2">名前</th>
+                        <th className="border px-4 py-2">カテゴリ</th>
+                        <th className="border px-4 py-2">価格</th>
+                        <th className="border px-4 py-2">所要時間</th>
+                        <th className="border px-4 py-2">特徴</th>
+                        <th className="border px-4 py-2">人気</th>
+                        <th className="border px-4 py-2">公開</th>
+                        <th className="border px-4 py-2">操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {services.map(service => (
-                        <tr key={service.id} className="text-center">
+                    {filteredServices.map((service) => (
+                        <tr key={service.id}>
                             <td className="border px-4 py-2">{service.id}</td>
                             <td className="border px-4 py-2">{service.name}</td>
+                            <td className="border px-4 py-2">{service.category || '-'}</td>
                             <td className="border px-4 py-2">¥{service.price}</td>
                             <td className="border px-4 py-2">{service.duration_minutes}分</td>
                             <td className="border px-4 py-2">
+                                {service.features && service.features.length > 0 ? (
+                                    <ul className="list-disc pl-4">
+                                        {service.features.map((f, idx) => (
+                                            <li key={idx}>{f}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <span className="text-gray-400">なし</span>
+                                )}
+                            </td>
+                            <td className="border px-4 py-2">
+                                {service.is_popular ? (
+                                    <span className="text-red-600 font-bold">人気</span>
+                                ) : (
+                                    <span className="text-gray-400">-</span>
+                                )}
+                            </td>
+                            {/* 公開/非公開切替ボタン */}
+                            <td className="border px-4 py-2">
                                 <button
-                                    className={`px-3 py-1 rounded ${service.is_active ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
-                                    onClick={() => handleToggle(service.id)}
+                                    onClick={() => toggleActive(service.id)}
+                                    className={`px-3 py-1 rounded ${service.is_active
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-gray-300 text-gray-700'
+                                        }`}
                                 >
                                     {service.is_active ? '公開' : '非公開'}
                                 </button>
@@ -54,13 +124,13 @@ export default function ServiceIndex() {
                             <td className="border px-4 py-2 space-x-2">
                                 <Link
                                     href={route('admin.services.edit', service.id)}
-                                    className="bg-yellow-400 px-3 py-1 rounded hover:bg-yellow-500"
+                                    className="text-blue-600 hover:underline"
                                 >
                                     編集
                                 </Link>
                                 <button
-                                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                                     onClick={() => handleDelete(service.id)}
+                                    className="text-red-600 hover:underline"
                                 >
                                     削除
                                 </button>
