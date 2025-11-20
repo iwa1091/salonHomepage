@@ -7,13 +7,14 @@ return [
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
+    | 各種外部サービスの認証情報を定義します。
+    | 例: Stripe, AWS, Postmark, Slackなど。
     |
     */
 
+    // ============================
+    // ✉️ メールサービス
+    // ============================
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
@@ -28,6 +29,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // ============================
+    // 💬 Slack 通知
+    // ============================
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
@@ -35,9 +39,18 @@ return [
         ],
     ],
 
+    // ============================
+    // 💳 Stripe 決済設定
+    // ============================
     'stripe' => [
+        // 公開鍵（JavaScript 側で使用）
         'key' => env('STRIPE_KEY'),
+
+        // シークレット鍵（サーバーサイド用）
         'secret' => env('STRIPE_SECRET_KEY'),
+
+        // Webhook 検証用シークレット
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
+
 ];

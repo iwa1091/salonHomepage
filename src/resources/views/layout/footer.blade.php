@@ -24,10 +24,24 @@
       <div class="footer-menu-section">
         <h4 class="footer-menu-heading">メニュー</h4>
         <nav class="footer-menu-nav">
-          <a href="#" class="footer-menu-item">まつげメニュー</a>
-          <a href="#" class="footer-menu-item">眉毛メニュー</a>
-          <a href="#" class="footer-menu-item">料金</a>
-          <a href="#" class="footer-menu-item">ご予約</a>
+            {{-- ナビゲーションの「ホーム」リンク先を 'home' から 'top' に変更 --}}
+            <a href="{{ route('top') }}" class="nav-link {{ request()->routeIs('top') ? 'is-active' : '' }}">
+                ホーム
+            </a>
+            {{-- ここを修正 --}}
+            <a href="{{ route('menu_price') }}" class="nav-link {{ request()->routeIs('menu_price') ? 'is-active' : '' }}">
+                メニュー・料金
+            </a>
+            <a href="{{ route('gallery') }}" class="nav-link {{ request()->routeIs('gallery') ? 'is-active' : '' }}">
+                施術事例・お客様の声
+            </a>
+            {{-- リンクをstoreからproductsに変更 --}}
+            <a href="{{ route('online-store.index') }}" class="nav-link {{ request()->routeIs('online-store.index') ? 'is-active' : '' }}">
+                商品販売
+            </a>
+            <a href="{{ route('contact.form') }}" class="nav-link {{ request()->routeIs('contact.form') ? 'is-active' : '' }}">
+                ご予約・お問い合わせ
+            </a>
         </nav>
       </div>
 
@@ -39,7 +53,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
-            <span class="contact-text">03-1234-5678</span>
+            <span class="contact-text">0436-63-4724</span>
           </div>
           <div class="contact-info-item">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -54,9 +68,9 @@
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
             <span class="contact-text">
-              〒123-4567<br />
-              東京都渋谷区●●●1-2-3<br />
-              ●●●ビル 2F
+              〒290-0055<br />
+              千葉県市原市五井東1丁目15-3<br />
+              ブルメリア102
             </span>
           </div>
         </div>
@@ -73,19 +87,11 @@
         </h4>
         <div class="hours-list">
           <div class="hours-item">
-            <span>火〜金</span>
-            <span>10:00〜19:00</span>
+            <span>火曜日〜土曜日</span>
+            <span>09:00〜17:00</span>
           </div>
           <div class="hours-item">
-            <span>土</span>
-            <span>10:00〜18:00</span>
-          </div>
-          <div class="hours-item">
-            <span>日</span>
-            <span>10:00〜17:00</span>
-          </div>
-          <div class="hours-item closed-day">
-            <span>月</span>
+            <span>日曜日と月曜日(祝日等不定休有り)</span>
             <span>定休日</span>
           </div>
         </div>

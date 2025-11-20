@@ -5,151 +5,100 @@
 @section('content')
 <div class="menu-container">
 
-    @php
-        // カテゴリごとに分割
-        $eyelashServices = $services->where('category', 'まつげエクステンション');
-        $eyebrowServices = $services->where('category', '眉メニュー');
-        $setServices     = $services->where('category', 'お得なセットメニュー');
-    @endphp
+        {{--  ページヘッダー（React版と同デザイン） --}}
+    <div class="menu-header">
+        <h1>メニュー・料金</h1>
+        <p>
+            お客様のご希望に合わせて、様々なメニューをご用意しております。<br>
+            すべて丁寧なカウンセリング付きです。
+        </p>
+    </div>
 
-    {{-- まつげエクステンション --}}
-    <section class="menu-section">
-        <h2 class="section-title">まつげエクステンション</h2>
-        <div class="menu-grid">
-            @forelse ($eyelashServices as $service)
-                <div class="menu-card @if($service->is_popular) menu-card-popular @endif">
-                    @if($service->is_popular)
-                        <span class="popular-badge">人気No.1</span>
-                    @endif
 
-                    @if($service->image)
-                        <div class="card-image">
-                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}">
-                        </div>
-                    @endif
+    {{-- カテゴリごとにループ --}}
+    @forelse ($categories as $category)
+        @php
+            // カテゴリに属する有効なサービスを取得
+            $activeServices = $category->services->where('is_active', true);
+        @endphp
 
-                    <div class="card-header">
-                        <h3 class="card-title">{{ $service->name }}</h3>
-                        <p class="card-description">{{ $service->description }}</p>
-                    </div>
+        @if ($activeServices->isNotEmpty())
+            <section class="menu-section">
+                <h2 class="section-title">{{ $category->name }}</h2>
 
-                    <div class="card-content">
-                        <div class="card-price-info">
-                            <span class="card-price">¥{{ number_format($service->price) }}</span>
-                            <div class="card-duration">
-                                <span class="duration-text">{{ $service->duration_minutes }}分</span>
+                {{-- カテゴリ説明があれば表示 --}}
+                @if($category->description)
+                    <p class="category-description">{{ $category->description }}</p>
+                @endif
+
+                <div class="menu-grid">
+                    @foreach ($activeServices as $service)
+                        <div class="menu-card @if($service->is_popular) menu-card-popular @endif">
+                            {{-- 人気バッジ --}}
+                            @if($service->is_popular)
+                                <span class="popular-badge">人気No.1</span>
+                            @endif
+
+                            {{-- 画像 --}}
+                            @if($service->image)
+                                <div class="card-image relative">
+                                    <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}">
+
+                                    {{-- 特徴バッジ群 --}}
+                                    @if(!empty($service->features))
+                                        <div class="feature-badges">
+                                            @foreach($service->features as $feature)
+                                                <span class="feature-badge">{{ $feature }}</span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <div class="card-header">
+                                <h3 class="card-title">{{ $service->name }}</h3>
+                                @if($service->description)
+                                    <p class="card-description">{!! nl2br(e($service->description)) !!}</p>
+                                @endif
+                            </div>
+
+                            <div class="card-content">
+                                <div class="card-price-info">
+                                    <span class="card-price">¥{{ number_format($service->price) }}</span>
+                                    <div class="card-duration">
+                                        <span class="duration-text">{{ $service->duration_minutes }}分</span>
+                                    </div>
+                                </div>
+
+
+                                {{-- 予約ボタン --}}
+                                <a href="{{ route('reservation.form', ['service_id' => $service->id]) }}" class="button btn-reserve btn-primary">
+                                    予約する
+                                </a>
                             </div>
                         </div>
-
-                        @if($service->features)
-                            <ul class="feature-list">
-                                @foreach(json_decode($service->features, true) as $feature)
-                                    <li class="feature-item">{{ $feature }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        {{-- 予約フォームに service_id を渡す --}}
-                        <a href="{{ route('reservation.form', ['service_id' => $service->id]) }}" class="button btn-reserve btn-primary">予約する</a>
-                    </div>
+                    @endforeach
                 </div>
-            @empty
-                <p class="no-service">現在、登録されているサービスはありません。</p>
-            @endforelse
+            </section>
+        @endif
+    @empty
+        <p class="no-service">現在、登録されているカテゴリはありません。</p>
+    @endforelse
+
+    {{-- 注意事項セクション --}}
+    <section class="notes-section mb-20">
+        <h3 class="notes-title">ご注意事項</h3>
+        <div class="notes-grid">
+            <div class="note-item">
+                <p>・駐車場をご用意しております。店舗前「2番」をご利用ください。</p>
+                <p>・前のお客様の施術状況により、お待ちいただくことがございます。<br>
+                    (駐車場は交代でのご利用にご協力くださいませ。)</p>
+            </div>
+            <div class="note-item">
+                <p>・ご来店はご予約時間ちょうどを目安にお越しください。</p>
+                <p>・5分以上前のご来店はご遠慮いただいております。</p>
+            </div>
         </div>
     </section>
-
-    {{-- 眉メニュー --}}
-    <section class="menu-section">
-        <h2 class="section-title">眉メニュー</h2>
-        <div class="menu-grid">
-            @forelse ($eyebrowServices as $service)
-                <div class="menu-card @if($service->is_popular) menu-card-popular @endif">
-                    @if($service->is_popular)
-                        <span class="popular-badge">人気No.1</span>
-                    @endif
-
-                    @if($service->image)
-                        <div class="card-image">
-                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}">
-                        </div>
-                    @endif
-
-                    <div class="card-header">
-                        <h3 class="card-title">{{ $service->name }}</h3>
-                        <p class="card-description">{{ $service->description }}</p>
-                    </div>
-
-                    <div class="card-content">
-                        <div class="card-price-info">
-                            <span class="card-price">¥{{ number_format($service->price) }}</span>
-                            <div class="card-duration">
-                                <span class="duration-text">{{ $service->duration_minutes }}分</span>
-                            </div>
-                        </div>
-
-                        @if($service->features)
-                            <ul class="feature-list">
-                                @foreach(json_decode($service->features, true) as $feature)
-                                    <li class="feature-item">{{ $feature }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        <a href="{{ route('reservation.form', ['service_id' => $service->id]) }}" class="button btn-reserve btn-primary">予約する</a>
-                    </div>
-                </div>
-            @empty
-                <p class="no-service">現在、登録されているサービスはありません。</p>
-            @endforelse
-        </div>
-    </section>
-
-    {{-- お得なセットメニュー --}}
-    <section class="menu-section">
-        <h2 class="section-title">お得なセットメニュー</h2>
-        <div class="menu-grid">
-            @forelse ($setServices as $service)
-                <div class="menu-card @if($service->is_popular) menu-card-popular @endif">
-                    @if($service->is_popular)
-                        <span class="popular-badge">人気No.1</span>
-                    @endif
-
-                    @if($service->image)
-                        <div class="card-image">
-                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}">
-                        </div>
-                    @endif
-
-                    <div class="card-header">
-                        <h3 class="card-title">{{ $service->name }}</h3>
-                        <p class="card-description">{{ $service->description }}</p>
-                    </div>
-
-                    <div class="card-content">
-                        <div class="card-price-info">
-                            <span class="card-price">¥{{ number_format($service->price) }}</span>
-                            <div class="card-duration">
-                                <span class="duration-text">{{ $service->duration_minutes }}分</span>
-                            </div>
-                        </div>
-
-                        @if($service->features)
-                            <ul class="feature-list">
-                                @foreach(json_decode($service->features, true) as $feature)
-                                    <li class="feature-item">{{ $feature }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        <a href="{{ route('reservation.form', ['service_id' => $service->id]) }}" class="button btn-reserve btn-primary">予約する</a>
-                    </div>
-                </div>
-            @empty
-                <p class="no-service">現在、登録されているサービスはありません。</p>
-            @endforelse
-        </div>
-    </section>
-
 </div>
 @endsection

@@ -4,48 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
-use App\Mail\ReservationConfirmation;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ReservationController extends Controller
 {
-    // 一般ユーザー用
+    /**
+     * 予約フォーム表示（Inertia）
+     */
+    public function form(Request $request)
+    {
+        return Inertia::render('Reservation/ReservationForm', [
+            'service_id' => $request->service_id ?? null,
+        ]);
+    }
+
+    /**
+     * 一般ユーザーの予約登録（user_id 対応版）
+     */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|max:255',
-            'phone'      => 'required|string|max:20',
-            'menu'       => 'required|string|max:255',
+        $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'name'       => 'nullable|string',
+            'email'      => 'nullable|email',
             'date'       => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'notes'      => 'nullable|string',
+            'start_time' => 'required',
+            'end_time'   => 'required',
+            'notes'      => 'nullable|string|max:500',
         ]);
 
-        $reservation = Reservation::create($data);
+        // ログインユーザー情報（ログインしていない場合は null）
+        $user = Auth::user();
 
-        // メール送信（Mailhog に送信）
-        Mail::to($data['email'])->send(new ReservationConfirmation($reservation));
+        $reservation = Reservation::create([
+            'service_id' => $request->service_id,
+            'date'       => $request->date,
+            'start_time' => $request->start_time,
+            'end_time'   => $request->end_time,
+            'notes'      => $request->notes,
 
-        // JSON レスポンスを返す (フロント側 fetch が処理可能)
-        return response()->json([
-            'message'     => '予約が完了しました',
-            'reservation' => $reservation,
+            // 🔹 ログインユーザーなら自動セット
+            'user_id' => $user ? $user->id : null,
+
+            // 🔹 ゲスト予約用（メールフォームからの名前・メール）
+            'name'  => $user ? $user->name  : $request->name,
+            'email' => $user ? $user->email : $request->email,
+
+            // 初期ステータス
+            'status' => 'confirmed',
         ]);
-    }
 
-    // 管理画面用 一覧
-    public function index()
-    {
-        $reservations = Reservation::all();
-        return Inertia::render('Admin/ReservationList', compact('reservations'));
-    }
-
-    // 管理画面用 削除
-    public function destroy($id)
-    {
-        Reservation::findOrFail($id)->delete();
-        return redirect()->back();
+        return redirect()
+            ->route('mypage.index')
+            ->with('success', 'ご予約を受け付けました！');
     }
 }

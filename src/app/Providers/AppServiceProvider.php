@@ -8,22 +8,17 @@ use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        // Vite関連（削除せず残してOK、今後Vite復帰しても問題なし）
         Vite::prefetch(concurrency: 3);
 
-        // Inertia に共通データを共有する
+        // Inertia に共通データを共有
         Inertia::share([
             'flash' => function () {
                 return [

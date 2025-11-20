@@ -8,10 +8,10 @@
 
 @section('content')
 <div class="product-detail-container">
-{{-- 商品画像 --}}
-<div class="product-image-area">
-<img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="product-image">
-</div>
+    {{-- 商品画像 --}}
+    <div class="product-image-area">
+        <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-image">
+    </div>
 
     {{-- 商品情報と決済ボタン --}}
     <div class="product-info-area">
@@ -19,16 +19,29 @@
         <p class="product-description">{{ $product->description }}</p>
         <p class="product-price">¥{{ number_format($product->price) }}</p>
 
-        @auth
-            {{-- ログイン済みの場合は購入手続きへ（フォームでPOST送信） --}}
-            <form action="{{ route('online-store.checkout', $product->id) }}" method="POST">
-                @csrf
-                <button type="submit" class="buy-button">
-                    購入手続きへ
-                </button>
-            </form>
+        {{-- 在庫表示 --}}
+        @if ($product->stock > 0)
+            <p class="product-stock text-green-600">在庫: {{ $product->stock }} 点</p>
         @else
-            {{-- 未ログインの場合は会員登録へ誘導 --}}
+            <p class="product-stock text-red-500 font-bold">売り切れ</p>
+        @endif
+
+        {{-- 購入ボタンエリア --}}
+        @auth
+            @if($product->stock > 0)
+                {{-- 在庫がある場合：購入可能 --}}
+                <form action="{{ route('online-store.checkout', $product->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="buy-button button button-primary">
+                        購入手続きへ
+                    </button>
+                </form>
+            @else
+                {{-- 在庫ゼロ：購入不可 --}}
+                <button class="buy-button button button-disabled" disabled>売り切れ</button>
+            @endif
+        @else
+            {{-- 未ログイン時：登録促進 --}}
             <a href="{{ route('register') }}" class="buy-button">
                 購入には会員登録が必要です
             </a>
@@ -39,5 +52,4 @@
         </a>
     </div>
 </div>
-
 @endsection

@@ -20,21 +20,17 @@ export default function ServiceIndex() {
     };
 
     const toggleActive = (serviceId) => {
-        Inertia.post(
-            route('admin.services.toggleActive', serviceId),
-            {},
-            {
-                preserveScroll: true,
-                onSuccess: (page) => {
-                    // サーバーから返ってきた最新状態に反映
-                    const updatedService = page.props.services.find((s) => s.id === serviceId);
-                    setServices(
-                        services.map((s) => (s.id === serviceId ? updatedService : s))
-                    );
-                },
-            }
-        );
+        Inertia.patch(route('admin.services.toggle', serviceId), {}, {
+            preserveScroll: true,
+            onSuccess: (page) => {
+                const updatedService = page.props.services.find((s) => s.id === serviceId);
+                setServices(
+                    services.map((s) => (s.id === serviceId ? updatedService : s))
+                );
+            },
+        });
     };
+
 
     const filteredServices = filterCategory
         ? services.filter((s) => s.category_id === parseInt(filterCategory))

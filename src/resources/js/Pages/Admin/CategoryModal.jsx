@@ -20,7 +20,7 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                     const createdCategory =
                         page.props.flash?.category || page.props.category;
                     if (createdCategory && onCreated) {
-                        onCreated(createdCategory);
+                        onCreated(createdCategory ?? null);
                     }
                     setName("");
                     onClose();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Reservation extends Model
 {
@@ -11,24 +12,22 @@ class Reservation extends Model
 
     /**
      * 一括割り当て可能な属性 (Mass Assignable)
-     * マイグレーションで追加したカラムを含めます。
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',      // 外部キー
-        'service_id',   // 外部キー
+        'user_id',      // 顧客 (User)
+        'service_id',   // メニュー (Service)
         'name',
         'email',
         'date',
-        'start_time',   // 追加
-        'end_time',     // 追加
-        'status',       // 追加
-        'notes',        // 追加
+        'start_time',
+        'end_time',
+        'status',
+        'notes',
+        'reservation_code', //マイページ紐づけ番号
     ];
 
     /**
-     * 予約とUserモデル（顧客）の関係を定義します。
+     * 🔹 User（顧客）とのリレーション
      */
     public function user()
     {
@@ -36,19 +35,46 @@ class Reservation extends Model
     }
 
     /**
-     * 予約とServiceモデル（サービス）の関係を定義します。
-     * ※ 'Service' モデルも作成する必要があります。
+     * 🔹 Service（メニュー）とのリレーション
      */
     public function service()
     {
-        // ServiceモデルがApp\Models\Serviceにあると仮定
-        return $this->belongsTo(Service::class); 
+        return $this->belongsTo(Service::class);
     }
-    
-    // 適切なデータ型のキャストを追加することも推奨されます
+
+    /**
+     * 🔹 日付・時間系のキャスト設定
+     */
     protected $casts = [
         'date' => 'date',
-        // 'start_time' と 'end_time' はDBからCarbonインスタンスとして取得したい場合、
-        // 'datetime' を使用することが多いですが、ここでは時間だけなので一旦省略します。
+        'start_time' => 'datetime:H:i',
+        'end_time'   => 'datetime:H:i',
     ];
+
+    /**
+     * 🔹 アクセサ：表示用の整形フォーマットを提供
+     * （InertiaやBladeで使うときに便利）
+     */
+    public function getFormattedDateAttribute(): string
+    {
+        return Carbon::parse($this->date)->format('Y年m月d日');
+    }
+
+    public function getFormattedTimeAttribute(): string
+    {
+        return Carbon::parse($this->start_time)->format('H:i');
+    }
+
+    /**
+     * 🔹 状態を日本語で返すアクセサ（例：confirmed → 確定）
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'confirmed' => '確定',
+            'pending'   => '保留',
+            'canceled'  => 'キャンセル',
+            default     => '不明',
+        };
+    }
 }

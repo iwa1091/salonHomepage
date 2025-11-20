@@ -5,29 +5,39 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use App\Models\Product; // Productモデルをインポート
 use Illuminate\Support\Facades\Log;
-use Stripe\Webhook;
-use Stripe\Exception\SignatureVerificationException;
+use App\Models\Product;
 use App\Models\Order;
+use Carbon\Carbon;
 
 class StripeController extends Controller
 {
     /**
-     * Create a new Stripe Checkout Session for a single product.
-     *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\RedirectResponse
+     * ✅ Stripe Checkout セッション作成
      */
-    // 引数をRequestからProductモデルに変更
-    public function checkout(Product $product)
+    public function checkout(Request $request, Product $product)
     {
-        // Stripeのシークレットキーをconfig()関数を使って設定
-        // config/services.php からキーを取得します。
         Stripe::setApiKey(config('services.stripe.secret'));
-        
+
+        if ($product->stock <= 0) {
+            return back()->with('error', 'この商品は在庫切れです。');
+        }
+
         try {
-            // Stripe Checkout Sessionを作成
+            $user = $request->user();
+
+            // ✅ ① まず仮注文を作成
+            $order = Order::create([
+                'user_id'        => $user->id,
+                'product_id'     => $product->id,
+                'order_number'   => strtoupper(uniqid('ORD')),
+                'amount'         => $product->price,
+                'currency'       => 'JPY',
+                'payment_status' => 'pending',
+                'ordered_at'     => Carbon::now(),
+            ]);
+
+            // ✅ ② Stripe セッション作成（ここで order_id を metadata に入れる）
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
@@ -35,71 +45,39 @@ class StripeController extends Controller
                         'currency' => 'jpy',
                         'product_data' => [
                             'name' => $product->name,
+                            'description' => $product->description,
                         ],
-                        'unit_amount' => $product->price,
+                        'unit_amount' => intval($product->price),
                     ],
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
-                // 成功時とキャンセル時のリダイレクト先を指定
-                'success_url' => route('checkout.success'),
+                'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('checkout.cancel'),
+
+                'metadata' => [
+                    'order_id'     => $order->id,  // ← ✅ ここで使用する
+                    'user_id'      => $user->id,
+                    'user_email'   => $user->email,
+                    'product_id'   => $product->id,
+                ],
             ]);
 
-            // 成功した場合は、Stripeの決済ページにリダイレクト
+            // ✅ ③ Stripe Session の ID を保存
+            $order->update([
+                'stripe_session_id' => $session->id,
+            ]);
+
             return redirect($session->url, 303);
 
         } catch (\Exception $e) {
-            // エラーが発生した場合、ログに記録してユーザーにメッセージを表示
-            Log::error('Failed to create Stripe Checkout Session.', ['error' => $e->getMessage()]);
-            return back()->with('error', '決済処理中にエラーが発生しました。');
+            Log::error('Stripe Checkout Error', [
+                'user_id'    => $request->user()->id ?? null,
+                'product_id' => $product->id,
+                'error'      => $e->getMessage()
+            ]);
+
+            return back()->with('error', '決済ページを開けませんでした。');
         }
-    }
-
-    /**
-     * Handle Stripe webhook events to update order status.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function webhook(Request $request)
-    {
-        // Stripeのシークレットキーをconfig()関数を使って設定
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $payload = @file_get_contents('php://input');
-        $sigHeader = $request->header('Stripe-Signature');
-        
-        // Stripe Webhookのシークレットキーをconfig()関数を使って取得
-        $endpointSecret = config('services.stripe.webhook_secret');
-
-        try {
-            // Webhookの署名検証
-            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-        } catch (SignatureVerificationException $e) {
-            // 署名検証失敗
-            Log::error('Webhook signature verification failed.', ['error' => $e->getMessage()]);
-            return response('Invalid signature', 400);
-        }
-
-        switch ($event->type) {
-            // 決済が完了した際のイベントを処理
-            case 'checkout.session.completed':
-                $session = $event->data->object;
-                Log::info('Checkout session completed', ['session' => $session]);
-
-                // ここでデータベースの注文ステータスを更新する処理を記述
-                // 例: $order = Order::where('stripe_session_id', $session->id)->firstOrFail();
-                //     $order->payment_status = 'paid';
-                //     $order->save();
-
-                break;
-            
-            // その他のイベントタイプは必要に応じて追加
-            default:
-                Log::warning('Unhandled event type: ' . $event->type);
-        }
-
-        // 成功した場合は200 OKを返す
-        return response('Webhook received', 200);
     }
 }

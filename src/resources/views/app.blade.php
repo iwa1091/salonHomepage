@@ -4,19 +4,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    <title inertia>{{ config('app.name', 'Lash Brow Ohana') }}</title>
 
-    <!-- Fonts -->
+    {{-- Google Fonts（必要なら） --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
+    {{-- Inertia.js route helper --}}
     @routes
-    @viteReactRefresh
-    @vite('resources/js/app.jsx')
+
+    {{-- ============================================
+         Vite - 全ページ共通CSS & JS を読み込む
+       ============================================ --}}
+    @vite([
+        'resources/css/base/global.css',
+        'resources/css/base/theme.css',
+        'resources/css/layout/header.css',
+        'resources/css/layout/footer.css',
+        'resources/js/app.jsx',
+    ])
+
     @inertiaHead
 </head>
 <body class="font-sans antialiased">
+
     @inertia
+
 </body>
 </html>

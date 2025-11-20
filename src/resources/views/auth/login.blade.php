@@ -2,9 +2,7 @@
 
 @section('title', 'ログイン')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('css/authentication.css') }}">
-@endsection
+@vite('resources/css/authentication.css')
 
 @section('content')
 <div class="authentication-page">

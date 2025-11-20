@@ -1,4 +1,4 @@
-import { ShoppingCart, CalendarDays, Users, LayoutDashboard, Settings } from 'lucide-react';
+import { ShoppingCart, CalendarDays, Users, Clock } from 'lucide-react';
 
 export function useAdmin() {
     const adminFeatures = [
@@ -8,6 +8,13 @@ export function useAdmin() {
             route: 'admin.reservations.index',
             icon: CalendarDays,
             color: 'bg-indigo-600',
+        },
+        {
+            title: "営業時間設定",
+            description: "営業日と時間帯を設定・更新します。",
+            route: "admin.business-hours.index",
+            color: "bg-brown",
+            icon: Clock,
         },
         {
             title: "商品・メニュー管理",
@@ -29,20 +36,6 @@ export function useAdmin() {
             route: 'admin.users.index',
             icon: Users,
             color: 'bg-orange-600',
-        },
-        {
-            title: "全体概要",
-            description: "売上や予約数の統計情報を確認します。",
-            route: 'admin.analytics',
-            icon: LayoutDashboard,
-            color: 'bg-teal-600',
-        },
-        {
-            title: "設定",
-            description: "店舗情報やシステムの基本設定を変更します。",
-            route: 'admin.settings',
-            icon: Settings,
-            color: 'bg-gray-600',
         },
     ];
 

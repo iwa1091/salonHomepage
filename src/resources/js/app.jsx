@@ -1,27 +1,26 @@
-import '../css/app.css';
+import { route } from 'ziggy-js';
+import { Ziggy } from './ziggy'; // @routes で生成される
 import './bootstrap';
+import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-
 createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
-
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,
             import.meta.glob('./Pages/**/*.jsx')
-        ).then(module => module.default), // ← これが必須
+        ),
 
     setup({ el, App, props }) {
-        const root = createRoot(el);
-        root.render(<App {...props} />);
-    },
-
-    progress: {
-        color: '#4B5563',
+        createRoot(el).render(
+            <App
+                {...props}
+                ziggy={Ziggy}
+                route={(...args) => route(...args, Ziggy)}
+            />
+        );
     },
 });

@@ -8,14 +8,14 @@ use Inertia\Middleware;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * The root template that is loaded on the first page visit.
+     * 初回 Inertia リクエストで読み込むルートテンプレート
      *
      * @var string
      */
-    protected $rootView = 'app';
+    protected $rootView = 'app_inertia';  // ← ここを変更！
 
     /**
-     * Determine the current asset version.
+     * アセットバージョンを判定
      */
     public function version(Request $request): ?string
     {
@@ -23,14 +23,13 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
+     * Inertia 全ページに共有するデータ
      */
     public function share(Request $request): array
     {
         return [
             ...parent::share($request),
+
             'auth' => [
                 'user' => $request->user(),
             ],

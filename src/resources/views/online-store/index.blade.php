@@ -13,14 +13,12 @@
     <div class="store-page container">
         <div class="store-container">
             {{-- ヘッダーセクション --}}
-            <div class="store-header">
-                <h1 class="store-title">オンラインストア</h1>
-                <p class="store-subtitle">
-                    自宅でサロンのクオリティを。厳選したアイテムをお届けします。<br>
-                    お客様の美容と健康をサポートする商品を多数取り揃えております。
+            <div class="store-header text-center">
+                <h1 class="store-title font-handwriting text-salon-brown">商品販売</h1>
+                <p class="store-subtitle text-salon-brown-light">
+                    サロンで使用している厳選されたアイケア商品を販売しております。 ご自宅でのケアにお役立てください。
                 </p>
             </div>
-            
             {{-- 検索・並び替え機能 --}}
             <div class="search-sort-container">
                 <form action="{{ route('online-store.index') }}" method="GET" class="search-form">
@@ -48,12 +46,18 @@
                         <div class="product-card">
                             <a href="{{ route('online-store.show', $product->id) }}" class="product-link">
                                 <div class="product-image-container">
-                                    <img src="{{ asset($product->image_path) }}" alt="{{ $product->name }}" class="product-image">
+                                    <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-image">
                                 </div>
                                 <div class="product-info">
                                     <h3 class="product-name">{{ $product->name }}</h3>
                                     <p class="product-description">{{ Str::limit($product->description, 50) }}</p>
                                     <span class="product-price">¥{{ number_format($product->price) }}</span>
+                                    {{-- 在庫表示 --}}
+                                    @if($product->stock > 0)
+                                        <p class="product-stock text-green-600">在庫: {{ $product->stock }} 点</p>
+                                    @else
+                                        <p class="product-stock text-red-500 font-bold">売り切れ</p>
+                                    @endif
                                 </div>
                             </a>
                         </div>

@@ -232,5 +232,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+    'mix' => [
+    'manifest' => public_path('../src/public/mix-manifest.json'),
+    ],
+
 
 ];

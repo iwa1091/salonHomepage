@@ -37,14 +37,15 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:100'],
+            'name' => 'required|string|max:255',
         ]);
 
-        Category::create($validated);
+        $category = Category::create($validated);
 
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'カテゴリを作成しました。');
+        // ✅ フラッシュデータに新しいカテゴリを渡す
+        return back()->with('category', $category);
     }
+
 
     /**
      * 編集フォーム

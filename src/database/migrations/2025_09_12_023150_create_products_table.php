@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedInteger('price');
             $table->string('image_path');
+            $table->integer('stock')->default(0); // ✅ 「after('price')」削除
             $table->timestamps();
         });
     }

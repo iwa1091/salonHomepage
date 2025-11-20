@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useForm, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import { Inertia } from "@inertiajs/inertia";
 import CategoryModal from "./CategoryModal";
 
 export default function ServiceForm({ service = null, categories: initialCategories = [] }) {
     const { errors } = usePage().props;
 
-    const { data, setData, post, put, processing } = useForm({
+    // ✅ Inertia の useForm フックを使用
+    const { data, setData, processing } = useForm({
         name: service?.name || "",
         description: service?.description || "",
         price: service?.price || "",
@@ -15,7 +17,7 @@ export default function ServiceForm({ service = null, categories: initialCategor
         is_active: service?.is_active || false,
         is_popular: service?.is_popular || false,
         category_id: service?.category_id || "",
-        features: service?.features || [],
+        features: Array.isArray(service?.features) ? service.features : [],
         image: null,
     });
 
@@ -23,13 +25,14 @@ export default function ServiceForm({ service = null, categories: initialCategor
     const [showModal, setShowModal] = useState(false);
     const [featureInput, setFeatureInput] = useState("");
 
-    // モーダル新規作成後に即反映
+    /** ✅ カテゴリ新規作成後に即反映 */
     const handleCategoryCreated = (newCategory) => {
         setCategories((prev) => [...prev, newCategory]);
         setData("category_id", newCategory.id);
+        setShowModal(false);
     };
 
-    // 入力変化
+    /** ✅ 入力変更 */
     const handleChange = (e) => {
         const { name, type, checked, files, value } = e.target;
         setData(
@@ -42,42 +45,49 @@ export default function ServiceForm({ service = null, categories: initialCategor
         );
     };
 
-    // 特徴追加
+    /** ✅ 特徴追加（Enterキー） */
     const handleFeatureKeyDown = (e) => {
-        if (e.key === "Enter" && featureInput.trim() !== "") {
+        if (e.isComposing || e.keyCode === 229) return;
+        if (e.key === "Enter") {
             e.preventDefault();
-            if (!data.features.includes(featureInput.trim())) {
-                setData("features", [...data.features, featureInput.trim()]);
+            const trimmed = featureInput.trim();
+            if (trimmed && !data.features.includes(trimmed)) {
+                setData("features", [...data.features, trimmed]);
             }
             setFeatureInput("");
         }
     };
 
+    /** ✅ 特徴削除 */
     const removeFeature = (feature) => {
         setData("features", data.features.filter((f) => f !== feature));
     };
 
-    // 保存
+    /** ✅ 保存処理 */
     const handleSubmit = (e) => {
         e.preventDefault();
+
         const formData = new FormData();
-        Object.keys(data).forEach((key) => {
-            if (key === "features") {
-                formData.append("features", JSON.stringify(data.features));
-            } else if (data[key] !== null) {
-                formData.append(key, data[key]);
+
+        Object.entries(data).forEach(([key, value]) => {
+            if (key === "features" && Array.isArray(value)) {
+                value.forEach((feature) => {
+                    formData.append("features[]", feature);
+                });
+            } else if (value !== null && value !== undefined) {
+                formData.append(key, value);
             }
         });
 
+        // 既存データなら PUT、それ以外は POST
         if (service) {
-            put(route("admin.services.update", service.id), {
-                data: formData,
+            formData.append("_method", "PUT");
+            Inertia.post(route("admin.services.update", service.id), formData, {
                 forceFormData: true,
                 preserveScroll: true,
             });
         } else {
-            post(route("admin.services.store"), {
-                data: formData,
+            Inertia.post(route("admin.services.store"), formData, {
                 forceFormData: true,
                 preserveScroll: true,
             });
@@ -106,9 +116,7 @@ export default function ServiceForm({ service = null, categories: initialCategor
                         className="w-full border px-3 py-2 rounded"
                         required
                     />
-                    {errors.name && (
-                        <div className="text-red-600">{errors.name}</div>
-                    )}
+                    {errors.name && <div className="text-red-600">{errors.name}</div>}
                 </div>
 
                 {/* カテゴリ */}
@@ -129,6 +137,8 @@ export default function ServiceForm({ service = null, categories: initialCategor
                                 </option>
                             ))}
                         </select>
+
+                        {/* ✅ 新規カテゴリ追加ボタン */}
                         <button
                             type="button"
                             className="px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
@@ -150,11 +160,10 @@ export default function ServiceForm({ service = null, categories: initialCategor
                         value={data.description}
                         onChange={handleChange}
                         className="w-full border px-3 py-2 rounded"
+                        rows="4"
                     />
                     {errors.description && (
-                        <div className="text-red-600">
-                            {errors.description}
-                        </div>
+                        <div className="text-red-600">{errors.description}</div>
                     )}
                 </div>
 
@@ -170,16 +179,12 @@ export default function ServiceForm({ service = null, categories: initialCategor
                         min="0"
                         required
                     />
-                    {errors.price && (
-                        <div className="text-red-600">{errors.price}</div>
-                    )}
+                    {errors.price && <div className="text-red-600">{errors.price}</div>}
                 </div>
 
                 {/* 所要時間 */}
                 <div>
-                    <label className="block mb-1 font-medium">
-                        所要時間 (分)
-                    </label>
+                    <label className="block mb-1 font-medium">所要時間 (分)</label>
                     <input
                         type="number"
                         name="duration_minutes"
@@ -191,9 +196,7 @@ export default function ServiceForm({ service = null, categories: initialCategor
                         required
                     />
                     {errors.duration_minutes && (
-                        <div className="text-red-600">
-                            {errors.duration_minutes}
-                        </div>
+                        <div className="text-red-600">{errors.duration_minutes}</div>
                     )}
                 </div>
 
@@ -213,6 +216,34 @@ export default function ServiceForm({ service = null, categories: initialCategor
                     )}
                 </div>
 
+                {/* 公開 */}
+                <div>
+                    <label className="inline-flex items-center">
+                        <input
+                            type="checkbox"
+                            name="is_active"
+                            checked={data.is_active}
+                            onChange={handleChange}
+                            className="mr-2"
+                        />
+                        公開
+                    </label>
+                </div>
+
+                {/* 人気サービス */}
+                <div>
+                    <label className="inline-flex items-center">
+                        <input
+                            type="checkbox"
+                            name="is_popular"
+                            checked={data.is_popular}
+                            onChange={handleChange}
+                            className="mr-2"
+                        />
+                        人気サービス
+                    </label>
+                </div>
+
                 {/* 特徴 */}
                 <div>
                     <label className="block mb-1 font-medium">特徴</label>
@@ -223,6 +254,7 @@ export default function ServiceForm({ service = null, categories: initialCategor
                         onKeyDown={handleFeatureKeyDown}
                         placeholder="Enterで追加"
                         className="w-full border px-3 py-2 rounded"
+                        autoComplete="off"
                     />
                     <div className="flex flex-wrap mt-2 gap-2">
                         {data.features.map((f, idx) => (
@@ -246,39 +278,9 @@ export default function ServiceForm({ service = null, categories: initialCategor
                     )}
                 </div>
 
-                {/* 公開 */}
-                <div>
-                    <label className="inline-flex items-center">
-                        <input
-                            type="checkbox"
-                            name="is_active"
-                            checked={data.is_active}
-                            onChange={handleChange}
-                            className="mr-2"
-                        />
-                        公開
-                    </label>
-                </div>
-
-                {/* 人気 */}
-                <div>
-                    <label className="inline-flex items-center">
-                        <input
-                            type="checkbox"
-                            name="is_popular"
-                            checked={data.is_popular}
-                            onChange={handleChange}
-                            className="mr-2"
-                        />
-                        人気サービス
-                    </label>
-                </div>
-
                 {/* 画像 */}
                 <div>
-                    <label className="block mb-1 font-medium">
-                        画像アップロード
-                    </label>
+                    <label className="block mb-1 font-medium">画像アップロード</label>
                     <input
                         type="file"
                         name="image"
@@ -293,12 +295,10 @@ export default function ServiceForm({ service = null, categories: initialCategor
                             className="mt-2 w-32 h-32 object-cover rounded"
                         />
                     )}
-                    {errors.image && (
-                        <div className="text-red-600">{errors.image}</div>
-                    )}
+                    {errors.image && <div className="text-red-600">{errors.image}</div>}
                 </div>
 
-                {/* 保存 */}
+                {/* 保存ボタン */}
                 <button
                     type="submit"
                     disabled={processing}
