@@ -13,34 +13,54 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            
-            // ユーザー関連 (認証済みユーザーの場合)
-            // 外部キー制約を付け、ユーザーが削除されたら予約も連鎖削除
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-            
-            // サービス関連 (必須: どのサービスが予約されたか)
-            // ★事前に 'services' テーブルが必要
-            $table->foreignId('service_id')->constrained()->onDelete('cascade');
 
-            // 予約者情報 (ゲスト予約も想定し残す)
+            /**
+             * ユーザー（ログインユーザーの場合は紐づく）
+             */
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->onDelete('cascade');
+
+            /**
+             * サービス（メニュー）
+             */
+            $table->foreignId('service_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            /**
+             * 予約者情報（ゲスト含む）
+             */
             $table->string('name');
             $table->string('email');
-            
-            // 時間情報
+            $table->string('phone')->nullable();   // ← 追加
+
+            /**
+             * 日付・時間
+             */
             $table->date('date');
             $table->time('start_time');
-            $table->time('end_time'); // サービス時間に基づいて計算される
+            $table->time('end_time');
 
-            // 予約ステータスとメモ
-            $table->string('status')->default('pending')->comment('pending, confirmed, cancelled, completed');
+            /**
+             * 状態
+             */
+            $table->string('status')
+                ->default('pending')
+                ->comment('pending, confirmed, cancelled, completed');
+
+            /**
+             * 備考
+             */
             $table->text('notes')->nullable();
-            
-            $table->timestamps();
 
-            // ★重複予約防止のための複合ユニーク制約 (ユーザーは同じ時間に予約できない)
-            // $table->unique(['user_id', 'date', 'start_time']); 
-            // ただし、管理者向け予約システムでは、より複雑なロジックが必要なため、
-            // 予約ロジック（コントローラー）側で重複チェックを行う方が一般的です。
+            /**
+             * マイページ紐づけ用の予約コード（RSVxxxxxx）
+             */
+            $table->string('reservation_code')->nullable(); // ← 追加
+
+            $table->timestamps();
         });
     }
 

@@ -1,94 +1,79 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm } from "@inertiajs/react";
+import "../../../css/pages/verify/reset-password.css";
 
-export default function ResetPassword({ token, email }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function ResetPassword({ email, token }) {
+
+    const { data, setData, post, processing, errors } = useForm({
         token: token,
         email: email,
-        password: '',
-        password_confirmation: '',
+        password: "",
+        password_confirmation: "",
     });
 
     const submit = (e) => {
         e.preventDefault();
-
-        post(route('password.store'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+        post("/reset-password");
     };
 
     return (
-        <GuestLayout>
-            <Head title="Reset Password" />
+        <>
+            <Head title="パスワード再設定" />
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+            <div className="reset-page">
+                <div className="reset-container">
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
+                    <form onSubmit={submit} className="reset-form">
 
-                    <InputError message={errors.email} className="mt-2" />
+                        <h1 className="reset-title">パスワード再設定</h1>
+
+                        {/* メール */}
+                        <div className="form-group">
+                            <label className="reset-label">メールアドレス</label>
+                            <input
+                                className="reset-input"
+                                type="email"
+                                value={data.email}
+                                onChange={(e) => setData("email", e.target.value)}
+                            />
+                            {errors.email && (
+                                <span className="reset-error">{errors.email}</span>
+                            )}
+                        </div>
+
+                        {/* 新パスワード */}
+                        <div className="form-group">
+                            <label className="reset-label">新しいパスワード</label>
+                            <input
+                                className="reset-input"
+                                type="password"
+                                value={data.password}
+                                onChange={(e) => setData("password", e.target.value)}
+                            />
+                            {errors.password && (
+                                <span className="reset-error">{errors.password}</span>
+                            )}
+                        </div>
+
+                        {/* 確認用 */}
+                        <div className="form-group">
+                            <label className="reset-label">パスワード（確認）</label>
+                            <input
+                                className="reset-input"
+                                type="password"
+                                value={data.password_confirmation}
+                                onChange={(e) =>
+                                    setData("password_confirmation", e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <button type="submit" className="reset-btn" disabled={processing}>
+                            パスワードを更新する
+                        </button>
+                    </form>
+
                 </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        type="password"
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Reset Password
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
+            </div>
+        </>
     );
 }

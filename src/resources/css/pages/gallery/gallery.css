@@ -1,16 +1,17 @@
-/* ===========================
-   gallery.css
-   lash-brow-ohana ギャラリー用
-=========================== */
+/* =========================================================
+   gallery.css — Lash Brow Ohana（ギャラリー専用）
+   配色：ベージュ × ゴールド × ブラウン
+   緑（--color-main）と深緑系の文字色は一切使用しない
+========================================================= */
 
 /* --------------------------------
    ページ全体
 -------------------------------- */
 .gallery-page-container {
-    background-color: var(--salon-beige);
-    padding: 40px 20px;
+    background-color: var(--color-bg-base);
+    padding: 3rem 1.5rem;
     font-family: var(--font-base);
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* --------------------------------
@@ -18,21 +19,22 @@
 -------------------------------- */
 .header-section {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 4rem;
 }
 
 .page-title {
-    font-size: 2.2rem;
-    font-family: 'Shippori Mincho', serif;
-    font-weight: bold;
-    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-default);
+    margin-bottom: 1rem;
 }
 
 .page-description {
     font-size: 1rem;
-    line-height: 1.6;
-    color: var(--salon-brown);
-    max-width: 680px;
+    line-height: 1.75;
+    color: var(--text-muted);
+    max-width: 720px;
     margin: 0 auto;
 }
 
@@ -40,46 +42,48 @@
    カード共通
 -------------------------------- */
 .card {
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background-color: var(--color-white);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-soft);
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .card:hover {
     transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
 }
 
 .card-content {
-    padding: 16px;
+    padding: 1.5rem;
 }
 
 .card-title {
+    font-family: var(--font-heading);
     font-size: 1.2rem;
-    font-family: 'Shippori Mincho', serif;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: var(--salon-brown);
+    color: var(--text-default);
+    margin-bottom: 0.6rem;
 }
 
 .card-description {
     font-size: 0.95rem;
-    color: var(--salon-brown);
+    line-height: 1.7;
+    color: var(--text-default);
 }
 
-/* ===========================
-   Before / After
-=========================== */
+/* =========================================================
+    Before / After セクション
+========================================================= */
 .grid-case {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
 }
 
 .card-grid-images {
     display: flex;
-    gap: 10px;
+    gap: 0.75rem;
 }
 
 @media (max-width: 767px) {
@@ -95,166 +99,177 @@
 
 .image-card {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
+    border-radius: var(--radius-base);
     display: block;
+    object-fit: cover;
+    object-position: top;
+    /* ← 顔が切れにくく調整 */
 }
 
+/* バッジ共通 */
 .badge {
     position: absolute;
-    top: 10px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: var(--white);
-    font-family: 'Zen Maru Gothic', sans-serif;
+    top: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-ui);
+    color: var(--color-white);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    /* ← 視認性UP */
 }
 
+/* Before → ブラウン */
 .badge-before {
-    left: 10px;
-    background: var(--salon-brown);
+    left: 0.75rem;
+    background-color: var(--text-default);
 }
 
+/* After → ゴールド */
 .badge-after {
-    right: 10px;
-    background: var(--salon-gold);
+    right: 0.75rem;
+    background-color: var(--color-accent);
 }
 
-/* ===========================
-   Gallery
-=========================== */
+/* =========================================================
+    Gallery Grid
+========================================================= */
 .grid-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 4rem;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1024px) {
     .grid-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 640px) {
     .grid-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
 
-.badge-category {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: var(--white);
-}
-
+/* ラッシュ → ゴールド */
 .badge-lash {
-    background: var(--salon-gold);
+    background-color: var(--color-accent);
 }
 
+/* ブロウ → ブラウン */
 .badge-brow {
-    background: var(--salon-brown);
+    background-color: var(--text-default);
 }
 
-/* ===========================
-   Reviews
-=========================== */
+/* =========================================================
+    Customer Reviews
+========================================================= */
 .grid-reviews {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
 }
 
-@media (max-width: 1023px) {
-    .grid-reviews {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-}
-
-@media (max-width: 767px) {
+@media (max-width: 768px) {
     .grid-reviews {
         grid-template-columns: 1fr;
     }
 }
 
 .card-review {
-    padding: 20px;
+    padding: 1.6rem;
 }
 
+/* レビューヘッダー */
 .review-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 12px;
+    margin-bottom: 1rem;
 }
 
 .review-name-age {
     font-size: 1rem;
-    font-weight: bold;
-    color: var(--salon-brown);
+    font-weight: 600;
+    color: var(--text-default);
 }
 
 .review-age {
-    margin-left: 6px;
-    color: var(--salon-brown);
+    margin-left: 0.4rem;
+    color: var(--text-muted);
 }
 
+/* 星（横並び） */
 .review-rating {
-    margin-top: 4px;
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    margin-top: 0.4rem;
 }
 
 .star {
-    width: 18px;
-    height: 18px;
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
 .quote {
-    width: 24px;
-    height: 24px;
+    width: 1.4rem;
+    height: 1.4rem;
     opacity: 0.5;
 }
 
 .review-comment {
     font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 12px;
-    color: var(--salon-brown);
+    line-height: 1.7;
+    color: var(--text-default);
+    margin-bottom: 1rem;
 }
 
 .review-details {
     font-size: 0.8rem;
     display: flex;
     justify-content: space-between;
-    color: var(--salon-brown);
+    color: var(--text-muted);
 }
 
-/* ===========================
-   Stats（お客様満足度）
-=========================== */
+/* 注記テキスト（Googleマップ口コミ要約） */
+.review-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    max-width: 720px;
+    margin: 0 auto 2rem auto;
+}
+
+/* =========================================================
+   Stats（満足度エリア）
+========================================================= */
 .section-stats {
-    background: var(--salon-brown);
-    color: var(--white);
-    padding: 60px 20px;
-    margin-top: 60px;
-    border-radius: 16px;
+    background-color: var(--text-default);
+    color: var(--color-white);
+    padding: 4rem 1.5rem;
     text-align: center;
+    border-radius: var(--radius-large);
 }
 
 .stats-container {
-    max-width: 1000px;
+    max-width: 960px;
     margin: 0 auto;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: var(--color-white);
 }
 
 .stats-grid {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 2rem;
 }
 
 .stat-item {
@@ -263,36 +278,34 @@
 
 .stat-value {
     font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 6px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent);
 }
 
 .stat-label {
     font-size: 0.9rem;
+    color: var(--color-white);
 }
 
-/* ===========================
+/* =========================================================
    スマホ最適化
-=========================== */
+========================================================= */
 @media (max-width: 767px) {
 
     .gallery-page-container {
-        padding: 30px 16px;
+        padding: 2rem 1rem;
     }
 
     .page-title {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
     }
 
     .card-content {
-        padding: 14px;
+        padding: 1.2rem;
     }
 
     .stat-value {
         font-size: 1.6rem;
-    }
-
-    .stat-label {
-        font-size: 0.8rem;
     }
 }

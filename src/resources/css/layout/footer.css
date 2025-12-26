@@ -1,140 +1,158 @@
-/* Custom Colors & Fonts */
-:root {
-    --salon-brown: #3e2723;
-    --salon-gold: #c3a167;
-    --white-80: rgba(255, 255, 255, 0.8);
-    --white-70: rgba(255, 255, 255, 0.7);
-    --white-60: rgba(255, 255, 255, 0.6);
-    --white-20: rgba(255, 255, 255, 0.2);
-}
+/* =====================================================
+   Ohana Salon — Footer (Deep Green × Gold Premium)
+   新テーマに完全準拠した高級フッターデザイン
+===================================================== */
 
-/* Base Styles */
+/* =====================================================
+   Main Footer
+===================================================== */
 .main-footer {
-    background-color: var(--salon-brown);
-    color: #fff;
-    font-family: 'Your Brand Font', sans-serif;
-    /* Tailwindのフォントを置き換え */
+    background-color: var(--color-main);
+    /* 深いボタニカルグリーン */
+    color: var(--color-white);
+    font-family: var(--font-ui);
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
+/* =====================================================
+   Container
+===================================================== */
 .footer-container {
-    max-width: 1280px;
+    max-width: var(--container-max);
     margin: 0 auto;
-    padding: 4rem 1rem;
+    padding: 0 1.2rem;
 }
 
-/* Footer Grid Layout */
+/* =====================================================
+   Footer Grid
+===================================================== */
 .footer-grid {
     display: grid;
-    grid-template-columns: 1fr;
     gap: 2rem;
+    grid-template-columns: 1fr;
 }
 
 @media (min-width: 768px) {
     .footer-grid {
         grid-template-columns: repeat(4, 1fr);
+        gap: 2.5rem;
     }
 }
 
-/* Logo & Description Section */
+/* =====================================================
+   Salon Branding（Logo + About）
+===================================================== */
 .salon-name {
-    font-family: 'Your Handwriting Font', cursive;
-    font-size: 1.5rem;
-    color: var(--salon-gold);
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    /* handwriting → heading に統一 */
+    font-size: 1.6rem;
+    color: var(--color-accent);
+    /* ゴールド */
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
 }
 
 .salon-description {
-    color: var(--white-80);
-    font-size: 0.875rem;
-    line-height: 1.625;
-    margin-bottom: 1rem;
+    font-family: var(--font-base);
+    font-size: 0.93rem;
+    line-height: 1.75;
+    margin-bottom: 1.1rem;
+    color: rgba(255, 255, 255, 0.88);
 }
 
+/* =====================================================
+   SNS Icons
+===================================================== */
 .social-links {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.7rem;
 }
 
 .social-link {
-    color: var(--white-60);
-    transition: color 0.15s ease-in-out;
+    padding: 0.4rem;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 224, 170, 0.16);
+    transition: 0.25s ease;
+    display: inline-flex;
 }
 
 .social-link:hover {
-    color: var(--salon-gold);
+    background-color: rgba(255, 224, 170, 0.28);
+    transform: translateY(-2px);
 }
 
-/* Menu, Contact, and Hours Sections */
-.footer-menu-section,
-.footer-contact-section,
-.footer-hours-section {
-    /* ここに各セクションのスタイルを追加 */
+.footer-sns-icon {
+    width: 1.35rem;
+    height: 1.35rem;
 }
 
+/* =====================================================
+   Footer Headings（Menu / Contact / Hours）
+===================================================== */
 .footer-menu-heading,
 .footer-contact-heading,
 .footer-hours-heading {
-    font-weight: 500;
-    color: #fff;
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 0.9rem;
+    color: var(--color-accent);
+    letter-spacing: 0.03em;
 }
 
-.footer-menu-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.nav-link {
-    font-size: 0.875rem;
-    /* 14px */
-    color: var(--salon-gold);
-    
-    /* デフォルトのテキスト色 */
-    text-decoration: none;
-    /* 下線をなくす */
-    transition: color 0.15s ease-in-out;
-}
-
-.footer-menu-item {
+/* =====================================================
+   Navigation Links
+===================================================== */
+.footer-nav-link {
     display: block;
-    color: var(--white-70);
-    font-size: 0.875rem;
-    transition: color 0.15s ease-in-out;
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.78);
+    padding: 0.28rem 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.footer-menu-item:hover {
-    color: var(--salon-gold);
+.footer-nav-link:hover,
+.footer-nav-link.is-active {
+    color: var(--color-accent);
 }
 
-/* Contact Info */
-.contact-info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
+/* =====================================================
+   Contact Info
+===================================================== */
 .contact-info-item {
     display: flex;
     align-items: center;
-    font-size: 0.875rem;
+    gap: 0.45rem;
+    margin-bottom: 0.55rem;
+    font-family: var(--font-base);
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.86);
 }
 
-.contact-text {
-    color: var(--white-80);
+.footer-icon {
+    width: 1rem;
+    height: 1rem;
 }
 
-.address-item {
-    align-items: flex-start;
+/* 住所が複数行の場合 */
+.address-item .contact-text {
+    line-height: 1.55;
 }
 
-/* Business Hours */
+/* =====================================================
+   Business Hours
+===================================================== */
 .hours-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--white-80);
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    font-family: var(--font-base);
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .hours-item {
@@ -142,67 +160,52 @@
     justify-content: space-between;
 }
 
-.closed-day span:last-child {
-    color: var(--salon-gold);
+@media (max-width: 480px) {
+    .hours-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
 }
 
-/* SVG Icons */
-.icon {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.5rem;
-    color: var(--salon-gold);
-    flex-shrink: 0;
-}
-
-.social-link .icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0;
-    color: var(--white-60);
-}
-
-/* Copyright Section */
+/* =====================================================
+   Copyright Section
+===================================================== */
 .footer-copyright-section {
-    border-top: 1px solid var(--white-20);
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    margin-top: 3rem;
+    padding-top: 1.3rem;
 }
 
 .copyright-container {
-    padding: 1.5rem 1rem;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 1.2rem;
 }
 
 .copyright-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    font-size: 0.875rem;
-    color: var(--white-60);
+    text-align: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    font-family: var(--font-ui);
+    color: rgba(255, 255, 255, 0.75);
 }
 
 @media (min-width: 768px) {
     .copyright-content {
         flex-direction: row;
         justify-content: space-between;
-    }
-}
-
-.legal-links {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-@media (min-width: 768px) {
-    .legal-links {
-        margin-top: 0;
+        text-align: left;
     }
 }
 
 .legal-link {
-    color: var(--white-60);
-    transition: color 0.15s ease-in-out;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 .legal-link:hover {
-    color: var(--salon-gold);
+    color: var(--color-accent);
 }

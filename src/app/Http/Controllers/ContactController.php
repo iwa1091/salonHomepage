@@ -2,53 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\ContactRequest;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactMail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\ContactNotification;
+use App\Mail\ContactAutoReply;
 
 class ContactController extends Controller
 {
-    /**
-     * お問い合わせフォームの表示
-     *
-     * @return \Illuminate\View\View
-     */
     public function showForm()
     {
         return view('contact');
     }
 
-    /**
-     * お問い合わせフォームの送信
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function sendEmail(Request $request)
+    public function sendEmail(ContactRequest $request)
     {
-        // フォーム入力の検証
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-        ]);
+        $validated = $request->validated();
 
         try {
-            // メール送信
-            Mail::to(config('mail.to.address')) // 管理者宛て
-                ->send(new ContactMail($validatedData));
+            /* ================================
+               1. 管理者宛メールを送信
+            ================================= */
+            Mail::to(config('mail.to.address'))
+                ->send(new ContactNotification($validated));
 
-            // 成功メッセージをセッションに保存
-            return redirect()->route('contact.form')->with('success', 'お問い合わせありがとうございます。2営業日以内に返信いたします。');
+            /* ================================
+               2. お客様宛メールを送信（自動返信）
+            ================================= */
+            Mail::to($validated['email'])
+                ->send(new ContactAutoReply($validated));
+
+            return redirect()
+                ->route('contact.form')
+                ->with('success', 'お問い合わせありがとうございます。確認メールを送信しました。');
 
         } catch (\Exception $e) {
-            // エラーログ
-            Log::error('メール送信エラー: ' . $e->getMessage());
 
-            // 失敗メッセージをセッションに保存
-            return redirect()->back()->with('error', 'メール送信中にエラーが発生しました。時間をおいて再度お試しください。')->withInput();
+            Log::error('お問い合わせメール送信エラー：' . $e->getMessage());
+
+            return back()
+                ->with('error', 'メール送信中にエラーが発生しました。時間をおいて再度お試しください。')
+                ->withInput();
         }
     }
 }

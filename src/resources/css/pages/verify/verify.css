@@ -1,36 +1,28 @@
 /* ===========================
-    verify.css - メール認証ページ用
-    =========================== */
-
-/* カラースキーム */
-:root {
-    --salon-beige: #EAD7CC;
-    --salon-brown: #5A4B4B;
-    --salon-gold: #C29F5C;
-    --white: #ffffff;
-    --success-color: #4CAF50;
-    --success-bg: #E8F5E9;
-}
+    verify.css - メール認証ページ用（最終版）
+    theme.css と完全連携
+=========================== */
 
 /* ページ全体 */
 .verify-page {
-    background-color: var(--salon-beige);
+    background-color: var(--color-bg-base);
     padding: 6rem 1rem;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    color: var(--salon-brown);
+    font-family: var(--font-base);
+    color: var(--text-default);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
 
+/* コンテナ */
 .verify-container {
     max-width: 600px;
     width: 100%;
     margin: auto;
-    background-color: var(--white);
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--card-bg);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-soft);
     padding: 2.5rem;
     text-align: center;
 }
@@ -38,20 +30,20 @@
 /* タイトル */
 .page__title {
     font-size: 2rem;
-    font-family: 'Shippori Mincho', serif;
+    font-family: var(--font-heading);
     font-weight: bold;
     color: var(--salon-brown);
     margin-bottom: 1.5rem;
 }
 
-/* コンテンツ */
+/* コンテンツ内部 */
 .verify-content {
     margin-top: 2rem;
 }
 
 .verify-text {
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.05rem;
+    line-height: 1.7;
     margin-bottom: 2rem;
 }
 
@@ -59,27 +51,28 @@
 .btn--big {
     width: 100%;
     padding: 1rem;
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     font-weight: bold;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-base);
     cursor: pointer;
-    background-color: var(--salon-gold);
-    color: var(--white);
-    transition: background-color 0.2s ease;
+    background-color: var(--color-accent);
+    color: var(--salon-white);
+    transition: 0.2s ease;
+    box-shadow: var(--shadow-soft);
 }
 
 .btn--big:hover {
-    background-color: #a38147;
+    background-color: var(--color-accent-soft);
 }
 
 /* アラートメッセージ */
 .alert {
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-base);
     margin-bottom: 2rem;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .alert--success {
@@ -87,13 +80,51 @@
     color: var(--success-color);
 }
 
-/* レスポンシブデザイン */
-@media (max-width: 576px) {
+/* =======================================================
+   ▼ レスポンシブ最適化
+======================================================= */
+
+/* タブレット（768px 以下） */
+@media (max-width: 768px) {
+    .verify-page {
+        padding: 4rem 1rem;
+    }
+
     .verify-container {
         padding: 2rem 1.5rem;
     }
 
     .page__title {
-        font-size: 1.75rem;
+        font-size: 1.85rem;
+    }
+
+    .verify-text {
+        font-size: 1.1rem;
+    }
+
+    .btn--big {
+        font-size: 1.05rem;
+        padding: 0.9rem;
+    }
+}
+
+/* スマホ（480px 以下） */
+@media (max-width: 480px) {
+    .verify-container {
+        padding: 1.8rem 1.25rem;
+    }
+
+    .page__title {
+        font-size: 1.6rem;
+    }
+
+    .verify-text {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .btn--big {
+        font-size: 1rem;
+        padding: 0.85rem;
     }
 }

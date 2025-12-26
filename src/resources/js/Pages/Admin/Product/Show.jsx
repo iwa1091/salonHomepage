@@ -1,13 +1,16 @@
+// /resources/js/Pages/Admin/Product/Show.jsx
 import React from "react";
 import { Link, usePage, router } from "@inertiajs/react";
 import { motion } from "framer-motion";
+import { route } from "ziggy-js";
+
+// CSS モジュール
+import "../../../../css/pages/admin/product/show.css";
 
 /**
  * 商品詳細ページ (Admin/Product/Show.jsx)
- * - Create.jsx と同じデザインコンセプト
  * - 商品の内容確認、編集・削除ボタンを配置
  */
-
 export default function Show() {
     const { product, flash } = usePage().props;
 
@@ -23,88 +26,82 @@ export default function Show() {
 
     return (
         <motion.div
-            className="min-h-screen bg-[var(--salon-beige)] flex justify-center items-start py-16"
+            className="admin-product-show-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-[700px]">
+            <div className="admin-product-show-container">
                 {/* タイトル */}
-                <h1 className="text-3xl font-handwriting text-[var(--salon-brown)] mb-8 text-center">
-                    商品詳細
-                </h1>
+                <h1 className="admin-product-show-title">商品詳細</h1>
 
                 {/* フラッシュメッセージ */}
                 {flash?.success && (
-                    <p className="text-green-600 text-center mb-4 font-medium">
+                    <p className="admin-product-show-flash">
                         {flash.success}
                     </p>
                 )}
 
                 {/* 商品情報 */}
-                <div className="space-y-6">
+                <div className="admin-product-show-main">
                     {/* 画像 */}
-                    <div className="text-center">
+                    <div className="admin-product-show-image-wrapper">
                         <img
                             src={`/storage/${product.image_path}`}
                             alt={product.name}
-                            className="max-h-[350px] mx-auto rounded-lg shadow-md object-contain"
+                            className="admin-product-show-image"
                         />
                     </div>
 
                     {/* 商品名 */}
-                    <div>
-                        <h2 className="text-xl font-semibold text-[var(--salon-brown)] mb-1">
-                            商品名
-                        </h2>
-                        <p className="text-[var(--salon-brown)] text-base bg-[var(--salon-beige)] px-4 py-2 rounded-lg">
+                    <div className="admin-product-show-block">
+                        <h2 className="admin-product-show-label">商品名</h2>
+                        <p className="admin-product-show-value">
                             {product.name}
                         </p>
                     </div>
 
                     {/* 価格 */}
-                    <div>
-                        <h2 className="text-xl font-semibold text-[var(--salon-brown)] mb-1">
-                            価格
-                        </h2>
-                        <p className="text-[var(--salon-gold)] font-bold text-lg bg-[var(--salon-beige)] px-4 py-2 rounded-lg">
+                    <div className="admin-product-show-block">
+                        <h2 className="admin-product-show-label">価格</h2>
+                        <p className="admin-product-show-price">
                             ¥{Number(product.price).toLocaleString()}
                         </p>
                     </div>
 
-                    {/* 説明 */}
-                    <div>
-                        <h2 className="text-xl font-semibold text-[var(--salon-brown)] mb-1">
+                    {/* 商品説明 */}
+                    <div className="admin-product-show-block">
+                        <h2 className="admin-product-show-label">
                             商品説明
                         </h2>
-                        <p className="text-[var(--salon-brown)] leading-relaxed bg-[var(--salon-beige)] px-4 py-3 rounded-lg whitespace-pre-line">
+                        <p className="admin-product-show-description">
                             {product.description}
                         </p>
                     </div>
                 </div>
 
                 {/* ボタン群 */}
-                <div className="flex justify-between items-center mt-10">
-                    {/* 戻る */}
+                <div className="admin-product-show-actions">
+                    {/* 一覧へ戻る */}
                     <Link
                         href={route("admin.products.index")}
-                        className="px-6 py-2 rounded-lg bg-gray-200 text-[var(--salon-brown)] hover:bg-gray-300 transition"
+                        className="admin-product-show-button admin-product-show-button--back"
                     >
                         一覧へ戻る
                     </Link>
 
-                    <div className="flex gap-4">
-                        {/* 編集 */}
+                    {/* 編集・削除 */}
+                    <div className="admin-product-show-actions-right">
                         <Link
                             href={route("admin.products.edit", product.id)}
-                            className="px-6 py-2 rounded-lg bg-[var(--salon-gold)] text-white hover:opacity-90 transition"
+                            className="admin-product-show-button admin-product-show-button--edit"
                         >
                             編集する
                         </Link>
 
-                        {/* 削除 */}
                         <button
+                            type="button"
                             onClick={handleDelete}
-                            className="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+                            className="admin-product-show-button admin-product-show-button--delete"
                         >
                             削除
                         </button>

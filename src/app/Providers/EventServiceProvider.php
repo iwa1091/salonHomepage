@@ -3,18 +3,28 @@
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
+    /**
+     * イベントリスナーのマッピング
+     *
+     * @var array
+     */
     protected $listen = [
-        // 👇 これをコメントアウトまたは削除
-        // Registered::class => [
-        //     \Illuminate\Auth\Listeners\SendEmailVerificationNotification::class,
-        // ],
+        Registered::class => [
+            SendEmailVerificationNotification::class,  // メール送信のリスナー
+        ],
     ];
 
-    public function boot(): void
+    /**
+     * イベントサービスの登録。
+     *
+     * @return void
+     */
+    public function boot()
     {
         parent::boot();
     }

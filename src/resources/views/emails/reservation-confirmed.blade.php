@@ -127,7 +127,7 @@
             <p>ご予約内容の確認やキャンセルをご希望の場合は、下記のボタンから「予約一覧ページ」をご確認ください。</p>
 
             <div class="btn-wrapper">
-                <a href="{{ url('/mypage/reservations') }}" class="btn">▶ ご予約内容を確認する</a>
+                <a href="{{ url('/mypage') }}" class="btn">▶ ご予約内容を確認する</a>
             </div>
 
             <p>ご来店を心よりお待ちしております。</p>

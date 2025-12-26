@@ -1,20 +1,29 @@
+// /resources/js/Pages/Admin/UserList.jsx
 import React from "react";
-import { usePage } from "@inertiajs/react";
-import "../../../css/admin-user-list.css";
+import { usePage, Link } from "@inertiajs/react";
+
+// ✅ モジュール化した CSS をインポート（パスを修正）
+import "../../../css/pages/admin/user-list.css";
 
 export default function UserList() {
     const { customers, filters } = usePage().props;
 
     return (
         <div className="admin-page-container">
-            <h1 className="page-title">顧客一覧</h1>
+            {/* ← 前のページ（ダッシュボード）へ戻るボタン */}
+            <div className="page-header">
+                <Link href="/admin/dashboard" className="back-button">
+                    前のページに戻る
+                </Link>
+                <h1 className="page-title">顧客一覧</h1>
+            </div>
 
             {/* 🔍 検索フォーム */}
             <form method="GET" className="search-bar">
                 <input
                     type="text"
                     name="search"
-                    defaultValue={filters.search || ""}
+                    defaultValue={filters?.search || ""}
                     placeholder="名前・メール・電話番号で検索"
                     className="search-input"
                 />

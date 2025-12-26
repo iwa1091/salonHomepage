@@ -47,11 +47,15 @@ class BusinessHourController extends Controller
         $hours = $request->all();
 
         foreach ($hours as $hour) {
+            // 更新するデータを確認し、is_closed の処理を適切に反映
+            $open_time = $hour['is_closed'] ? null : $hour['open_time'];
+            $close_time = $hour['is_closed'] ? null : $hour['close_time'];
+
             BusinessHour::updateOrCreate(
                 ['day_of_week' => $hour['day_of_week']],
                 [
-                    'open_time' => $hour['is_closed'] ? null : $hour['open_time'],
-                    'close_time' => $hour['is_closed'] ? null : $hour['close_time'],
+                    'open_time' => $open_time,
+                    'close_time' => $close_time,
                     'is_closed' => $hour['is_closed'] ?? false,
                 ]
             );
@@ -96,6 +100,9 @@ class BusinessHourController extends Controller
         $records = $request->all();
 
         foreach ($records as $data) {
+            $open_time = $data['is_closed'] ? null : $data['open_time'];
+            $close_time = $data['is_closed'] ? null : $data['close_time'];
+
             BusinessHour::updateOrCreate(
                 [
                     'year' => $data['year'],
@@ -104,8 +111,8 @@ class BusinessHourController extends Controller
                     'day_of_week' => $data['day_of_week'],
                 ],
                 [
-                    'open_time' => $data['is_closed'] ? null : $data['open_time'],
-                    'close_time' => $data['is_closed'] ? null : $data['close_time'],
+                    'open_time' => $open_time,
+                    'close_time' => $close_time,
                     'is_closed' => $data['is_closed'] ?? false,
                 ]
             );

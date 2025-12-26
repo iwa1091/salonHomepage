@@ -1,6 +1,10 @@
+// /resources/js/Pages/Admin/CategoryModal.jsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Inertia } from "@inertiajs/inertia";
+
+// モジュール化した CSS をインポート
+import "../../../css/pages/admin/category-modal.css";
 
 export default function CategoryModal({ isOpen, onClose, onCreated }) {
     const [name, setName] = useState("");
@@ -40,7 +44,7 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                 <>
                     {/* 背景オーバーレイ */}
                     <motion.div
-                        className="fixed inset-0 bg-black bg-opacity-40 z-40"
+                        className="category-modal-overlay"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -49,22 +53,25 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
 
                     {/* モーダル本体 */}
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        className="category-modal-wrapper"
                         initial={{ opacity: 0, scale: 0.9, y: -30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -30 }}
                         transition={{ duration: 0.25 }}
                     >
-                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative">
-                            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                        <div className="category-modal-content">
+                            <h2 className="category-modal-title">
                                 新規カテゴリー作成
                             </h2>
 
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-4">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="category-modal-form"
+                            >
+                                <div className="category-modal-field">
                                     <label
                                         htmlFor="category-name"
-                                        className="block text-sm font-medium text-gray-700"
+                                        className="category-modal-label"
                                     >
                                         カテゴリー名
                                     </label>
@@ -72,19 +79,23 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                                         id="category-name"
                                         type="text"
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        onChange={(e) =>
+                                            setName(e.target.value)
+                                        }
+                                        className="category-modal-input"
                                         placeholder="例: まつ毛エクステ"
                                     />
                                     {errors.name && (
-                                        <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                                        <p className="category-modal-error">
+                                            {errors.name}
+                                        </p>
                                     )}
                                 </div>
 
-                                <div className="flex justify-end space-x-2 mt-6">
+                                <div className="category-modal-actions">
                                     <button
                                         type="button"
-                                        className="px-4 py-2 rounded-lg text-gray-600 bg-gray-100 hover:bg-gray-200"
+                                        className="category-modal-button category-modal-button--cancel"
                                         onClick={onClose}
                                     >
                                         キャンセル
@@ -92,7 +103,7 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="px-4 py-2 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+                                        className="category-modal-button category-modal-button--submit"
                                     >
                                         {loading ? "保存中..." : "保存"}
                                     </button>

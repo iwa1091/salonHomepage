@@ -1,11 +1,13 @@
+// /resources/js/Pages/Reservation/ReservationForm.jsx
 import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import "../../../css/pages/reservation/reservation-form.css";
 
 /**
- * 30分刻みで時間スロットを生成
+ * 15分刻みで時間スロットを生成
  */
-function generateTimeSlots(start, end, interval = 30) {
+function generateTimeSlots(start, end, interval = 15) {
     const slots = [];
     if (!start || !end) return slots;
 
@@ -13,7 +15,9 @@ function generateTimeSlots(start, end, interval = 30) {
     const [endHour, endMinute] = end.split(":").map(Number);
 
     while (hour < endHour || (hour === endHour && minute <= endMinute)) {
-        const time = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+        const time = `${String(hour).padStart(2, "0")}:${String(
+            minute
+        ).padStart(2, "0")}`;
         slots.push(time);
         minute += interval;
         if (minute >= 60) {
@@ -35,24 +39,11 @@ export default function ReservationForm() {
         notes: "",
     });
     const [services, setServices] = useState([]);
-    const [businessHours, setBusinessHours] = useState([]);
-    const [availableTimes, setAvailableTimes] = useState([]);
+    const [businessHours, setBusinessHours] = useState([]); // 営業時間データ
+    const [availableTimes, setAvailableTimes] = useState([]); // 予約可能時間
     const [message, setMessage] = useState("");
 
-    /**
-     * 🟡 URLパラメータから service_id を初期セット
-     */
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const serviceId = params.get("service_id");
-        if (serviceId) {
-            setFormData((prev) => ({ ...prev, service_id: serviceId }));
-        }
-    }, []);
-
-    /**
-     * サービス一覧をロード
-     */
+    // サービス一覧の取得
     useEffect(() => {
         async function fetchServices() {
             try {
@@ -68,17 +59,16 @@ export default function ReservationForm() {
         fetchServices();
     }, []);
 
-    /**
-     * 営業時間をロード（今月分）
-     */
+    // 営業時間の取得（来月のデータも取得できるように修正）
     useEffect(() => {
         async function fetchBusinessHours() {
             try {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth() + 1;
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1; // 月の更新に対応
 
-                const res = await fetch(`/api/business-hours/weekly?year=${year}&month=${month}`);
+                const res = await fetch(
+                    `/api/business-hours/weekly?year=${year}&month=${month}`
+                );
                 if (res.ok) {
                     const data = await res.json();
                     setBusinessHours(data);
@@ -88,55 +78,55 @@ export default function ReservationForm() {
             }
         }
         fetchBusinessHours();
-    }, []);
+    }, [date]); // `date`が変わる度に再取得
 
-    /**
-     * 選択された日付に応じて予約可能時間を更新
-     */
+    // 選択された日付に応じて予約可能時間を更新
     useEffect(() => {
         if (businessHours.length === 0) return;
 
         const dayOfWeekNames = ["日", "月", "火", "水", "木", "金", "土"];
         const selectedDay = dayOfWeekNames[date.getDay()];
-        const weekOfMonth = Math.ceil(date.getDate() / 7);
 
-        const hourInfo = businessHours.find(
-            (h) => h.day_of_week === selectedDay && h.week_of_month === weekOfMonth
+        // 週ごとにデータをフィルタリング
+        const weekOfMonth = Math.ceil(date.getDate() / 7); // 現在の日付から週番号を取得
+        const weeklyHours = businessHours.filter(
+            (h) => h.week_of_month === weekOfMonth && h.day_of_week === selectedDay
         );
 
-        if (!hourInfo || hourInfo.is_closed) {
-            setAvailableTimes([]);
+        // 営業時間が存在する場合に時間スロットを生成
+        if (weeklyHours.length > 0) {
+            const hourInfo = weeklyHours[0]; // 1週間分のデータがある場合、最初の1つを使用
+            if (hourInfo.is_closed) {
+                setAvailableTimes([]); // 営業時間外
+            } else {
+                const slots = generateTimeSlots(
+                    hourInfo.open_time,
+                    hourInfo.close_time,
+                    15
+                ); // 15分単位
+                setAvailableTimes(slots);
+            }
         } else {
-            const slots = generateTimeSlots(hourInfo.open_time, hourInfo.close_time, 30);
-            setAvailableTimes(slots);
+            setAvailableTimes([]); // 営業時間外
         }
-    }, [date, businessHours]);
+    }, [date, businessHours]); // businessHoursが更新されるたびに再実行
 
-    /**
-     * カレンダーの無効化（日曜など休業日）
-     */
+    // カレンダーの無効化（日曜など休業日）
     const tileDisabled = ({ date }) => {
         const dayOfWeekNames = ["日", "月", "火", "水", "木", "金", "土"];
         const selectedDay = dayOfWeekNames[date.getDay()];
-        const weekOfMonth = Math.ceil(date.getDate() / 7);
 
-        const dayInfo = businessHours.find(
-            (h) => h.day_of_week === selectedDay && h.week_of_month === weekOfMonth
-        );
+        const dayInfo = businessHours.find((h) => h.day_of_week === selectedDay);
 
         return !dayInfo || dayInfo.is_closed;
     };
 
-    /**
-     * 入力変更ハンドラ
-     */
+    // 入力変更ハンドラ
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    /**
-     * 📨 送信処理
-     */
+    // 送信処理
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -176,9 +166,6 @@ export default function ReservationForm() {
                     email: "",
                     notes: "",
                 });
-            } else if (response.status === 422) {
-                const errorData = await response.json();
-                setMessage("⚠️ 入力内容を確認してください（" + Object.values(errorData.errors).join("、") + "）");
             } else {
                 const errorData = await response.json();
                 setMessage(errorData.message || "⚠️ 予約に失敗しました。");
@@ -189,17 +176,32 @@ export default function ReservationForm() {
         }
     };
 
+    // 🔙 メニュー・料金ページ（menu_price.blade.php）へ戻る
+    const handleBack = () => {
+        // Blade 側のルート `/menu_price` へ遷移
+        window.location.href = "/menu_price";
+    };
+
     return (
-        <main className="flex-1 max-w-3xl mx-auto p-6">
-            <h1 className="text-2xl font-bold text-center mb-6 text-[var(--salon-brown)]">
-                ご予約フォーム
-            </h1>
+        <main className="reservation-main">
+            {/* 前のページに戻るボタン */}
+            <div className="reservation-back">
+                <button
+                    type="button"
+                    onClick={handleBack}
+                    className="reservation-back-button"
+                >
+                    前のページに戻る
+                </button>
+            </div>
+
+            <h1 className="reservation-title">ご予約フォーム</h1>
 
             {message && (
                 <p
-                    className={`mb-4 text-center font-medium ${message.includes("✅")
-                        ? "text-green-600"
-                        : "text-red-600"
+                    className={`reservation-message ${message.includes("✅")
+                            ? "reservation-message--success"
+                            : "reservation-message--error"
                         }`}
                 >
                     {message}
@@ -208,24 +210,24 @@ export default function ReservationForm() {
 
             <form
                 onSubmit={handleSubmit}
-                className="space-y-6 bg-white p-6 rounded-lg shadow"
+                className="reservation-form-card"
             >
                 {/* 名前 */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">お名前</label>
+                <div className="reservation-field">
+                    <label className="reservation-label">お名前</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="reservation-input"
                     />
                 </div>
 
                 {/* メール */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">
+                <div className="reservation-field">
+                    <label className="reservation-label">
                         メールアドレス
                     </label>
                     <input
@@ -234,107 +236,112 @@ export default function ReservationForm() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="reservation-input"
                     />
                 </div>
 
                 {/* 電話番号 */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">
-                        電話番号
-                    </label>
+                <div className="reservation-field">
+                    <label className="reservation-label">電話番号</label>
                     <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="reservation-input"
                     />
                 </div>
 
                 {/* メニュー選択 */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">メニュー</label>
+                <div className="reservation-field">
+                    <label className="reservation-label">メニュー</label>
                     <select
                         name="service_id"
                         value={formData.service_id}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="reservation-select"
                     >
                         <option value="">選択してください</option>
                         {services.map((service) => (
                             <option key={service.id} value={service.id}>
-                                {service.name}（¥{service.price} / {service.duration_minutes}分）
+                                {service.name}（¥{service.price} /{" "}
+                                {service.duration_minutes}
+                                分）
                             </option>
                         ))}
                     </select>
                 </div>
 
                 {/* カレンダー */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">ご希望日</label>
-                    <Calendar
-                        onChange={setDate}
-                        value={date}
-                        tileDisabled={tileDisabled}
-                        className="border rounded-lg p-2"
-                    />
-                    <p className="mt-2 text-sm text-gray-500">
-                        選択された日付: {date.toLocaleDateString()}
-                    </p>
+                <div className="reservation-field">
+                    <label className="reservation-label">ご希望日</label>
+                    <div className="reservation-calendar-wrapper">
+                        <div className="reservation-calendar">
+                            <Calendar
+                                onChange={setDate}
+                                value={date}
+                                tileDisabled={tileDisabled}
+                            />
+                        </div>
+                        <p className="reservation-date-text">
+                            選択された日付: {date.toLocaleDateString()}
+                        </p>
+                    </div>
                 </div>
 
                 {/* 時間枠選択 */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">ご希望時間</label>
+                <div className="reservation-field">
+                    <label className="reservation-label">ご希望時間</label>
 
-                    {availableTimes.length === 0 ? (
-                        <p className="text-gray-500 text-sm">
-                            ※ この日は休業日または営業時間外です
-                        </p>
-                    ) : (
-                        <div className="grid grid-cols-3 gap-2">
-                            {availableTimes.map((time) => (
-                                <button
-                                    type="button"
-                                    key={time}
-                                    onClick={() => setSelectedTime(time)}
-                                    className={`px-3 py-2 rounded-lg border transition ${selectedTime === time
-                                        ? "bg-[var(--salon-brown)] text-white border-[var(--salon-brown)]"
-                                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                                        }`}
-                                >
-                                    {time}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    <div className="reservation-time-wrapper">
+                        {availableTimes.length === 0 ? (
+                            <p className="reservation-time-note">
+                                ※ この日は休業日または営業時間外です
+                            </p>
+                        ) : (
+                            <div className="reservation-time-grid">
+                                {availableTimes.map((time) => (
+                                    <button
+                                        type="button"
+                                        key={time}
+                                        onClick={() => setSelectedTime(time)}
+                                        className={`reservation-time-button ${selectedTime === time
+                                                ? "reservation-time-button--selected"
+                                                : ""
+                                            }`}
+                                    >
+                                        {time}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
-                    {selectedTime && (
-                        <p className="mt-2 text-sm text-gray-500">
-                            選択された時間: {selectedTime}
-                        </p>
-                    )}
+                        {selectedTime && (
+                            <p className="reservation-selected-time">
+                                選択された時間: {selectedTime}
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 {/* 備考 */}
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">備考</label>
+                <div className="reservation-field">
+                    <label className="reservation-label">備考</label>
                     <textarea
                         name="notes"
                         value={formData.notes}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="reservation-textarea"
                     />
                 </div>
 
                 {/* 送信ボタン */}
                 <button
                     type="submit"
-                    className="w-full bg-[var(--salon-brown)] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[var(--salon-gold)] transition"
+                    className="reservation-submit-button"
                 >
                     予約する
                 </button>

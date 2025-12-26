@@ -9,22 +9,19 @@ use Illuminate\Http\Request;
 class EmailVerificationNotificationController extends Controller
 {
     /**
-     * 認証メール再送処理（Blade + 日本語対応 + 二重送信防止）
+     * 認証メール再送処理
      */
     public function store(Request $request): RedirectResponse
     {
-        // ✅ すでに認証済みならホームへリダイレクト
+        // すでに認証済みの場合は、認証画面をスキップしてリダイレクト
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('home', absolute: false));
+            return redirect()->route('home'); // 認証後のリダイレクト先を設定
         }
 
-        // ✅ Fortify 標準動作に準拠
-        // → User モデル内の sendEmailVerificationNotification() を呼び出す
-        // （ここでブランド仕様 VerifyEmail が1通だけ送信される）
+        // メール認証再送信
         $request->user()->sendEmailVerificationNotification();
 
-        // ✅ Blade 版 verify-email.blade.php でフラッシュメッセージ表示
-        //  → `session('resent')` により「新しい認証メールを送信しました。」が表示される
-        return back()->with('resent', true);
+        // フラッシュメッセージを追加してリダイレクト
+        return back()->with('resent', true); // 再送信されたことを通知
     }
 }

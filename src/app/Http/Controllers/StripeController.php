@@ -8,6 +8,7 @@ use Stripe\Checkout\Session;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Customer;   // ★ 顧客モデルを追加
 use Carbon\Carbon;
 
 class StripeController extends Controller
@@ -19,6 +20,7 @@ class StripeController extends Controller
     {
         Stripe::setApiKey(config('services.stripe.secret'));
 
+        // 在庫チェック
         if ($product->stock <= 0) {
             return back()->with('error', 'この商品は在庫切れです。');
         }
@@ -26,9 +28,24 @@ class StripeController extends Controller
         try {
             $user = $request->user();
 
-            // ✅ ① まず仮注文を作成
+            // 念のため：未ログイン時はログイン画面へ
+            if (!$user) {
+                return redirect()->route('login')->with('error', '購入にはログインが必要です。');
+            }
+
+            // ★ ① ユーザー情報から Customer を作成 / 更新
+            $customer = Customer::updateOrCreate(
+                ['email' => $user->email],   // キー：メールアドレス
+                [
+                    'name'  => $user->name,
+                    'phone' => $user->phone ?? null,
+                ]
+            );
+
+            // ★ ② customer_id を含めて仮注文を作成
             $order = Order::create([
                 'user_id'        => $user->id,
+                'customer_id'    => $customer?->id,              // ← 顧客との紐づけを追加
                 'product_id'     => $product->id,
                 'order_number'   => strtoupper(uniqid('ORD')),
                 'amount'         => $product->price,
@@ -37,36 +54,37 @@ class StripeController extends Controller
                 'ordered_at'     => Carbon::now(),
             ]);
 
-            // ✅ ② Stripe セッション作成（ここで order_id を metadata に入れる）
+            // ★ ③ Stripe セッション作成（metadata に order_id などを付与）
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'jpy',
                         'product_data' => [
-                            'name' => $product->name,
+                            'name'        => $product->name,
                             'description' => $product->description,
                         ],
                         'unit_amount' => intval($product->price),
                     ],
                     'quantity' => 1,
                 ]],
-                'mode' => 'payment',
+                'mode'        => 'payment',
                 'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('checkout.cancel'),
-
-                'metadata' => [
-                    'order_id'     => $order->id,  // ← ✅ ここで使用する
+                'cancel_url'  => route('checkout.cancel'),
+                'metadata'    => [
+                    'order_id'     => $order->id,
                     'user_id'      => $user->id,
                     'user_email'   => $user->email,
                     'product_id'   => $product->id,
+                    'customer_id'  => $customer?->id,  // ★ あとで Webhook 側で使うことも可能
                 ],
             ]);
 
-            // ✅ ③ Stripe Session の ID を保存
+            // ✅ ④ Stripe Session の ID を保存
             $order->update([
                 'stripe_session_id' => $session->id,
             ]);
+
 
             return redirect($session->url, 303);
 

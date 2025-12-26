@@ -19,8 +19,6 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Fortifyのデフォルトルートを無効化
-        Fortify::ignoreRoutes();
 
         // --- ビューの設定 ---
         Fortify::loginView(fn () => view('auth.login'));

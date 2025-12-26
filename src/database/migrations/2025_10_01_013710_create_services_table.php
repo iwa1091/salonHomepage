@@ -20,8 +20,8 @@ return new class extends Migration
             // サービスの説明
             $table->text('description')->nullable();
             
-            // 所要時間（分単位）
-            $table->unsignedSmallInteger('duration_minutes');
+            // 所要時間（分単位）: duration_minutes カラムを追加
+            $table->unsignedSmallInteger('duration_minutes');  // 所要時間（分単位）
             
             // 価格（円単位）
             $table->decimal('price', 8, 0)->unsigned();

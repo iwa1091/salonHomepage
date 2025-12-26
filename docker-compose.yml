@@ -17,7 +17,7 @@ services:
     container_name: php
     volumes:
       - ./src:/var/www
-    # Laravel の設定は .env から読み込まれるので、environment は不要
+    # Laravel の設定は src/.env から読み込まれるので、environment は不要
 
   mysql:
     image: mysql:8.0.26
@@ -58,7 +58,7 @@ services:
     container_name: ngrok
     restart: always
     environment:
-      - NGROK_AUTHTOKEN=2x9tBMZoNdLWJ0rS7awLqAiLU32_5a8tQTXzbmd756txkWshP
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     command: >
       http nginx:80
     ports:

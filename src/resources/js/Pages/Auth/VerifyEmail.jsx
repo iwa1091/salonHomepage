@@ -1,50 +1,62 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm } from "@inertiajs/react";
+import "../../../css/pages/verify/verify.css";
 
 export default function VerifyEmail({ status }) {
-    const { post, processing } = useForm({});
+    // 認証メール再送フォーム
+    const { post, processing, reset } = useForm({});
 
-    const submit = (e) => {
+    const resend = (e) => {
         e.preventDefault();
-
-        post(route('verification.send'));
+        post("/email/verification-notification", {
+            onSuccess: () => {
+                // 成功時に status を更新してメッセージを表示
+                reset();
+                alert("新しい認証リンクが、メールアドレスに送信されました。");
+            },
+        });
     };
 
     return (
-        <GuestLayout>
-            <Head title="Email Verification" />
+        <>
+            <Head title="メール認証" />
 
-            <div className="mb-4 text-sm text-gray-600">
-                Thanks for signing up! Before getting started, could you verify
-                your email address by clicking on the link we just emailed to
-                you? If you didn't receive the email, we will gladly send you
-                another.
+            <div className="verify-page">
+                <div className="verify-container">
+
+                    {/* タイトル */}
+                    <div className="verify-header">
+                        <h1 className="page__title">メール認証はお済みですか？</h1>
+                    </div>
+
+                    <div className="verify-content">
+
+                        {/* 成功メッセージ */}
+                        {status === "verification-link-sent" && (
+                            <div className="alert alert--success" role="alert">
+                                新しい認証リンクが、メールアドレスに送信されました。
+                            </div>
+                        )}
+
+                        <p className="verify-text">
+                            このページを閲覧するには、メールアドレスの認証が必要です。
+                            もし認証用のメールが届いていない場合は、以下のボタンをクリックして、
+                            新しい認証メールを再送信してください。
+                        </p>
+
+                        {/* 認証メール再送ボタン */}
+                        <form onSubmit={resend} className="resend-form">
+                            <button
+                                type="submit"
+                                className="btn btn--big btn--resend"
+                                disabled={processing}
+                                aria-busy={processing}
+                            >
+                                認証メールを再送信する
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
-                        Resend Verification Email
-                    </PrimaryButton>
-
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Log Out
-                    </Link>
-                </div>
-            </form>
-        </GuestLayout>
+        </>
     );
 }

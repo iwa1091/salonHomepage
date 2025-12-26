@@ -14,16 +14,18 @@ class Reservation extends Model
      * 一括割り当て可能な属性 (Mass Assignable)
      */
     protected $fillable = [
-        'user_id',      // 顧客 (User)
-        'service_id',   // メニュー (Service)
+        'customer_id', 
+        'user_id',          // 顧客 (User)
+        'service_id',       // メニュー (Service)
         'name',
         'email',
+        'phone',            // ← 追加（必須）
         'date',
         'start_time',
         'end_time',
         'status',
         'notes',
-        'reservation_code', //マイページ紐づけ番号
+        'reservation_code', // マイページ紐づけ番号
     ];
 
     /**
@@ -52,8 +54,7 @@ class Reservation extends Model
     ];
 
     /**
-     * 🔹 アクセサ：表示用の整形フォーマットを提供
-     * （InertiaやBladeで使うときに便利）
+     * 🔹 アクセサ：表示用フォーマット
      */
     public function getFormattedDateAttribute(): string
     {
@@ -66,7 +67,7 @@ class Reservation extends Model
     }
 
     /**
-     * 🔹 状態を日本語で返すアクセサ（例：confirmed → 確定）
+     * 🔹 状態ラベル
      */
     public function getStatusLabelAttribute(): string
     {

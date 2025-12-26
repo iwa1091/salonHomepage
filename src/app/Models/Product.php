@@ -21,4 +21,9 @@ class Product extends Model
         'image_path',
         'stock', 
     ];
+
+        protected $casts = [
+        'price' => 'integer',
+        'stock' => 'integer',
+    ];
 }

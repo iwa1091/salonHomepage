@@ -19,7 +19,7 @@
                             を<br />ワンランク上へ</span>
                         </h1>
                         <p class="hero-subtitle">
-                            市原市｜大人の男に選ばれるサロン<br />
+                            市原市｜大人に選ばれるサロン<br />
                         </p>
                     </div>
                     <div class="hero-buttons-wrapper">

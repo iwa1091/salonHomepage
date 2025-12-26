@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 class LoginRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * 認可
      */
     public function authorize(): bool
     {
@@ -20,20 +20,40 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * バリデーションルール
      */
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ];
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * 属性名（日本語ラベル）
+     */
+    public function attributes(): array
+    {
+        return [
+            'email'    => 'メールアドレス',
+            'password' => 'パスワード',
+        ];
+    }
+
+    /**
+     * メッセージ（共通）
+     */
+    public function messages(): array
+    {
+        return [
+            'required' => ':attributeは必須です。',
+            'email'    => ':attributeは有効な形式で入力してください。',
+        ];
+    }
+
+    /**
+     * 認証処理
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -44,8 +64,9 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            // ★ メールアドレス or パスワード不一致時のメッセージを日本語で固定
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'メールアドレスまたはパスワードが一致しません',
             ]);
         }
 
@@ -53,7 +74,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * ログイン試行回数制限
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -76,7 +97,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the rate limiting throttle key for the request.
+     * レートリミット用キー
      */
     public function throttleKey(): string
     {

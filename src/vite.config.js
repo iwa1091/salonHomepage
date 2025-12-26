@@ -5,32 +5,42 @@ import path from 'path';
 
 export default defineConfig({
     server: {
-        host: true,
-        port: 5173,
-        strictPort: true,
+        host: true,       // サーバーのホストを "localhost" に設定
+        port: 5173,       // Vite のデフォルトポート（必要に応じて変更）
+        strictPort: true, // ポートの重複時にエラーを発生させる
         hmr: {
-            host: 'localhost',
+            host: 'localhost', // Hot Module Replacement のホスト設定
         },
     },
 
-    // ⭐ public ディレクトリを無効化（Vite 管理外にする）
-    publicDir: false,
 
     resolve: {
         alias: {
-            // ⭐ resources を @ で参照できるようにする
-            '@': path.resolve(__dirname, 'resources'),
+            // '@' エイリアスで resources/js ディレクトリを参照
+            '@': path.resolve(__dirname, 'resources/js'),
         },
     },
 
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.jsx',
+                'resources/css/base/theme.css', // 共通テーマ CSS
+                'resources/css/base/global.css', // グローバル CSS
+                'resources/js/app.jsx',          // メインの JS ファイル（React）
             ],
-            refresh: true,
+            refresh: true, // Blade テンプレートを変更した際に自動更新
         }),
-        react(),
+        react(), // React 用の Vite プラグイン
     ],
+
+    build: {
+        manifest: true, // Vite のマニフェストファイルを生成
+        rollupOptions: {
+            input: [
+                'resources/js/app.jsx',          // メインの JS ファイル
+                'resources/css/base/theme.css',  // theme.css をバンドル
+                'resources/css/base/global.css', // global.css をバンドル
+            ],
+        },
+    },
 });

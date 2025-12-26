@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Notifications\VerifyEmail as VerifyEmailNotification;
+use App\Notifications\VerifyEmailNotification;
+use App\Notifications\ResetPasswordNotification; // ★ 追加：パスワードリセット用
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,11 +13,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    /**
-     * 一括代入可能な属性
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -25,53 +21,52 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
     ];
 
-    /**
-     * メール認証通知を送信（ブランド仕様 + 二重送信防止）
-     *
-     * Laravel標準の VerifyEmail をブランド版に差し替え。
-     * Fortifyの Registered イベントから自動的に呼ばれる。
-     */
-    public function sendEmailVerificationNotification(): void
-    {
-        // ✅ すでに認証済みのユーザーには送らない
-        if ($this->hasVerifiedEmail()) {
-            return;
-        }
-
-        // ✅ 通知を1通だけ送信（重複防止）
-        $this->notify(new VerifyEmailNotification());
-    }
-
-    /**
-     * 管理者判定メソッド
-     *
-     * @return bool
-     */
+    // 管理者判定メソッド
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    /**
-     * JSONシリアライズ時に非表示にする属性
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * 属性キャスト設定
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * メール認証通知を送信
+     * メール認証が未完了の場合にのみ通知を送信する
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        // すでに認証済みであれば、再通知しない
+        if ($this->hasVerifiedEmail()) {
+            return;
+        }
+
+        // 認証未完了の場合、通知を送信
+        $this->notify(new VerifyEmailNotification());
+    }
+
+    /**
+     * パスワードリセット通知を送信
+     *
+     * ForgotPasswordController → Password::sendResetLink()
+     * から内部的に呼び出されるメソッドです。
+     * ここで、独自の ResetPasswordNotification を使用します。
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

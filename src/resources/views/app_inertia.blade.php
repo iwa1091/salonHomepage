@@ -2,26 +2,29 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    {{-- ページタイトル --}}
-    <title inertia>{{ config('app.name') }}</title>
+    {{-- ページタイトル（Inertia対応） --}}
+    <title inertia>{{ config('app.name', 'Lash Brow Ohana') }}</title>
 
-    {{-- Ziggy（Reactで route() を使うために必須） --}}
+    {{-- Ziggy：React 内で route() を使うために必要 --}}
     @routes
 
-    {{-- Vite（React + app.css のみ） --}}
+    {{-- Vite（React + 共通CSS + Tailwind） --}}
     @viteReactRefresh
     @vite([
+        'resources/css/base/theme.css',
+        'resources/css/base/global.css',
+        'resources/css/layout/app-shell.css',  {{-- 任意：React 専用のレイアウトCSS --}}
         'resources/js/app.jsx',
-        'resources/css/app.css',
     ])
 
     {{-- Inertia Head --}}
     @inertiaHead
 </head>
 
-<body class="bg-[var(--background)] text-[var(--foreground)]">
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
     @inertia
 </body>
 </html>

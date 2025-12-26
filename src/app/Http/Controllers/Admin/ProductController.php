@@ -22,7 +22,7 @@ class ProductController extends Controller
             $keyword = $request->keyword;
             $query->where(function ($q) use ($keyword) {
                 $q->where('name', 'like', "%{$keyword}%")
-                  ->orWhere('description', 'like', "%{$keyword}%");
+                    ->orWhere('description', 'like', "%{$keyword}%");
             });
         }
 
@@ -63,7 +63,7 @@ class ProductController extends Controller
             'name'        => 'required|max:255',
             'description' => 'required',
             'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',                 
+            'stock'       => 'required|integer|min:0',
             'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -73,7 +73,7 @@ class ProductController extends Controller
             'name'        => $validated['name'],
             'description' => $validated['description'],
             'price'       => $validated['price'],
-            'stock'       => $validated['stock'], 
+            'stock'       => $validated['stock'],
             'image_path'  => $imagePath,
         ]);
 
@@ -82,11 +82,21 @@ class ProductController extends Controller
     }
 
     /**
-     * 商品詳細（将来Inertia化予定）
+     * 商品詳細
      */
     public function show(Product $product)
     {
         return Inertia::render('Admin/Product/Show', [
+            'product' => $product,
+        ]);
+    }
+
+    /**
+     * 編集ページ
+     */
+    public function edit(Product $product)
+    {
+        return Inertia::render('Admin/Product/Edit', [
             'product' => $product,
         ]);
     }
@@ -100,9 +110,11 @@ class ProductController extends Controller
             'name'        => 'required|max:255',
             'description' => 'required',
             'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0', // ← 在庫数もバリデーション
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // 画像更新処理
         if ($request->hasFile('image')) {
             if ($product->image_path) {
                 Storage::disk('public')->delete($product->image_path);
@@ -112,10 +124,12 @@ class ProductController extends Controller
             $imagePath = $product->image_path;
         }
 
+        // 在庫数を含めて更新
         $product->update([
             'name'        => $validated['name'],
             'description' => $validated['description'],
             'price'       => $validated['price'],
+            'stock'       => $validated['stock'],
             'image_path'  => $imagePath,
         ]);
 
@@ -137,14 +151,4 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')
             ->with('success', '商品が削除されました。');
     }
-        /**
-     * 編集ページ
-     */
-    public function edit(Product $product)
-    {
-        return Inertia::render('Admin/Product/Edit', [
-            'product' => $product,
-        ]);
-    }
-
 }
