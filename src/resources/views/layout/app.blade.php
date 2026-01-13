@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    {{-- ✅ CSRF（Inertia/axios/fetch のPOST/PUT/DELETE安定化） --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title', 'Lash Brow Ohana')</title>
 
     {{-- Font Awesome --}}

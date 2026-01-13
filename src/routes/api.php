@@ -40,6 +40,10 @@ Route::prefix('business-hours')->group(function () {
 //
 // ※ 認証（auth:sanctum + admin guard）は必要なら後で追加できます。
 //    現在はフロントの React 管理画面が動作するように公開しています。
+//
+// ✅ 予約一覧については、/admin/reservations（web.php / admin認証）から Inertia props で表示し、
+//    削除も web.php の admin 認証ルート（admin.reservations.destroy）を使用する運用に寄せたため、
+//    ここ（api.php）の「予約一覧API」は無効化しました。
 // ============================================================
 
 use App\Http\Controllers\Admin\AdminReservationController;
@@ -59,8 +63,8 @@ Route::prefix('admin')->group(function () {
     // ============================================
     // 📅 管理：予約一覧 API（React 管理画面用）
     // ============================================
-    Route::get('reservations', [AdminReservationController::class, 'apiIndex']);
-    Route::delete('reservations/{id}', [AdminReservationController::class, 'apiDestroy']);
+    // Route::get('reservations', [AdminReservationController::class, 'apiIndex']);
+    // Route::delete('reservations/{id}', [AdminReservationController::class, 'apiDestroy']);
 
     // ============================================
     // 👤 顧客管理 API

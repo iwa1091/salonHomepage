@@ -10,22 +10,29 @@ ENV_EXAMPLE  := src/.env.example
 
 UID := $(shell id -u)
 GID := $(shell id -g)
+USER_NAME := $(shell id -un)
 
 PHP_EXEC_USER  := $(COMPOSE) exec -u $(UID):$(GID) $(PHP_SERVICE)
 NODE_EXEC_USER := $(COMPOSE) exec -u $(UID):$(GID) $(NODE_SERVICE)
 PHP_EXEC_ROOT  := $(COMPOSE) exec -u 0:0 $(PHP_SERVICE)
 
+.DEFAULT_GOAL := help
+
 .PHONY: help
 help:
 	@echo ""
 	@echo "Commands:"
+	@echo "  make doctor       Health check (Docker Desktop/WSL/compose/config)"
+	@echo "  make doctor-up    doctor -> up -> ps"
+	@echo ""
 	@echo "  make up           Start containers (build if needed)"
 	@echo "  make down         Stop containers"
 	@echo "  make restart      Restart containers"
 	@echo "  make logs         Follow logs"
 	@echo "  make ps           Show containers"
+	@echo "  make config       Validate compose config"
 	@echo ""
-	@echo "  make init         First time setup (env/install/key/migrate/link/clear)"
+	@echo "  make init         First time setup (doctor/up/env/perms/install/key/migrate/link/clear)"
 	@echo "  make install      composer install + npm(ci|install)"
 	@echo "  make key          php artisan key:generate --force"
 	@echo "  make migrate      php artisan migrate"
@@ -42,6 +49,32 @@ help:
 	@echo "  make chown        sudo chown -R (fallback)"
 	@echo ""
 
+# -----------------------
+# Health check (WSL外操作前提)
+# -----------------------
+.PHONY: doctor doctor-up config
+doctor:
+	@echo "== Doctor =="
+	@command -v docker >/dev/null 2>&1 || { echo "[NG] docker command not found (WSL側に docker CLI がありません)"; exit 1; }
+	@docker info >/dev/null 2>&1 || { echo "[NG] Docker daemon not reachable. Docker Desktop起動/WSL統合を確認してください"; exit 1; }
+	@docker compose version >/dev/null 2>&1 || { echo "[NG] docker compose plugin not available"; exit 1; }
+	@echo "[OK] docker: $$(docker --version)"
+	@echo "[OK] compose: $$(docker compose version --short 2>/dev/null || docker compose version | head -n 1)"
+	@echo "[OK] daemon reachable"
+	@echo ""
+	@echo "== Compose config check =="
+	@$(COMPOSE) config >/dev/null
+	@echo "[OK] docker-compose.yml config OK"
+	@echo ""
+
+doctor-up: doctor up ps ## doctor -> up -> ps
+
+config:
+	@$(COMPOSE) config
+
+# -----------------------
+# Docker lifecycle
+# -----------------------
 .PHONY: up down restart logs ps
 up:
 	$(COMPOSE) up -d --build
@@ -57,6 +90,9 @@ logs:
 ps:
 	$(COMPOSE) ps
 
+# -----------------------
+# Shell access
+# -----------------------
 .PHONY: php node
 php:
 	$(COMPOSE) exec $(PHP_SERVICE) bash
@@ -64,6 +100,9 @@ php:
 node:
 	$(COMPOSE) exec $(NODE_SERVICE) bash
 
+# -----------------------
+# Generic runners
+# -----------------------
 .PHONY: artisan composer npm
 artisan:
 	@if [ -z "$(c)" ]; then echo "Usage: make artisan c='migrate'"; exit 1; fi
@@ -77,6 +116,9 @@ npm:
 	@if [ -z "$(c)" ]; then echo "Usage: make npm c='run dev'"; exit 1; fi
 	$(NODE_EXEC_USER) bash -lc "cd $(APP_DIR) && npm $(c)"
 
+# -----------------------
+# Setup / Laravel helpers
+# -----------------------
 .PHONY: env install npm-install key migrate seed fresh storage-link clear optimize fix-perms
 
 env:
@@ -126,6 +168,9 @@ fix-perms:
 		chown -R $(UID):$(GID) storage bootstrap/cache && \
 		chmod -R ug+rwX storage bootstrap/cache"
 
+# -----------------------
+# Frontend (Vite)
+# -----------------------
 .PHONY: dev build
 dev:
 	@$(NODE_EXEC_USER) bash -lc "cd $(APP_DIR) && npm run dev -- --host 0.0.0.0 --port 5173"
@@ -133,14 +178,20 @@ dev:
 build:
 	@$(NODE_EXEC_USER) bash -lc "cd $(APP_DIR) && npm run build"
 
+# -----------------------
+# First time setup
+# -----------------------
 .PHONY: init
-init: up env fix-perms install key migrate storage-link clear
+init: doctor up env fix-perms install key migrate storage-link clear
 	@echo ""
 	@echo "🎉 Setup completed!"
 	@echo "Next (dev):"
 	@echo "  make dev"
 	@echo ""
 
+# -----------------------
+# Fallback chown (host)
+# -----------------------
 .PHONY: chown
 chown:
-	sudo chown -R ri309:ri309 ./src
+	sudo chown -R $(USER_NAME):$(USER_NAME) ./src

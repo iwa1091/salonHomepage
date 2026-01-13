@@ -1,0 +1,55 @@
+{
+    "name": "lash-brow-ohana-dev",
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "docker-compose.devcontainer.yml"
+    ],
+    "service": "workspace",
+    "workspaceFolder": "/workspaces/lash-brow-ohana",
+    "shutdownAction": "stopCompose",
+    "forwardPorts": [
+        80,
+        5173,
+        8025,
+        8080,
+        4040
+    ],
+    "portsAttributes": {
+        "80": {
+            "label": "Nginx (Laravel)"
+        },
+        "5173": {
+            "label": "Vite"
+        },
+        "8025": {
+            "label": "Mailhog UI"
+        },
+        "8080": {
+            "label": "phpMyAdmin"
+        },
+        "4040": {
+            "label": "ngrok Inspect"
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/postCreate.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "onecentlin.laravel-blade",
+                "amiralizadeh9480.laravel-extra-intellisense",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "ms-azuretools.vscode-docker"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "files.eol": "\n",
+                "terminal.integrated.cwd": "/workspaces/lash-brow-ohana/src",
+                "intelephense.environment.phpVersion": "8.3"
+            }
+        }
+    }
+    
+}

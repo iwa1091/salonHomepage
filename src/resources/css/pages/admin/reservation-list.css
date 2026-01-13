@@ -170,6 +170,35 @@
 }
 
 /* ============================================
+   ✅ ページネーション（ReservationList.jsx で追加）
+   ※ 既存の .admin-reservation-back-link を流用しているため、
+      ここでは「ページネーション内だけ」見た目を調整
+============================================ */
+.admin-reservation-pagination {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+/* pagination 内のリンク（戻るボタンと同classなので、ここでだけ上書き） */
+.admin-reservation-pagination .admin-reservation-back-link {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    background-color: var(--card-bg);
+    box-shadow: none;
+    transform: none;
+}
+
+.admin-reservation-pagination .admin-reservation-back-link:hover {
+    background-color: var(--color-bg-light);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+/* ============================================
    レスポンシブ
 ============================================ */
 
@@ -243,6 +272,15 @@
         padding: 0.25rem 0.7rem;
         font-size: 0.78rem;
     }
+
+    .admin-reservation-pagination {
+        gap: 0.35rem;
+    }
+
+    .admin-reservation-pagination .admin-reservation-back-link {
+        padding: 0.3rem 0.65rem;
+        font-size: 0.82rem;
+    }
 }
 
 /* ■ iPhone SE 想定（幅 375px 前後） */
@@ -276,6 +314,11 @@
         width: 100%;
         justify-content: center;
         padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .admin-reservation-pagination .admin-reservation-back-link {
+        padding: 0.28rem 0.6rem;
         font-size: 0.8rem;
     }
 }

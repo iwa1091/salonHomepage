@@ -5,6 +5,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
+    {{-- ✅ CSRF（Inertia/Router の POST/PUT/DELETE を安定させる） --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     {{-- ページタイトル（Inertia対応） --}}
     <title inertia>{{ config('app.name', 'Lash Brow Ohana') }}</title>
 

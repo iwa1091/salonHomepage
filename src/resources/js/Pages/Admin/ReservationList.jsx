@@ -1,6 +1,6 @@
 // /resources/js/Pages/Admin/ReservationList.jsx
 import { useEffect, useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import "../../../css/pages/admin/reservation-list.css";
 
 // ⏰ 時刻表示を日本時間の「HH:mm」形式に揃えるヘルパー
@@ -42,11 +42,25 @@ function formatDateToJapanese(value) {
 }
 
 export default function ReservationList() {
+    const { reservations: reservationsProp } = usePage().props;
+
     const [reservations, setReservations] = useState([]);
     const [businessHours, setBusinessHours] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // 営業時間データの取得
+    // ✅ Inertia props から予約データを反映（/admin/reservations の Inertia ページ）
+    useEffect(() => {
+        const data = reservationsProp?.data
+            ? reservationsProp.data
+            : Array.isArray(reservationsProp)
+                ? reservationsProp
+                : [];
+
+        setReservations(data);
+        setLoading(false);
+    }, [reservationsProp]);
+
+    // 営業時間データの取得（✅ axios化：CSRF/Accept(JSON)/エラーハンドリング統一）
     useEffect(() => {
         async function fetchBusinessHours() {
             try {
@@ -54,49 +68,44 @@ export default function ReservationList() {
                 const year = now.getFullYear();
                 const month = now.getMonth() + 1; // 現在の月
 
-                const res = await fetch(
-                    `/api/business-hours/weekly?year=${year}&month=${month}`
-                );
-                if (res.ok) {
-                    const data = await res.json();
-                    setBusinessHours(data);
-                }
+                // bootstrap.js で window.axios を初期化済み前提
+                const res = await window.axios.get("/api/business-hours/weekly", {
+                    params: { year, month },
+                });
+
+                setBusinessHours(Array.isArray(res.data) ? res.data : []);
             } catch (err) {
-                console.error("営業時間の取得に失敗:", err);
+                // axios エラーは err.response がある場合がある
+                const status = err?.response?.status;
+                const data = err?.response?.data;
+
+                console.error("営業時間の取得に失敗:", {
+                    status,
+                    data,
+                    message: err?.message,
+                });
+
+                // 失敗時は空にして誤判定を避ける
+                setBusinessHours([]);
             }
         }
         fetchBusinessHours();
     }, []);
 
-    // 予約データの取得
-    useEffect(() => {
-        async function fetchReservations() {
-            try {
-                const res = await fetch("/api/admin/reservations");
-                if (res.ok) {
-                    const data = await res.json();
-                    setReservations(data);
-                }
-            } catch (err) {
-                console.error("予約一覧の取得に失敗:", err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchReservations();
-    }, []);
-
     // 予約の時間表示（営業中/営業時間外のラベルも付ける）
     const getFormattedTime = (date, startTimeRaw) => {
+        const startTime = formatTimeToHHmm(startTimeRaw);
+
+        // ✅ 営業時間が未取得の間はラベルを付けず、誤判定を避ける
+        if (!businessHours || businessHours.length === 0) {
+            return startTime;
+        }
+
         const dayOfWeekNames = ["日", "月", "火", "水", "木", "金", "土"];
         const selectedDay = dayOfWeekNames[date.getDay()];
 
         // 営業時間データを取得（※週は考慮せず曜日ベースで判定＝既存仕様のまま）
-        const hourInfo = businessHours.find(
-            (h) => h.day_of_week === selectedDay
-        );
-
-        const startTime = formatTimeToHHmm(startTimeRaw);
+        const hourInfo = businessHours.find((h) => h.day_of_week === selectedDay);
 
         if (hourInfo && !hourInfo.is_closed) {
             return `${startTime}（営業中）`;
@@ -107,20 +116,19 @@ export default function ReservationList() {
 
     const handleDelete = async (id) => {
         if (!confirm("この予約を削除しますか？")) return;
-        const res = await fetch(`/api/admin/reservations/${id}`, {
-            method: "DELETE",
+
+        // ✅ 公開APIではなく、admin認証下の web ルートで削除する
+        router.post(route("admin.reservations.destroy", id), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                // 画面反映を即時にしたい場合は残す（Inertia の再描画でも更新されます）
+                setReservations((prev) => prev.filter((r) => r.id !== id));
+            },
         });
-        if (res.ok) {
-            setReservations((prev) => prev.filter((r) => r.id !== id));
-        }
     };
 
     if (loading) {
-        return (
-            <p className="admin-reservation-loading">
-                読み込み中...
-            </p>
-        );
+        return <p className="admin-reservation-loading">読み込み中...</p>;
     }
 
     return (
@@ -156,9 +164,7 @@ export default function ReservationList() {
                                 <td className="admin-reservation-cell admin-reservation-cell--id">
                                     {r.id}
                                 </td>
-                                <td className="admin-reservation-cell">
-                                    {r.name}
-                                </td>
+                                <td className="admin-reservation-cell">{r.name}</td>
                                 <td className="admin-reservation-cell">
                                     {r.service_name}
                                 </td>
@@ -166,10 +172,7 @@ export default function ReservationList() {
                                     {formatDateToJapanese(r.date)}
                                 </td>
                                 <td className="admin-reservation-cell admin-reservation-cell--time">
-                                    {getFormattedTime(
-                                        new Date(r.date),
-                                        r.start_time
-                                    )}
+                                    {getFormattedTime(new Date(r.date), r.start_time)}
                                 </td>
                                 <td className="admin-reservation-cell">
                                     <span className="admin-reservation-status">
@@ -178,10 +181,7 @@ export default function ReservationList() {
                                 </td>
                                 <td className="admin-reservation-actions">
                                     <Link
-                                        href={route(
-                                            "admin.reservations.edit",
-                                            r.id
-                                        )}
+                                        href={route("admin.reservations.edit", r.id)}
                                         className="admin-reservation-button admin-reservation-button--edit"
                                     >
                                         編集
@@ -198,6 +198,35 @@ export default function ReservationList() {
                     </tbody>
                 </table>
             </div>
+
+            {/* ✅ paginate を使っている場合のリンク（CSS未追加でも表示はされます） */}
+            {Array.isArray(reservationsProp?.links) && reservationsProp.links.length > 0 && (
+                <div className="admin-reservation-pagination">
+                    {reservationsProp.links.map((l, idx) => {
+                        // l.url が null のものは非活性
+                        if (!l.url) {
+                            return (
+                                <span
+                                    key={idx}
+                                    className="admin-reservation-back-link"
+                                    style={{ opacity: 0.5, pointerEvents: "none" }}
+                                    dangerouslySetInnerHTML={{ __html: l.label }}
+                                />
+                            );
+                        }
+
+                        return (
+                            <Link
+                                key={idx}
+                                href={l.url}
+                                className="admin-reservation-back-link"
+                                preserveScroll
+                                dangerouslySetInnerHTML={{ __html: l.label }}
+                            />
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }
