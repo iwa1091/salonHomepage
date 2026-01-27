@@ -322,3 +322,153 @@
         font-size: 0.8rem;
     }
 }
+
+/* ========================================
+   🆕 カレンダービュー用スタイル（追記）
+   ======================================== */
+
+/* タブ切り替えボタン */
+.admin-cal-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-cal-tab {
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-light);
+    color: var(--text-default);
+    font-size: 0.9rem;
+    font-family: var(--font-base);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-cal-tab:hover {
+    background-color: var(--color-accent-soft);
+}
+
+.admin-cal-tab.is-active {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
+}
+
+/* カレンダーラッパー */
+.admin-cal-wrapper {
+    background: var(--card-bg);
+    border-radius: var(--radius-base);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+}
+
+/* カレンダーヘッダー */
+.admin-cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.admin-cal-month-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.admin-cal-month-tab {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background-color: var(--color-bg-light);
+    color: var(--text-default);
+    font-size: 0.85rem;
+    font-family: var(--font-base);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-cal-month-tab:hover {
+    background-color: var(--color-accent-soft);
+}
+
+.admin-cal-month-tab.is-active {
+    background-color: var(--color-main);
+    color: var(--color-white);
+    border-color: var(--color-main);
+}
+
+.admin-cal-note {
+    font-size: 0.8rem;
+    color: var(--salon-brown);
+    font-family: var(--font-base);
+}
+
+/* react-calendar 上書き（ohana デザイントークン適用） */
+.react-calendar {
+    width: 100% !important;
+    border: none !important;
+    background: var(--card-bg) !important;
+    font-family: var(--font-base) !important;
+}
+
+.react-calendar__navigation {
+    margin-bottom: 0.5rem;
+}
+
+.react-calendar__navigation button {
+    color: var(--text-default);
+    font-family: var(--font-base);
+    font-size: 1rem;
+    background: none;
+}
+
+.react-calendar__navigation button:enabled:hover {
+    background-color: var(--color-bg-light);
+}
+
+.react-calendar__month-view__weekdays {
+    text-align: center;
+    font-weight: 600;
+    color: var(--salon-brown);
+    font-family: var(--font-base);
+}
+
+.react-calendar__tile {
+    padding: 0.75rem 0.5rem;
+    background: none;
+    text-align: center;
+    font-family: var(--font-base);
+    color: var(--text-default);
+    border-radius: var(--radius-base);
+    transition: background-color 0.2s ease;
+}
+
+.react-calendar__tile:enabled:hover {
+    background-color: var(--color-bg-light);
+}
+
+.react-calendar__tile--active {
+    background-color: var(--color-accent) !important;
+    color: var(--color-white) !important;
+}
+
+.react-calendar__tile--now {
+    background-color: var(--color-accent-soft);
+    font-weight: 600;
+}
+
+.react-calendar__tile:disabled {
+    background-color: var(--color-bg-soft);
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* 予約件数バッジ（●） */
+.admin-cal-dot {
+    display: inline-block;
+    margin-left: 0.25rem;
+    font-size: 1rem;
+    color: var(--color-accent);
+    vertical-align: middle;
+}

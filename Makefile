@@ -164,9 +164,13 @@ optimize:
 
 fix-perms:
 	@$(PHP_EXEC_ROOT) bash -lc "cd $(APP_DIR) && \
-		mkdir -p storage bootstrap/cache && \
-		chown -R $(UID):$(GID) storage bootstrap/cache && \
-		chmod -R ug+rwX storage bootstrap/cache"
+		set -e; \
+		mkdir -p storage/framework/{views,cache,sessions} storage/logs bootstrap/cache; \
+		GROUP=$$(id -gn www-data 2>/dev/null || echo $(GID)); \
+		chown -R $(UID):$$GROUP storage bootstrap/cache; \
+		chmod -R ug+rwX storage bootstrap/cache; \
+		find storage bootstrap/cache -type d -exec chmod 2775 {} \; ; \
+		touch storage/logs/laravel.log >/dev/null 2>&1 || true"
 
 # -----------------------
 # Frontend (Vite)

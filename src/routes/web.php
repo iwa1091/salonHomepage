@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BusinessHourController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\TimetableController;
 
 // マイページ
 use App\Http\Controllers\MypageReservationLinkController;
@@ -97,6 +98,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // 顧客一覧（Admin/UserList.jsx と CustomerController@index 用）
         Route::get('/users', [CustomerController::class, 'index'])->name('users.index');
+
+        // 管理者用 JSON API（Session認証下で提供）
+        Route::prefix('api')->group(function () {
+            Route::get('reservations', [AdminReservationController::class, 'apiIndex']);
+            Route::get('timetable', [TimetableController::class, 'getData']);
+        });
+
+        // Timetable ページ（Inertia）
+        Route::get('/timetable', [TimetableController::class, 'index'])
+            ->name('timetable.index');
     });
 });
 

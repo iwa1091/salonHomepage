@@ -48,6 +48,22 @@ function formatTimeToHHmm(value) {
     return `${h}:${m}`;
 }
 
+// ========================================
+// 🆕 week_of_month 計算ヘルパー
+// ========================================
+function getWeekOfMonth(dateObj) {
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) return 1;
+    const day = dateObj.getDate();
+    const firstDay = new Date(dateObj.getFullYear(), dateObj.getMonth(), 1);
+    const firstIso = firstDay.getDay() === 0 ? 7 : firstDay.getDay();
+    return Math.ceil((day + firstIso - 1) / 7);
+}
+
+function getDayOfWeekJp(dateObj) {
+    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+    return dayNames[dateObj.getDay()];
+}
+
 // 📅「0000年00月00日00:00」形式に整形するヘルパー
 function formatDateTimeJp(dateStr, timeStr) {
     if (!dateStr) return "";
@@ -79,23 +95,40 @@ export default function ReservationEdit() {
     const [businessHours, setBusinessHours] = useState([]);
     const [availableTimes, setAvailableTimes] = useState([]);
 
+    // カレンダー月移動用の state
+    const [activeYear, setActiveYear] = useState(new Date().getFullYear());
+    const [activeMonth, setActiveMonth] = useState(new Date().getMonth() + 1);
+
     // 営業時間データ取得
     useEffect(() => {
         async function fetchBusinessHours() {
-            const res = await fetch("/api/business-hours");
-            if (res.ok) {
-                const data = await res.json();
-                setBusinessHours(data);
+            try {
+                const res = await window.axios.get("/api/business-hours/weekly", {
+                    params: { year: activeYear, month: activeMonth },
+                });
+                setBusinessHours(Array.isArray(res.data) ? res.data : []);
+            } catch (err) {
+                console.error('営業時間取得エラー:', err);
+                setBusinessHours([]);
             }
         }
         fetchBusinessHours();
-    }, []);
+    }, [activeYear, activeMonth]);
+
+    // カレンダー月移動時の処理
+    const handleActiveStartDateChange = ({ activeStartDate }) => {
+        if (!activeStartDate) return;
+        setActiveYear(activeStartDate.getFullYear());
+        setActiveMonth(activeStartDate.getMonth() + 1);
+    };
 
     // 営業日判定関数
     const tileDisabled = ({ date }) => {
-        const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
+        const weekOfMonth = getWeekOfMonth(date);
+        const dayOfWeek = getDayOfWeekJp(date);
         const target = businessHours.find(
-            (b) => b.day_of_week === dayNames[date.getDay()]
+            (b) => Number(b.week_of_month) === Number(weekOfMonth) &&
+                   b.day_of_week === dayOfWeek
         );
         return !target || target.is_closed;
     };
@@ -109,10 +142,13 @@ export default function ReservationEdit() {
         )
             return;
 
-        const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
         const selectedDate = new Date(formData.date);
+        const weekOfMonth = getWeekOfMonth(selectedDate);
+        const dayOfWeek = getDayOfWeekJp(selectedDate);
+
         const target = businessHours.find(
-            (b) => b.day_of_week === dayNames[selectedDate.getDay()]
+            (b) => Number(b.week_of_month) === Number(weekOfMonth) &&
+                   b.day_of_week === dayOfWeek
         );
 
         if (!target || target.is_closed) {
@@ -206,6 +242,7 @@ export default function ReservationEdit() {
                                 <Calendar
                                     value={new Date(formData.date)}
                                     onChange={handleDateChange}
+                                    onActiveStartDateChange={handleActiveStartDateChange}
                                     tileDisabled={tileDisabled}
                                 />
                             </div>
