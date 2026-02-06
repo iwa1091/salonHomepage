@@ -93,6 +93,7 @@
 }
 
 /* 人気No.1バッジ */
+/* 人気No.1バッジ */
 .menu-card-popular .popular-badge {
     position: absolute;
     top: 10px;
@@ -103,6 +104,22 @@
     font-size: 0.8rem;
     border-radius: var(--radius-full);
     font-weight: 600;
+
+    /* ★ 追加：画像より前面に出す */
+    z-index: 3;
+}
+
+/* カード画像 */
+.card-image {
+    width: 100%;
+    height: 160px;
+    border-radius: var(--radius-base);
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+    position: relative;
+
+    /* ★ 追加：バッジより背面にする（保険） */
+    z-index: 1;
 }
 
 /* カード画像 */

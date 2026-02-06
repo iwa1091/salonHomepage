@@ -48,12 +48,6 @@
                 </button>
             </div>
         </form>
-        
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">
-                一般ユーザーの方は <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">こちら</a>
-            </p>
-        </div>
     </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/*
+/* 
 ==========================================
   ホームページ固有のスタイル（完全レスポンシブ対応）
   画像「右側に植物＋ゴールドの道具」に合わせたデザイン
@@ -10,7 +10,10 @@
 ----------------------------- */
 .hero-section {
     position: relative;
-    min-height: 100vh;
+    /* ▼ 修正：追従ヘッダー分を差し引いて、ヒーローが被らないように調整 */
+    min-height: calc(100vh - var(--header-height));
+    padding-top: var(--header-height);
+
     display: flex;
     align-items: center;
     justify-content: flex-start;

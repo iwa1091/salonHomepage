@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers\Admin;
 
@@ -7,6 +7,10 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
+
+// ✅ FormRequest（Admin配下）
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateProductRequest;
 
 class ProductController extends Controller
 {
@@ -57,17 +61,16 @@ class ProductController extends Controller
     /**
      * 新規商品を登録
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-            'name'        => 'required|max:255',
-            'description' => 'required',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0',
-            'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validated = $request->validated();
 
-        $imagePath = Storage::disk('public')->put('products', $request->file('image'));
+        // ✅ put() は失敗時に false になり得るため、store() でパス文字列を確実に取得する
+        $imagePath = $request->file('image')->store('products', 'public');
+
+        if (!$imagePath) {
+            return redirect()->back()->with('error', '画像のアップロードに失敗しました。');
+        }
 
         Product::create([
             'name'        => $validated['name'],
@@ -104,27 +107,26 @@ class ProductController extends Controller
     /**
      * 商品を更新
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'name'        => 'required|max:255',
-            'description' => 'required',
-            'price'       => 'required|numeric|min:0',
-            'stock'       => 'required|integer|min:0', // ← 在庫数もバリデーション
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validated = $request->validated();
 
         // 画像更新処理
         if ($request->hasFile('image')) {
-            if ($product->image_path) {
+            if ($product->image_path && $product->image_path !== '0') {
                 Storage::disk('public')->delete($product->image_path);
             }
-            $imagePath = Storage::disk('public')->put('products', $request->file('image'));
+
+            // ✅ put() は失敗時に false になり得るため、store() でパス文字列を確実に取得する
+            $imagePath = $request->file('image')->store('products', 'public');
+
+            if (!$imagePath) {
+                return redirect()->back()->with('error', '画像のアップロードに失敗しました。');
+            }
         } else {
             $imagePath = $product->image_path;
         }
 
-        // 在庫数を含めて更新
         $product->update([
             'name'        => $validated['name'],
             'description' => $validated['description'],
@@ -142,7 +144,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->image_path) {
+        if ($product->image_path && $product->image_path !== '0') {
             Storage::disk('public')->delete($product->image_path);
         }
 

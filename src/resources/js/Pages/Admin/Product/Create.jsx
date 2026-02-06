@@ -19,7 +19,7 @@ export default function Create() {
     const [preview, setPreview] = useState(null);
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0] ?? null;
         setData("image", file);
         if (file) {
             setPreview(URL.createObjectURL(file));
@@ -32,6 +32,7 @@ export default function Create() {
         e.preventDefault();
 
         post(route("admin.products.store"), {
+            forceFormData: true, // ✅ ファイル送信を確実にする
             onSuccess: () => {
                 reset();
                 setPreview(null);
@@ -52,6 +53,7 @@ export default function Create() {
                     onSubmit={handleSubmit}
                     className="admin-product-create-form"
                     encType="multipart/form-data"
+                    noValidate
                 >
                     {/* 商品名 */}
                     <div className="admin-product-create-field">
@@ -157,9 +159,7 @@ export default function Create() {
                             name="stock"
                             id="stock"
                             value={data.stock}
-                            onChange={(e) =>
-                                setData("stock", e.target.value)
-                            }
+                            onChange={(e) => setData("stock", e.target.value)}
                             className="admin-product-create-input"
                             min="0"
                         />

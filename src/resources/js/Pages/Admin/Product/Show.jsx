@@ -46,7 +46,7 @@ export default function Show() {
                     {/* 画像 */}
                     <div className="admin-product-show-image-wrapper">
                         <img
-                            src={`/storage/${product.image_path}`}
+                            src={product.image_url}
                             alt={product.name}
                             className="admin-product-show-image"
                         />

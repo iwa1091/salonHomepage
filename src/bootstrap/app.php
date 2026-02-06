@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        // ✅ Stripe Webhook は外部サービスからのPOSTのため CSRF 検証を除外
+        // ※ ルートは web.php の POST /stripe/webhook を想定
+        $middleware->validateCsrfTokens(except: [
+            '/stripe/webhook',
+        ]);
+
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {

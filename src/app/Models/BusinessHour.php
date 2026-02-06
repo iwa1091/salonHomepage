@@ -41,6 +41,9 @@ class BusinessHour extends Model
      * 型キャスト設定
      */
     protected $casts = [
+        'year' => 'integer',
+        'month' => 'integer',
+        'week_of_month' => 'integer',
         'is_closed' => 'boolean',
     ];
 
@@ -130,5 +133,25 @@ class BusinessHour extends Model
     {
         $firstDay = $date->copy()->startOfMonth();
         return (int) ceil(($date->day + $firstDay->dayOfWeekIso - 1) / 7);
+    }
+
+    /**
+     * 時刻を "HH:MM" に正規化（UI input[type=time] に安全）
+     * - "09:00:00" -> "09:00"
+     * - "09:00" -> "09:00"
+     * - null/空 -> null
+     */
+    public static function normalizeTimeToHi($value): ?string
+    {
+        if ($value === null) return null;
+
+        $s = trim((string) $value);
+        if ($s === '') return null;
+
+        if (preg_match('/\b(\d{2}:\d{2})\b/', $s, $m)) {
+            return $m[1];
+        }
+
+        return null;
     }
 }

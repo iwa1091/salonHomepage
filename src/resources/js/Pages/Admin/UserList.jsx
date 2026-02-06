@@ -45,7 +45,6 @@ export default function UserList() {
                             <th>総支出</th>
                             <th>最終予約日</th>
                             <th>最終購入日</th>
-                            <th>メモ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,14 +60,11 @@ export default function UserList() {
                                     <td>{c.total_spent}</td>
                                     <td>{c.last_reservation_at}</td>
                                     <td>{c.last_purchase_at}</td>
-                                    <td className="memo-cell">
-                                        {c.memo || "—"}
-                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="10" className="text-center">
+                                <td colSpan="9" className="text-center">
                                     顧客データがありません。
                                 </td>
                             </tr>

@@ -27,6 +27,16 @@ class StripeWebhookController extends Controller
         // Webhook Secret は config/services.php 経由で取得
         $secret    = config('services.stripe.webhook_secret');
 
+        // ✅ 署名用シークレット未設定やヘッダ欠落をログで明示（原因切り分けしやすくする）
+        if (empty($secret)) {
+            Log::critical('❌ STRIPE_WEBHOOK_SECRET is empty. Check services.stripe.webhook_secret');
+            return response('Webhook secret not configured', 500);
+        }
+        if (empty($sigHeader)) {
+            Log::error('❌ Stripe-Signature header missing');
+            return response('Signature header missing', 400);
+        }
+
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $secret);
         } catch (\UnexpectedValueException $e) {
@@ -43,35 +53,53 @@ class StripeWebhookController extends Controller
                 $session = $event->data->object;
                 Log::info('✅ Checkout completed Webhook received', ['session_id' => $session->id]);
 
+                // ✅ 非同期決済などで paid じゃない可能性があるため、paid のみ確定処理にする
+                if (($session->payment_status ?? null) !== 'paid') {
+                    Log::info('ℹ️ checkout.session.completed but not paid', [
+                        'session_id'      => $session->id,
+                        'payment_status'  => $session->payment_status ?? null,
+                    ]);
+                    return response('Not paid yet', 200);
+                }
+
                 // 1. Stripe Session IDを使って既存の仮注文を検索する (重複作成防止)
-                $order = Order::where('stripe_session_id', $session->id)
-                    ->where('payment_status', 'pending')
-                    ->first();
+                // ✅ pending 条件が厳しすぎると見つからないため、まず session_id だけで取得する
+                $order = Order::where('stripe_session_id', $session->id)->first();
 
                 if (!$order) {
-                    // 注文が既に見つからない、または既に処理済み（paidなど）の場合、Stripeに200を返す
-                    Log::warning('⚠️ Order not found or already processed.', ['session_id' => $session->id]);
-                    return response('Order processed or not found', 200);
+                    // 注文が見つからない場合でも Stripe には 200 を返す（再送ループ抑止）
+                    Log::warning('⚠️ Order not found.', ['session_id' => $session->id]);
+                    return response('Order not found', 200);
+                }
+
+                // ✅ すでに paid なら冪等（同じWebhook再送でも二重処理しない）
+                if (($order->payment_status ?? null) === 'paid') {
+                    Log::info('ℹ️ Order already paid. Skip.', [
+                        'order_id'   => $order->id,
+                        'session_id' => $session->id,
+                    ]);
+                    return response('Already processed', 200);
                 }
 
                 $product = $order->product;
 
                 if (!$product) {
                     Log::error('❌ Product not found for order.', ['order_id' => $order->id]);
+                    // Stripe には 200 を返す運用が安全だが、既存挙動を崩さないため 404 のままにする
                     return response('Product not found for order', 404);
                 }
+
+                // ✅ customer_details が null の場合に備えてガード（nullsafe）
+                $details = $session->customer_details ?? null;
 
                 // 2. 注文ステータスを paid に更新
                 $order->update([
                     'payment_status'    => 'paid',
                     'stripe_payment_id' => $session->payment_intent ?? null,
                     // 配送先情報をStripeセッション情報で上書き（または既存の値を維持）
-                    'shipping_name'     => $session->customer_details->name
-                        ?? $order->shipping_name,
-                    'shipping_address'  => $session->customer_details->address->line1
-                        ?? $order->shipping_address,
-                    'shipping_phone'    => $session->customer_details->phone
-                        ?? $order->shipping_phone,
+                    'shipping_name'     => $details?->name ?? $order->shipping_name,
+                    'shipping_address'  => $details?->address?->line1 ?? $order->shipping_address,
+                    'shipping_phone'    => $details?->phone ?? $order->shipping_phone,
                     // amount と currency は仮注文作成時に設定済みのため更新は不要
                 ]);
                 Log::info('✅ Order status updated to PAID.', ['order_id' => $order->id]);
@@ -91,8 +119,8 @@ class StripeWebhookController extends Controller
                         $customer = $order->customer;
                     } else {
                         // Fallback：メールアドレスから Customer を検索
-                        $emailFromSession = $session->customer_details->email ?? null;
-                        $emailFromUser    = $order->user->email ?? null;
+                        $emailFromSession = $details?->email ?? null;
+                        $emailFromUser    = $order->user?->email ?? null;
                         $email            = $emailFromSession ?? $emailFromUser;
 
                         if ($email) {
@@ -122,8 +150,7 @@ class StripeWebhookController extends Controller
                     $adminEmail = env('MAIL_ADMIN_ADDRESS');
 
                     // ユーザーメールアドレスは、Stripeセッション または 紐づくユーザー情報から取得
-                    $customerEmail = $session->customer_details->email
-                        ?? ($order->user->email ?? null);
+                    $customerEmail = $details?->email ?? ($order->user?->email ?? null);
 
                     // 管理者メール
                     if ($adminEmail) {

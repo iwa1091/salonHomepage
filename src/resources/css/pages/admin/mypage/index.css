@@ -67,12 +67,58 @@
     margin: 0 0 1rem 0;
 }
 
+/* ✅ セクション見出し行（右側にリンク等を置く） */
+.mypage-section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mypage-section-head .mypage-section-title {
+    margin-bottom: 0;
+}
+
 /* ---------------------------------------
    共通テキスト
 --------------------------------------- */
 .mypage-text-muted {
     font-size: 0.9rem;
     color: rgba(0, 0, 0, 0.6);
+}
+
+/* ---------------------------------------
+   ✅ フラッシュメッセージ（成功/エラー/情報）
+--------------------------------------- */
+.mypage-flash-success {
+    background: var(--color-bg-soft);
+    border: 1px solid rgba(205, 175, 99, 0.35);
+    color: var(--text-default);
+    border-radius: 0.9rem;
+    padding: 0.85rem 1rem;
+    margin: 0 0 0.9rem 0;
+    font-size: 0.9rem;
+}
+
+.mypage-flash-error {
+    background: rgba(217, 83, 79, 0.08);
+    border: 1px solid rgba(217, 83, 79, 0.35);
+    color: #b94a48;
+    border-radius: 0.9rem;
+    padding: 0.85rem 1rem;
+    margin: 0 0 0.9rem 0;
+    font-size: 0.9rem;
+}
+
+.mypage-flash-info {
+    background: rgba(47, 79, 62, 0.06);
+    border: 1px solid rgba(47, 79, 62, 0.18);
+    color: var(--text-default);
+    border-radius: 0.9rem;
+    padding: 0.85rem 1rem;
+    margin: 0 0 0.9rem 0;
+    font-size: 0.9rem;
 }
 
 /* ---------------------------------------
@@ -132,6 +178,35 @@
     box-shadow: none;
 }
 
+/* ✅ セクション下部アクション */
+.mypage-section-actions {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* ✅ アウトラインボタン（予約一覧など） */
+.mypage-outline-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.7rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: #ffffff;
+    color: var(--text-default);
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.mypage-outline-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
 /* ---------------------------------------
    予約 / 購入アイテムカード
 --------------------------------------- */
@@ -157,6 +232,16 @@
     margin-top: 0.15rem;
 }
 
+/* ✅ カード内のアクション行（キャンセル導線） */
+.mypage-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+}
+
 /* 再予約 / 再購入リンク */
 .mypage-inline-link {
     display: inline-block;
@@ -171,6 +256,43 @@
 .mypage-inline-link:hover {
     opacity: 0.9;
     transform: translateY(-1px);
+}
+
+/* ✅ コンパクト版（右上リンク等） */
+.mypage-inline-link--compact {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+/* ✅ キャンセルボタン */
+.mypage-danger-button {
+    border: none;
+    border-radius: 9999px;
+    padding: 0.65rem 1rem;
+    font-size: 0.85rem;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #d9534f;
+    color: #ffffff;
+    box-shadow: var(--shadow-soft);
+    transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.mypage-danger-button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.mypage-danger-button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.mypage-danger-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* 空データ時テキスト */

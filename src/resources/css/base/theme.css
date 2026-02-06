@@ -25,6 +25,11 @@
 
     --color-white: #ffffff;
 
+    /* ▼ 追加：共通で参照されるが未定義だったトークン（header.css / home.css 対応） */
+    --color-gray: rgba(58, 47, 41, 0.82);
+    --color-light-gray: rgba(0, 0, 0, 0.06);
+    --color-white-90: rgba(255, 255, 255, 0.90);
+
     /* Extra Soft Palette（新しい上質カラー） */
     --color-bg-light: #F7F6F2;
     /* 柔らかいライトベージュ */
@@ -65,6 +70,9 @@
     --space-xl: 3rem;
 
     --container-max: 1280px;
+
+    /* ▼ 追加：ヘッダー高さ（sticky/fixed/アンカーずれ対策の共通値） */
+    --header-height: 4.5rem;
 
     /* Z-index */
     --z-header: 999;

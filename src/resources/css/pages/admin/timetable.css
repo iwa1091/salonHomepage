@@ -1,0 +1,582 @@
+/* /resources/css/pages/admin/timetable.css */
+/* =====================================================
+   Admin Timetable
+   ※ base/theme.css / base/global.css のトークンを使用
+===================================================== */
+
+/* ページ全体 */
+.admin-timetable-page {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 1.5rem 1rem 2.5rem;
+}
+
+/* 上部バー */
+.admin-timetable-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+/* 戻るリンク群（pill） */
+.admin-timetable-back {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-timetable-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--color-bg-soft);
+    color: var(--salon-brown);
+    text-decoration: none;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease;
+}
+
+.admin-timetable-back-link:hover {
+    background-color: var(--color-bg-light);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+/* ナビ（前日/翌日 + 日付カード） */
+.admin-timetable-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* ボタン共通 */
+.admin-timetable-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-default);
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease,
+        color 0.15s ease;
+}
+
+.admin-timetable-btn:hover {
+    background-color: var(--color-bg-light);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+.admin-timetable-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* primary / danger */
+.admin-timetable-btn--primary {
+    background-color: var(--color-main);
+    border-color: var(--color-main);
+    color: #fff;
+}
+
+.admin-timetable-btn--primary:hover {
+    background-color: #385a47;
+}
+
+.admin-timetable-btn--danger {
+    background-color: #b43d3d;
+    border-color: #b43d3d;
+    color: #fff;
+}
+
+.admin-timetable-btn--danger:hover {
+    background-color: #912f2f;
+}
+
+/* 日付カード */
+.admin-timetable-date {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    box-shadow: var(--shadow-soft);
+    padding: 0.65rem 0.9rem;
+    min-width: 160px;
+}
+
+.admin-timetable-date__label {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.55);
+    margin-bottom: 0.15rem;
+}
+
+.admin-timetable-date__value {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    color: var(--salon-brown);
+    letter-spacing: 0.02em;
+}
+
+.admin-timetable-date__sub {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.admin-timetable-open {
+    color: var(--salon-brown);
+}
+
+.admin-timetable-closed {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 9999px;
+    background-color: var(--color-bg-soft);
+    color: rgba(0, 0, 0, 0.65);
+    border: 1px solid var(--border-color);
+}
+
+/* アクション */
+.admin-timetable-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 読み込み/エラー */
+.admin-timetable-loading,
+.admin-timetable-error {
+    padding: 1rem;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow-soft);
+    font-size: 0.9rem;
+}
+
+.admin-timetable-error {
+    border-color: rgba(180, 61, 61, 0.35);
+    color: #912f2f;
+    background-color: rgba(180, 61, 61, 0.06);
+}
+
+/* カード */
+.admin-timetable-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    padding: 1rem;
+}
+
+/* ヒント */
+.admin-timetable-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
+}
+
+.admin-timetable-hint__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background-color: var(--color-bg-soft);
+    border: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: var(--salon-brown);
+    white-space: nowrap;
+}
+
+.admin-timetable-hint__text {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+/* 休業表示 */
+.admin-timetable-closed-panel {
+    padding: 1rem;
+    border-radius: var(--radius-base);
+    background-color: var(--color-bg-soft);
+    border: 1px solid var(--border-color);
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   Timeline
+=========================== */
+
+/* 横スクロール領域 */
+.timetable-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+}
+
+/* ヘッダー */
+.timetable-header {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 0.5rem;
+}
+
+.timetable-header__lane {
+    flex: 0 0 auto;
+}
+
+.timetable-header__timeline {
+    position: relative;
+    flex: 0 0 auto;
+    height: 34px;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+    background: var(--color-bg-soft);
+    overflow: hidden;
+}
+
+/* 1時間ラベル（absolute） */
+.timetable-hour-label {
+    position: absolute;
+    top: 7px;
+    transform: translateX(-50%);
+    font-size: 0.78rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-family: var(--font-base);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* ボディ */
+.timetable-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.timetable-row {
+    display: flex;
+    align-items: stretch;
+}
+
+/* レーンラベル */
+.timetable-lane {
+    flex: 0 0 auto;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+    background-color: var(--color-bg-soft);
+    padding: 0.6rem 0.55rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.15rem;
+}
+
+.timetable-lane__title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--salon-brown);
+    line-height: 1.1;
+}
+
+.timetable-lane__sub {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+/* レーンのトラック */
+.timetable-track {
+    position: relative;
+    flex: 0 0 auto;
+    min-height: 150px;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--border-color);
+    background-color: #fff;
+    overflow: hidden;
+
+    /* 15分 grid（縦線） */
+    background-image: repeating-linear-gradient(to right,
+            rgba(0, 0, 0, 0.06) 0,
+            rgba(0, 0, 0, 0.06) 1px,
+            transparent 1px,
+            transparent var(--slot-width));
+}
+
+/* ブロック共通 */
+.timetable-block {
+    position: absolute;
+    top: 10px;
+    height: 100px;
+    border-radius: 12px;
+    padding: 0.45rem 0.55rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    overflow: visible;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.timetable-block:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+}
+
+.timetable-block__time {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    opacity: 0.95;
+}
+
+.timetable-block__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+}
+
+.timetable-block__line {
+    font-size: 0.78rem;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 予約ブロック */
+.timetable-block--reservation {
+    background-color: rgba(47, 79, 62, 0.12);
+    border-color: rgba(47, 79, 62, 0.2);
+    color: #1f2937;
+}
+
+.timetable-block--reservation .timetable-block__time {
+    color: var(--salon-brown);
+}
+
+/* 管理者ブロック */
+.timetable-block--admin {
+    background-color: rgba(205, 175, 99, 0.18);
+    border-color: rgba(205, 175, 99, 0.35);
+    color: #1f2937;
+}
+
+.timetable-block--admin .timetable-block__time {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* 予約削除ボタン */
+.timetable-block__delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    border: none;
+    background-color: rgba(180, 61, 61, 0.92);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timetable-block__delete:hover {
+    background-color: #912f2f;
+}
+
+/* ===========================
+   Modal
+=========================== */
+.timetable-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 60;
+}
+
+.timetable-modal {
+    width: min(760px, 100%);
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+}
+
+.timetable-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.timetable-modal__title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    color: var(--salon-brown);
+}
+
+.timetable-modal__close {
+    border: none;
+    background: transparent;
+    font-size: 1.35rem;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 1;
+}
+
+.timetable-modal__close:hover {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.timetable-modal__body {
+    padding: 1rem;
+}
+
+.timetable-modal__error {
+    margin-bottom: 0.8rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    background-color: rgba(180, 61, 61, 0.08);
+    border: 1px solid rgba(180, 61, 61, 0.35);
+    color: #912f2f;
+    font-size: 0.85rem;
+    white-space: pre-line;
+}
+
+.timetable-modal__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-top: 1px solid var(--border-color);
+    background: #fff;
+}
+
+.timetable-modal__footer-right {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* フォーム */
+.timetable-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.timetable-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.timetable-form-field--full {
+    grid-column: 1 / -1;
+}
+
+.timetable-form-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--salon-brown);
+}
+
+.timetable-form-input,
+.timetable-form-textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0.55rem 0.6rem;
+    font-family: var(--font-base);
+    font-size: 0.92rem;
+    color: var(--foreground);
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.timetable-form-input:focus,
+.timetable-form-textarea:focus {
+    outline: none;
+    border-color: var(--color-main);
+    box-shadow: 0 0 0 1px rgba(47, 79, 62, 0.15);
+}
+
+.timetable-form-textarea {
+    resize: vertical;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+/* タブレット以下 */
+@media (max-width: 1023px) {
+    .admin-timetable-page {
+        padding: 1.25rem 0.75rem 2rem;
+    }
+
+    .admin-timetable-card {
+        padding: 0.9rem;
+    }
+
+    .timetable-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* スマホ */
+@media (max-width: 767px) {
+    .admin-timetable-topbar {
+        gap: 0.75rem;
+    }
+
+    .admin-timetable-date {
+        min-width: 150px;
+    }
+
+    .timetable-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timetable-lane__title {
+        font-size: 0.88rem;
+    }
+
+    .timetable-block {
+        height: 76px;
+        top: 8px;
+    }
+}

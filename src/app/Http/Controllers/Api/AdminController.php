@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
-use App\Models\Schedule;
+// use App\Models\Schedule; // ✅ Schedule は無効化（BusinessHour 運用へ統一）
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -89,9 +89,10 @@ class AdminController extends Controller
      */
     public function indexSchedules()
     {
-        // 有効期間順で取得
-        $schedules = Schedule::orderBy('effective_from', 'desc')->get();
-        return response()->json($schedules);
+        // ✅ Schedule は利用しない方針（BusinessHour に統一）
+        return response()->json([
+            'message' => 'Schedule は現在無効です。営業時間管理は BusinessHour を使用してください。',
+        ], 410);
     }
 
     /**
@@ -99,71 +100,31 @@ class AdminController extends Controller
      */
     public function storeSchedule(Request $request)
     {
-        $rules = [
-            'type' => 'required|in:weekly,exception',
-            // 時間のバリデーション: 24時間表記 (例: 10:00)
-            'start_time' => 'nullable|date_format:H:i',
-            // end_timeが存在し、かつstart_timeが存在する場合、start_timeより後であること
-            'end_time' => 'nullable|date_format:H:i|after:start_time', 
-            'effective_from' => 'required|date',
-            'effective_to' => 'nullable|date|after_or_equal:effective_from',
-        ];
-
-        // タイプ別の必須項目チェック
-        if ($request->input('type') === 'weekly') {
-            $rules['day_of_week'] = 'required|integer|between:0,6'; // 曜日
-            $rules['date'] = 'nullable';
-        } else { // exception (特定日)
-            $rules['date'] = 'required|date';
-            $rules['day_of_week'] = 'nullable';
-        }
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $schedule = Schedule::create($request->all());
-        return response()->json($schedule, 201);
+        // ✅ Schedule は利用しない方針（BusinessHour に統一）
+        return response()->json([
+            'message' => 'Schedule は現在無効です。営業時間管理は BusinessHour を使用してください。',
+        ], 410);
     }
 
     /**
      * 既存のスケジュール設定を更新
      */
-    public function updateSchedule(Request $request, Schedule $schedule)
+    public function updateSchedule(Request $request, $schedule)
     {
-        $rules = [
-            'type' => 'sometimes|required|in:weekly,exception',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after:start_time',
-            'effective_from' => 'sometimes|required|date',
-            'effective_to' => 'nullable|date|after_or_equal:effective_from',
-        ];
-
-        // 更新時もtypeに基づいたバリデーションルールを適用
-        if ($request->input('type') === 'weekly') {
-            $rules['day_of_week'] = 'sometimes|required|integer|between:0,6';
-        } elseif ($request->input('type') === 'exception') {
-            $rules['date'] = 'sometimes|required|date';
-        }
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $schedule->update($request->all());
-        return response()->json($schedule);
+        // ✅ Schedule は利用しない方針（BusinessHour に統一）
+        return response()->json([
+            'message' => 'Schedule は現在無効です。営業時間管理は BusinessHour を使用してください。',
+        ], 410);
     }
 
     /**
      * スケジュール設定を削除
      */
-    public function destroySchedule(Schedule $schedule)
+    public function destroySchedule($schedule)
     {
-        $schedule->delete();
-        return response()->json(['message' => 'スケジュール設定が削除されました。'], 200);
+        // ✅ Schedule は利用しない方針（BusinessHour に統一）
+        return response()->json([
+            'message' => 'Schedule は現在無効です。営業時間管理は BusinessHour を使用してください。',
+        ], 410);
     }
 }

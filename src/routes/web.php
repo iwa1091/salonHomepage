@@ -1,6 +1,7 @@
-<?php
+<?php  
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 // 共通ミドルウェア
@@ -37,10 +38,21 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BusinessHourController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\TimetableController;
+use App\Http\Controllers\Admin\AdminBlockController;
 
 // マイページ
 use App\Http\Controllers\MypageReservationLinkController;
 use App\Http\Controllers\MypageController;
+
+// 予約履歴 / キャンセル（ログインユーザー）
+use App\Http\Controllers\UserReservationController;
+
+// メールからのキャンセル（署名付きURLで保護：Controller未作成でも動くよう routes に最小実装）
+use App\Models\Reservation;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\AdminReservationCanceledMail;
+use App\Mail\UserReservationCanceledMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +65,108 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/mypage', [MypageController::class, 'index'])
         ->name('mypage.index');
+
+    // ✅ 予約履歴一覧（ユーザー向け）
+    Route::get('/mypage/reservations', [UserReservationController::class, 'index'])
+        ->name('mypage.reservations.index');
+
+    // ✅ マイページ：キャンセル確認（Blade confirm へ）
+    Route::get('/mypage/reservations/{reservation}/cancel/confirm', [UserReservationController::class, 'cancelConfirm'])
+        ->name('mypage.reservations.cancel.confirm');
+
+    // ✅ マイページからのキャンセル（ログイン必須）
+    Route::post('/mypage/reservations/{id}/cancel', [UserReservationController::class, 'cancel'])
+        ->name('mypage.reservations.cancel');
+
+    // ✅ マイページからの予約作成（user_id を必ず紐付ける）
+    Route::post('/mypage/reservations/store', [UserReservationController::class, 'storeFromMypage'])
+        ->name('mypage.reservations.store');
 });
+
+/*
+|--------------------------------------------------------------------------
+| 公開：予約メールからのキャンセル（署名付きURL）
+|--------------------------------------------------------------------------
+| - ログイン不要
+| - 署名(signed)で改ざん防止
+| - GET: 確認ページ（Bladeへ切替）
+| - POST: キャンセル実行 + ユーザー/管理者へメール送信（Bladeへ切替）
+|
+| ※ 将来的に Controller + Blade(view) へ切り出す場合も、URL/route名を維持すれば互換性を保てます。
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['signed'])->group(function () {
+
+    // 確認ページ
+    Route::get('/reservations/{reservation}/cancel', function (Request $request, Reservation $reservation) {
+        $reservation->load('service');
+
+        $title = 'キャンセル確認 | Lash Brow Ohana';
+        $isCanceled = ($reservation->status === 'canceled');
+
+        // ✅ signed middleware が POST にも効くため、POST先も「署名付きURL」で生成する
+        $action = \Illuminate\Support\Facades\URL::signedRoute(
+            'reservations.public.cancel.perform',
+            ['reservation' => $reservation->id]
+        );
+
+        return view('reservations.cancel.confirm', [   // ✅ 変更：view名
+            'title'       => $title,
+            'reservation' => $reservation,
+            'isCanceled'  => $isCanceled,
+            'action'      => $action,
+            'home'        => url('/'),
+        ]);
+    })->name('reservations.public.cancel.show');
+
+    // キャンセル実行
+    Route::post('/reservations/{reservation}/cancel', function (Request $request, Reservation $reservation) {
+        $reservation->load('service');
+
+        $alreadyCanceled = ($reservation->status === 'canceled');
+
+        if (!$alreadyCanceled) {
+            // ✅ cancel_reason を保存（任意）
+            $validated = $request->validate([
+                'cancel_reason' => ['nullable', 'string', 'max:500'],
+            ]);
+
+            $reservation->update([
+                'status' => 'canceled',
+                'cancel_reason' => $validated['cancel_reason'] ?? null,
+            ]);
+
+            try {
+                // 管理者へキャンセル通知
+                $adminEmail = env('MAIL_ADMIN_ADDRESS', 'admin@lash-brow-ohana.local');
+                Mail::to($adminEmail)->send(new AdminReservationCanceledMail($reservation));
+
+                // ユーザーへキャンセル通知
+                if (!empty($reservation->email)) {
+                    Mail::to($reservation->email)->send(new UserReservationCanceledMail($reservation));
+                }
+            } catch (\Throwable $e) {
+                Log::error('[公開キャンセル通知メール送信エラー]', [
+                    'reservation_id' => $reservation->id,
+                    'email' => $reservation->email ?? '不明',
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $home = url('/');
+        $message = $alreadyCanceled ? 'この予約は既にキャンセル済みです。' : '予約をキャンセルしました。';
+
+        return view('reservations.cancel.done', [      // ✅ 変更：view名
+            'title'           => 'キャンセル結果 | Lash Brow Ohana',
+            'reservation'     => $reservation,
+            'alreadyCanceled' => $alreadyCanceled,
+            'message'         => $message,
+            'home'            => $home,
+        ]);
+    })->name('reservations.public.cancel.perform');
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +216,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('api')->group(function () {
             Route::get('reservations', [AdminReservationController::class, 'apiIndex']);
             Route::get('timetable', [TimetableController::class, 'getData']);
+
+            // ✅ 管理者ブロックAPI（Timetable.jsx が /admin/api/blocks を叩く想定）
+            Route::post('blocks', [AdminBlockController::class, 'store']);
+            Route::put('blocks/{id}', [AdminBlockController::class, 'update']);
+            Route::delete('blocks/{id}', [AdminBlockController::class, 'destroy']);
         });
 
         // Timetable ページ（Inertia）
@@ -191,7 +309,7 @@ Route::prefix('online-store')->name('online-store.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
-    ->withoutMiddleware(['web', 'auth', Authenticate::class])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class, 'auth', Authenticate::class])
     ->name('stripe.webhook');
 
 /*

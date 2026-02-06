@@ -1,7 +1,6 @@
 // /resources/js/Pages/Admin/CategoryModal.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Inertia } from "@inertiajs/inertia";
 
 // モジュール化した CSS をインポート
 import "../../../css/pages/admin/category-modal.css";
@@ -11,31 +10,74 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
-    const handleSubmit = (e) => {
+    // ✅ 開くたびに入力/エラーをリセット（2回目以降の不具合防止）
+    useEffect(() => {
+        if (!isOpen) return;
+        setName("");
+        setErrors({});
+        setLoading(false);
+    }, [isOpen]);
+
+    const closeSafely = () => {
+        if (loading) return; // 保存中に閉じない（事故防止）
+        setErrors({});
+        onClose?.();
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const trimmed = name.trim();
+        if (!trimmed) {
+            setErrors({ name: "カテゴリー名を入力してください。" });
+            return;
+        }
+
         setLoading(true);
         setErrors({});
 
-        Inertia.post(
-            "/admin/categories",
-            { name },
-            {
-                onSuccess: (page) => {
-                    const createdCategory =
-                        page.props.flash?.category || page.props.category;
-                    if (createdCategory && onCreated) {
-                        onCreated(createdCategory ?? null);
-                    }
-                    setName("");
-                    onClose();
-                },
-                onError: (err) => {
-                    // Laravel バリデーションエラーを errors にセット
-                    setErrors(err);
-                },
-                onFinish: () => setLoading(false),
+        try {
+            // ✅ window.axios は bootstrap.js で初期化済み前提
+            // server 側で expectsJson() に反応させるため、Accept: application/json を付ける
+            const res = await window.axios.post(
+                "/admin/categories",
+                { name: trimmed },
+                { headers: { Accept: "application/json" } }
+            );
+
+            const created = res?.data?.category || null;
+
+            if (created && onCreated) {
+                onCreated(created);
             }
-        );
+
+            setName("");
+            setErrors({});
+            onClose?.(); // ✅ 成功したら閉じる
+        } catch (err) {
+            // Laravel validation (422)
+            const status = err?.response?.status;
+            const data = err?.response?.data;
+
+            if (status === 422 && data?.errors) {
+                // errors.name は配列のことが多い
+                const nameErr = Array.isArray(data.errors.name)
+                    ? data.errors.name[0]
+                    : data.errors.name;
+
+                setErrors({
+                    ...data.errors,
+                    ...(nameErr ? { name: nameErr } : {}),
+                });
+            } else {
+                // その他（500など）
+                setErrors({
+                    name: data?.message || "保存に失敗しました。時間をおいて再度お試しください。",
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -48,7 +90,7 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
+                        onClick={closeSafely}
                     />
 
                     {/* モーダル本体 */}
@@ -58,36 +100,29 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -30 }}
                         transition={{ duration: 0.25 }}
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <div className="category-modal-content">
-                            <h2 className="category-modal-title">
-                                新規カテゴリー作成
-                            </h2>
+                            <h2 className="category-modal-title">新規カテゴリー作成</h2>
 
-                            <form
-                                onSubmit={handleSubmit}
-                                className="category-modal-form"
-                            >
+                            <form onSubmit={handleSubmit} className="category-modal-form">
                                 <div className="category-modal-field">
-                                    <label
-                                        htmlFor="category-name"
-                                        className="category-modal-label"
-                                    >
+                                    <label htmlFor="category-name" className="category-modal-label">
                                         カテゴリー名
                                     </label>
                                     <input
                                         id="category-name"
                                         type="text"
                                         value={name}
-                                        onChange={(e) =>
-                                            setName(e.target.value)
-                                        }
+                                        onChange={(e) => setName(e.target.value)}
                                         className="category-modal-input"
                                         placeholder="例: まつ毛エクステ"
+                                        disabled={loading}
+                                        autoFocus
                                     />
-                                    {errors.name && (
+                                    {errors?.name && (
                                         <p className="category-modal-error">
-                                            {errors.name}
+                                            {Array.isArray(errors.name) ? errors.name[0] : errors.name}
                                         </p>
                                     )}
                                 </div>
@@ -96,7 +131,8 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
                                     <button
                                         type="button"
                                         className="category-modal-button category-modal-button--cancel"
-                                        onClick={onClose}
+                                        onClick={closeSafely}
+                                        disabled={loading}
                                     >
                                         キャンセル
                                     </button>

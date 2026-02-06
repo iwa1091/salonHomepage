@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -34,17 +35,26 @@ class CategoryController extends Controller
     /**
      * 保存処理
      */
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', Rule::unique('categories', 'name')],
         ]);
 
         $category = Category::create($validated);
 
-        // ✅ フラッシュデータに新しいカテゴリを渡す
+        // ✅ モーダル（axios）からは JSON で返す
+        if ($request->expectsJson()) {
+            return response()->json(['category' => $category], 201);
+        }
+
+        // ✅ 画面遷移（通常フォーム）時は従来通り
         return back()->with('category', $category);
     }
+
+
 
 
     /**
@@ -63,7 +73,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:100'],
+            'name' => ['required', 'string', 'max:100', 'unique:categories,name,' . $category->id],
         ]);
 
         $category->update($validated);
@@ -71,6 +81,7 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')
             ->with('success', 'カテゴリを更新しました。');
     }
+
 
     /**
      * 削除処理

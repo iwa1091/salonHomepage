@@ -15,8 +15,9 @@ import "../../../../css/pages/admin/product/edit.css";
 export default function Edit() {
     const { product, flash } = usePage().props;
 
-    // useForm で初期値を設定
-    const { data, setData, processing, errors, reset } = useForm({
+    // useForm で初期値を設定（✅ ファイル送信を確実にするため post + _method を使用）
+    const { data, setData, post, processing, errors, reset } = useForm({
+        _method: "patch",
         name: product.name || "",
         price: product.price || "",
         description: product.description || "",
@@ -26,23 +27,31 @@ export default function Edit() {
 
     const [preview, setPreview] = useState(null);
 
+    // 既存画像（/storage/0 などを踏まないようにフォールバック）
+    const existingImageSrc =
+        product?.image_url ||
+        (product?.image_path && product.image_path !== "0"
+            ? `/storage/${product.image_path}`
+            : "/img/logo.png");
+
     // ファイル選択時のプレビュー処理
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0] ?? null;
         setData("image", file);
+
         if (file) {
             setPreview(URL.createObjectURL(file));
+        } else {
+            setPreview(null);
         }
     };
 
-    // 送信処理（PATCHで送信）
+    // 送信処理（✅ post + _method=patch で送信）
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        router.post(route("admin.products.update", product.id), {
-            _method: "patch", // LaravelにPATCHとして送る
-            ...data,
-        }, {
+        post(route("admin.products.update", product.id), {
+            forceFormData: true, // ✅ ファイル送信を確実にする
             onSuccess: () => {
                 alert("商品情報を更新しました。");
                 reset("image");
@@ -71,6 +80,7 @@ export default function Edit() {
                     onSubmit={handleSubmit}
                     className="admin-product-edit-form"
                     encType="multipart/form-data"
+                    noValidate
                 >
                     {/* 商品名 */}
                     <div className="admin-product-edit-field">
@@ -148,19 +158,11 @@ export default function Edit() {
 
                         <div className="admin-product-edit-preview-wrapper">
                             <div className="admin-product-edit-preview-inner">
-                                {preview ? (
-                                    <img
-                                        src={preview}
-                                        alt="新しいプレビュー"
-                                        className="admin-product-edit-preview-image"
-                                    />
-                                ) : (
-                                    <img
-                                        src={`/storage/${product.image_path}`}
-                                        alt="既存画像"
-                                        className="admin-product-edit-preview-image"
-                                    />
-                                )}
+                                <img
+                                    src={preview || existingImageSrc}
+                                    alt={preview ? "新しいプレビュー" : "既存画像"}
+                                    className="admin-product-edit-preview-image"
+                                />
                             </div>
                         </div>
 

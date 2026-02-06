@@ -29,7 +29,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased" x-data="{ open: false }">
 
     @include('layout.header')
 

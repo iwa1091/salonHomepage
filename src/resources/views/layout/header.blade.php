@@ -1,7 +1,4 @@
-{{-- Alpine.js で open を管理 --}}
-<div x-data="{ open: false }">
-
-    <header class="main-header">
+<header class="main-header">
         <div class="header-container">
             <div class="header-content">
 
@@ -94,9 +91,8 @@
                 <a href="{{ route('gallery') }}" class="mobile-nav-link {{ request()->routeIs('gallery') ? 'is-active' : '' }}">施術事例・お客様の声</a>
                 <a href="{{ route('online-store.index') }}" class="mobile-nav-link {{ request()->routeIs('online-store.index') ? 'is-active' : '' }}">商品販売</a>
                 <a href="{{ route('contact.form') }}" class="mobile-nav-link {{ request()->routeIs('contact.form') ? 'is-active' : '' }}">ご予約・お問い合わせ</a>
+                <a href="{{ route('mypage.index') }}" class="mobile-nav-link {{ request()->routeIs('mypage.*') ? 'is-active' : '' }}">マイページ</a>
             </div>
 
         </div>
     </div>
-
-</div>

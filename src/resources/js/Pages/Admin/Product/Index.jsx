@@ -36,6 +36,13 @@ export default function Index() {
             animate={{ opacity: 1 }}
         >
             <div className="admin-product-container">
+                {/* 戻るボタン（ReservationList と同じ位置） */}
+                <div className="admin-product-back">
+                    <Link href={route("admin.dashboard")} className="admin-product-back-link">
+                        前のページに戻る
+                    </Link>
+                </div>
+
                 {/* Header */}
                 <header className="admin-product-header">
                     <h1 className="admin-product-title">商品管理</h1>
@@ -99,7 +106,7 @@ export default function Index() {
                             >
                                 <div className="admin-product-image-wrapper">
                                     <img
-                                        src={`/storage/${product.image_path}`}
+                                        src={product.image_url}
                                         alt={product.name}
                                         className="admin-product-image"
                                     />
@@ -152,17 +159,6 @@ export default function Index() {
                     ))}
                 </nav>
             </div>
-
-            {/* 右下固定の戻るボタン（スマホではアイコンのみ表示） */}
-            <Link
-                href={route("admin.dashboard")}
-                className="admin-product-back-floating"
-            >
-                <i className="fa-solid fa-arrow-left admin-product-back-icon" />
-                <span className="admin-product-back-label">
-                    前のページに戻る
-                </span>
-            </Link>
         </motion.div>
     );
 }

@@ -6,100 +6,136 @@
     <title>ご予約完了のお知らせ</title>
     <style>
         /* ===============================
-           ベースレイアウト
+           Base Layout (Ohana Theme)
+           ※ メールは theme.css のCSS変数が使えないため、色は固定値で合わせます
         =============================== */
         body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-            background-color: #f9f9fb;
+            font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN", "Hiragino Kaku Gothic ProN", Meiryo, "Noto Serif JP", serif;
+            background-color: #F1F1EF; /* --color-bg-base */
             margin: 0;
             padding: 0;
-            color: #333;
-        }
-        .container {
-            max-width: 640px;
-            margin: 30px auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-        }
-        .header {
-            background-color: #7e5bef; /* ブランドカラー（少し濃いラベンダー） */
-            color: #fff;
-            text-align: center;
-            padding: 22px 15px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-        .content {
-            padding: 28px 24px;
+            color: #3A2F29; /* --text-default */
             line-height: 1.8;
         }
+
+        .container {
+            max-width: 640px;
+            margin: 28px auto;
+            background-color: #ffffff;
+            border-radius: 12px; /* --radius-large */
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.10); /* --border-color */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); /* --shadow-soft */
+        }
+
+        .header {
+            background-color: #2F4F3E; /* --color-main */
+            color: #ffffff;
+            text-align: center;
+            padding: 18px 16px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 22px 22px 18px;
+        }
+
         .content p {
             margin: 12px 0;
             font-size: 15px;
         }
+
+        /* Reservation detail box */
         ul {
-            background: #f7f5ff;
-            padding: 15px 20px;
+            margin: 14px 0 0;
+            padding: 14px 16px;
             border-radius: 10px;
             list-style: none;
+            background: #F7F6F2; /* --color-bg-light */
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
+
         li {
-            margin-bottom: 8px;
+            margin: 8px 0;
             font-size: 15px;
+            color: #3A2F29;
+        }
+
+        .note {
+            font-size: 12.5px;
+            color: rgba(0, 0, 0, 0.65);
+            margin-top: 10px;
         }
 
         /* ===============================
-           ボタンスタイル
+           Buttons
         =============================== */
         .btn-wrapper {
             text-align: center;
-            margin: 28px 0 18px 0;
+            margin: 18px 0 10px;
         }
+
         .btn {
             display: inline-block;
-            background-color: #b794f4; /* 明るめのラベンダー */
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+            background-color: #CDAF63; /* --color-accent */
             color: #ffffff !important;
-            padding: 12px 24px;
+            padding: 12px 18px;
             font-size: 15px;
-            font-weight: bold;
-            border-radius: 8px;
+            font-weight: 700;
+            border-radius: 9999px; /* --radius-full */
             text-decoration: none;
-            transition: background 0.3s ease;
+            border: 1px solid #CDAF63;
         }
-        .btn:hover {
-            background-color: #9f7aea;
+
+        .btn-secondary {
+            display: inline-block;
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            color: #3A2F29 !important;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 9999px;
+            text-decoration: none;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            margin-top: 10px;
         }
 
         /* ===============================
-           フッター
+           Footer
         =============================== */
         .footer {
             text-align: center;
-            font-size: 13px;
-            color: #888;
-            padding: 20px;
-            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.60);
+            padding: 14px 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            background: #ffffff;
         }
 
         /* ===============================
-           スマホ対応
+           Mobile
         =============================== */
         @media (max-width: 600px) {
             .container {
                 margin: 10px;
             }
             .content {
-                padding: 20px 16px;
+                padding: 18px 16px 14px;
             }
-            .btn {
-                width: 100%;
-                box-sizing: border-box;
-                padding: 14px 0;
+            .header h1 {
+                font-size: 17px;
             }
         }
     </style>
@@ -124,15 +160,28 @@
                 <li><strong>ご要望：</strong>{{ $reservation->notes ?? 'なし' }}</li>
             </ul>
 
-            <p>ご予約内容の確認やキャンセルをご希望の場合は、下記のボタンから「予約一覧ページ」をご確認ください。</p>
+            <p class="note">ご予約内容の確認やキャンセルをご希望の場合は、下記のボタンからご確認ください。</p>
+
+            @php
+                // ✅ cancelUrl が渡ってこない場合でも、署名付きURLを自動生成（route名は web.php と一致）
+                $signedCancelUrl = $cancelUrl ?? \Illuminate\Support\Facades\URL::signedRoute(
+                    'reservations.public.cancel.show',
+                    ['reservation' => $reservation->id]
+                );
+            @endphp
 
             <div class="btn-wrapper">
-                <a href="{{ url('/mypage') }}" class="btn">▶ ご予約内容を確認する</a>
+                <a href="{{ url('/mypage/reservations') }}" class="btn">▶ ご予約内容を確認する</a>
+
+                {{-- 署名付きキャンセルURLが渡ってくる場合のみ表示（未定義でもエラーになりません） --}}
+                @if(!empty($signedCancelUrl ?? null))
+                    <a href="{{ $signedCancelUrl }}" class="btn-secondary">キャンセル手続きへ</a>
+                @endif
             </div>
 
             <p>ご来店を心よりお待ちしております。</p>
 
-            <p style="margin-top: 24px;">Lash Brow Ohana</p>
+            <p style="margin-top: 18px;">Lash Brow Ohana</p>
         </div>
 
         <div class="footer">

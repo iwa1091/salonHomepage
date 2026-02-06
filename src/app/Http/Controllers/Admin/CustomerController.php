@@ -54,7 +54,6 @@ class CustomerController extends Controller
                 'last_purchase_at' => $customer->last_purchase_at
                     ? Carbon::parse($customer->last_purchase_at)->format('Y/m/d')
                     : '—',
-                'memo' => $customer->memo,
             ];
         });
 
@@ -96,7 +95,6 @@ class CustomerController extends Controller
             'last_purchase_at' => $customer->last_purchase_at
                 ? Carbon::parse($customer->last_purchase_at)->format('Y/m/d')
                 : '—',
-            'memo' => $customer->memo,
             'created_at' => $customer->created_at->format('Y/m/d H:i'),
             'updated_at' => $customer->updated_at->format('Y/m/d H:i'),
         ];
@@ -110,7 +108,7 @@ class CustomerController extends Controller
 
     /**
      * =========================================================
-     * ✏️ 顧客メモ・情報更新（API対応）
+     * ✏️ 顧客情報更新（API対応）
      * =========================================================
      */
     public function update($id, Request $request)
@@ -121,7 +119,6 @@ class CustomerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:30',
-            'memo' => 'nullable|string|max:1000',
         ]);
 
         $customer->update($validated);

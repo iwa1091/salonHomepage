@@ -71,12 +71,34 @@ class StripeController extends Controller
                 'mode'        => 'payment',
                 'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('checkout.cancel'),
+
+                // ✅ Webhook 側で customer_details を安定して取るため
+                'customer_email' => $user->email,
+                'phone_number_collection' => ['enabled' => true],
+                'shipping_address_collection' => [
+                    'allowed_countries' => ['JP'],
+                ],
+
+                // ✅ 追跡しやすくする（Sessionにも付く）
+                'client_reference_id' => (string) $order->id,
+
+                // ✅ Stripe metadata は value が「文字列」である必要があるため文字列に寄せる
                 'metadata'    => [
-                    'order_id'     => $order->id,
-                    'user_id'      => $user->id,
-                    'user_email'   => $user->email,
-                    'product_id'   => $product->id,
-                    'customer_id'  => $customer?->id,  // ★ あとで Webhook 側で使うことも可能
+                    'order_id'    => (string) $order->id,
+                    'user_id'     => (string) $user->id,
+                    'user_email'  => (string) $user->email,
+                    'product_id'  => (string) $product->id,
+                    'customer_id' => (string) ($customer?->id ?? ''),
+                ],
+
+                // ✅ 後々の追跡のため payment_intent 側にも metadata を持たせる
+                'payment_intent_data' => [
+                    'metadata' => [
+                        'order_id'    => (string) $order->id,
+                        'user_id'     => (string) $user->id,
+                        'product_id'  => (string) $product->id,
+                        'customer_id' => (string) ($customer?->id ?? ''),
+                    ],
                 ],
             ]);
 
@@ -85,6 +107,13 @@ class StripeController extends Controller
                 'stripe_session_id' => $session->id,
             ]);
 
+            // ✅ 検証しやすいログ（order_id と session_id の紐づけ）
+            Log::info('✅ Stripe Checkout Session created', [
+                'order_id'   => $order->id,
+                'session_id' => $session->id,
+                'user_id'    => $user->id,
+                'product_id' => $product->id,
+            ]);
 
             return redirect($session->url, 303);
 

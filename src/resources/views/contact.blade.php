@@ -194,7 +194,11 @@
                             </span>
                             <div>
                                 <p class="info-label">電話番号</p>
-                                <p class="info-text">0436-63-4724</p>
+                                <p class="info-text">
+                                    <a href="tel:0436634724" class="phone-link" aria-label="電話をかける 0436-63-4724">
+                                        0436-63-4724
+                                    </a>
+                                </p>
                             </div>
                         </div>
 
@@ -246,13 +250,13 @@
                     <div class="card-content">
                         <div class="hours-list">
                             <div class="hours-item">
-                                <span class="day">日曜日・月曜日（祝日等不定休あり）</span>
+                                <span class="day">日曜日・月曜日・火曜日（祝日等不定休）</span>
                                 <span class="time">定休日</span>
                             </div>
 
                             <div class="hours-item">
-                                <span class="day">火曜日〜土曜日</span>
-                                <span class="time">09:00〜17:00</span>
+                                <span class="day">水曜日〜土曜日</span>
+                                <span class="time">09:00〜16:00</span>
                             </div>
                         </div>
 
@@ -270,7 +274,7 @@
                     <div class="quick-contact-content">
                         <h3>お急ぎの方は</h3>
                         <p>お電話でのご予約も承っております</p>
-                        <a href="tel:03-1234-5678" class="phone-button">電話で予約</a>
+                        <a href="tel:0436634724" class="phone-button">電話で予約</a>
                     </div>
                 </div>
 

@@ -214,6 +214,26 @@ label {
     line-height: 1.5;
 }
 
+/* 電話リンク（tel） */
+.phone-link {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color .2s ease, opacity .2s ease;
+}
+
+.phone-link:hover {
+    color: var(--text-default);
+    opacity: 0.9;
+}
+
+.phone-link:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
 /* SNS */
 .sns-links {
     display: flex;

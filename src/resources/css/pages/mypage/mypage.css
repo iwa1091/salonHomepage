@@ -161,3 +161,126 @@
         font-size: 0.9rem;
     }
 }
+
+
+/* =========================================================
+   追記（既存を崩さず改善）
+   - フォーム要素のはみ出し防止
+   - 日付入力（type="date"）の選択しやすさ改善
+   - グリッドカードの横幅を少し短く（見た目の収まり改善）
+========================================================= */
+
+/* フォーム系のはみ出し対策（border-box + max-width） */
+.mypage-container :where(input, select, textarea, button) {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* input系クラスがある場合の保険（他CSSと競合しにくい“サイズ系のみ”） */
+.mypage-container :where(.mypage-input) {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* カード内で右端がはみ出すケースの保険（角丸内のはみ出しを抑止） */
+.mypage-container :where(.card) {
+    overflow: hidden;
+}
+
+/* 日付 input のタップ領域（スマホでも押しやすく） */
+.mypage-container :where(input[type="date"], .mypage-date) {
+    min-height: 44px;
+    padding-right: 2.4rem;
+    /* カレンダーアイコン分の余白 */
+}
+
+/* Chrome/Safari系：カレンダーアイコンを大きくして押しやすく */
+.mypage-container :where(input[type="date"], .mypage-date)::-webkit-calendar-picker-indicator {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+/* グリッドカードが横に広がりすぎないよう“少し短く”上書き */
+.mypage-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+@media (max-width: 1024px) {
+    .mypage-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+/* =========================================================
+   追記：戻るボタン（予約一覧などで共通利用）
+   - 「左上に戻るボタン」を置きたいページで
+     1) ヘッダー（または見出し）を .mypage-page-head で囲む
+     2) 戻るボタンに .mypage-back-button を付ける
+========================================================= */
+
+/* 戻るボタン配置のためのヘッダーラッパー（左に余白を確保） */
+.mypage-page-head {
+    position: relative;
+    padding-left: 3.25rem;
+    /* 戻るボタン分の余白 */
+}
+
+/* 左上戻るボタン（a / button どちらでもOK） */
+.mypage-back-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    min-height: 44px;
+    padding: 0.55rem 0.9rem;
+
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background-color: var(--color-white);
+
+    color: var(--text-default);
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    text-decoration: none;
+
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.mypage-back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    opacity: 0.98;
+}
+
+.mypage-back-button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* アイコンだけ色をアクセントにしたい場合（任意） */
+.mypage-back-button__icon {
+    color: var(--color-accent);
+    font-size: 1.05em;
+    line-height: 1;
+}
+
+/* スマホ：少し詰める */
+@media (max-width: 768px) {
+    .mypage-page-head {
+        padding-left: 3rem;
+    }
+
+    .mypage-back-button {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.92rem;
+    }
+}

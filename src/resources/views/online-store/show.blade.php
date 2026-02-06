@@ -11,9 +11,11 @@
 
     {{-- 左カラム：商品画像 --}}
     <div class="product-image-area">
-        <img src="{{ asset('storage/' . $product->image_path) }}"
-             alt="{{ $product->name }}"
-             class="product-image">
+        <img
+            src="{{ $product->image_url }}"
+            alt="{{ $product->name }}"
+            class="product-image"
+        >
     </div>
 
     {{-- 右カラム：商品情報 --}}

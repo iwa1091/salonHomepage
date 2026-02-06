@@ -90,10 +90,13 @@
 
                             {{-- 商品画像 --}}
                             <div class="product-image-container">
-                                <img src="{{ asset('storage/' . $product->image_path) }}"
-                                     alt="{{ $product->name }}"
-                                     class="product-image">
+                                <img
+                                    src="{{ $product->image_url }}"
+                                    alt="{{ $product->name }}"
+                                    class="product-image"
+                                >
                             </div>
+
 
                             {{-- 商品情報 --}}
                             <div class="product-info">

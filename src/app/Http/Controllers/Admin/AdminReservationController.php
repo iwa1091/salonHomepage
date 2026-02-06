@@ -51,11 +51,34 @@ class AdminReservationController extends Controller
      * GET /api/admin/reservations
      * -------------------------------------------------------------
      */
-    public function apiIndex()
+    public function apiIndex(Request $request)
     {
-        $reservations = Reservation::with(['service', 'user'])
+        // ✅ 追加：from/to（ReservationList.jsx が付与）に対応して絞り込む
+        // ✅ 追加：デフォルトではキャンセルを除外（confirmed のみ）
+        $validated = $request->validate([
+            'from' => ['nullable', 'date_format:Y-m-d'],
+            'to'   => ['nullable', 'date_format:Y-m-d'],
+            // 任意：キャンセルも含めたい場合のみ ?include_canceled=1
+            'include_canceled' => ['nullable', 'boolean'],
+        ]);
+
+        $query = Reservation::with(['service', 'user'])
             ->orderBy('date', 'desc')
-            ->orderBy('start_time', 'desc')
+            ->orderBy('start_time', 'desc');
+
+        if (!empty($validated['from'])) {
+            $query->where('date', '>=', $validated['from']);
+        }
+        if (!empty($validated['to'])) {
+            $query->where('date', '<=', $validated['to']);
+        }
+
+        $includeCanceled = (bool)($validated['include_canceled'] ?? false);
+        if (!$includeCanceled) {
+            $query->where('status', 'confirmed');
+        }
+
+        $reservations = $query
             ->get()
             ->map(fn ($r) => [
                 'id'            => $r->id,
@@ -111,14 +134,22 @@ class AdminReservationController extends Controller
     public function edit($id)
     {
         // 予約情報 + サービス・ユーザーを取得
-        $reservation = Reservation::with(['service', 'user'])
-            ->findOrFail($id);
+        $reservation = Reservation::with(['service', 'user'])->findOrFail($id);
 
-        // 予約日の年月に合わせて営業時間を取得（将来的に使う場合のために保持）
+        // ✅ 予約日の年月に合わせて営業時間（business_hours）を取得
+        //    データが無ければ seed してから取得する
         $targetDate = Carbon::parse($reservation->date);
+        $year  = (int) $targetDate->year;
+        $month = (int) $targetDate->month;
 
-        $businessHours = BusinessHour::where('year', $targetDate->year)
-            ->where('month', $targetDate->month)
+        if (BusinessHour::where('year', $year)->where('month', $month)->count() === 0) {
+            BusinessHour::seedDefaultForMonth($year, $month);
+        }
+
+        $businessHours = BusinessHour::where('year', $year)
+            ->where('month', $month)
+            ->orderBy('week_of_month')
+            ->orderByRaw("FIELD(day_of_week, '月','火','水','木','金','土','日')")
             ->get();
 
         return Inertia::render('Admin/ReservationEdit', [
@@ -129,22 +160,20 @@ class AdminReservationController extends Controller
                 'end_time'     => $reservation->end_time,
                 'name'         => $reservation->name,
                 'email'        => $reservation->email,
+                'phone'        => $reservation->phone, // ✅ 追加
                 'status'       => $reservation->status,
                 'notes'        => $reservation->notes,
 
-                // サービス関連
                 'service_id'   => $reservation->service_id,
                 'service_name' => $reservation->service?->name,
                 'duration'     => $reservation->service?->duration_minutes,
 
-                // フロントが期待しているネスト構造（ReservationEdit.jsx 用）
                 'service' => $reservation->service ? [
                     'id'               => $reservation->service->id,
                     'name'             => $reservation->service->name,
                     'duration_minutes' => $reservation->service->duration_minutes,
                 ] : null,
 
-                // ユーザー情報
                 'user_id'   => $reservation->user_id,
                 'user_name' => $reservation->user?->name,
                 'user'      => $reservation->user ? [
@@ -153,8 +182,7 @@ class AdminReservationController extends Controller
                 ] : null,
             ],
 
-            // 今は ReservationEdit.jsx 側で /api/business-hours を叩いていますが、
-            // 将来的に Inertia 経由で渡したい場合に備えて残しておきます。
+            // ✅ これで未定義エラーが消え、props として渡せます
             'businessHours' => $businessHours,
         ]);
     }
@@ -170,53 +198,50 @@ class AdminReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
 
-        // ReservationEdit.jsx から送られてくる項目に合わせてバリデーション
         $validated = $request->validate([
             'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['nullable', 'email', 'max:255'],     // ✅ 追加
+            'phone'      => ['nullable', 'string', 'max:20'],     // ✅ 追加
+            'notes'      => ['nullable', 'string', 'max:1000'],   // ✅ 追加（上限は運用に合わせて）
             'date'       => ['required', 'date'],
-            'start_time' => ['required', 'date_format:H:i'],   // "HH:MM" を想定
+            'start_time' => ['required', 'date_format:H:i'],
             'service_id' => ['required', 'exists:services,id'],
-            // service_duration は信頼せず、サービスから再取得する
         ]);
 
-        // サービスの施術時間から end_time を再計算
         $service = Service::findOrFail($validated['service_id']);
 
-        // "Y-m-d H:i" 形式で結合して Carbon に渡す
         $startDateTime = Carbon::createFromFormat(
             'Y-m-d H:i',
             $validated['date'] . ' ' . $validated['start_time']
         );
-        $endDateTime   = (clone $startDateTime)->addMinutes($service->duration_minutes);
+        $endDateTime = (clone $startDateTime)->addMinutes($service->duration_minutes);
 
-        // 🔁 他の予約との重複チェック（自分自身は除外）
         $isOverlapping = Reservation::where('date', $validated['date'])
             ->where('status', 'confirmed')
             ->where('id', '!=', $reservation->id)
             ->where(function ($query) use ($startDateTime, $endDateTime) {
                 $query->where('start_time', '<', $endDateTime->format('H:i:s'))
-                      ->where('end_time', '>', $startDateTime->format('H:i:s'));
+                    ->where('end_time', '>', $startDateTime->format('H:i:s'));
             })
             ->exists();
 
         if ($isOverlapping) {
             return back()
-                ->withErrors([
-                    'start_time' => '指定された時間帯は他の予約と重複しています。',
-                ])
+                ->withErrors(['start_time' => '指定された時間帯は他の予約と重複しています。'])
                 ->withInput();
         }
 
-        // 予約情報を更新（email / notes / status はこの画面では変更しない想定）
         $reservation->update([
             'name'       => $validated['name'],
+            'email'      => $validated['email'] ?? null,  // ✅ 追加
+            'phone'      => $validated['phone'] ?? null,  // ✅ 追加
+            'notes'      => $validated['notes'] ?? null,  // ✅ 追加
             'date'       => $validated['date'],
             'start_time' => $startDateTime->format('H:i:s'),
             'end_time'   => $endDateTime->format('H:i:s'),
             'service_id' => $validated['service_id'],
         ]);
 
-        // 紐づく顧客の統計情報を再計算
         if ($reservation->customer_id) {
             $customer = Customer::find($reservation->customer_id);
             if ($customer) {
@@ -228,6 +253,7 @@ class AdminReservationController extends Controller
             ->route('admin.reservations.index')
             ->with('success', '予約内容を更新しました');
     }
+
 
     /**
      * -------------------------------------------------------------

@@ -191,10 +191,66 @@
     background-color: #f3f4f6;
 }
 
+/* ✅ 選択時刻：日付選択と同じ「緑」に統一 */
 .reservation-time-button--selected {
-    background-color: var(--salon-brown);
+    background-color: var(--color-main);
     color: #ffffff;
-    border-color: var(--salon-brown);
+    border-color: var(--color-main);
+}
+
+/* =====================================================
+   ✅ 追加：時間ボタン内「時刻 + ○/×」表示（ReservationForm.jsx と整合）
+===================================================== */
+
+/* ボタン内部を縦並び（時刻の下に ○/×） */
+.reservation-time-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+    gap: 0.15rem;
+    min-height: 44px;
+    /* クリックしやすさ */
+}
+
+/* 時刻（上段） */
+.reservation-time-label {
+    display: inline-block;
+}
+
+/* ○/×（下段） */
+.reservation-time-status {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* 有効枠は ○ を緑寄り、無効枠は × を赤寄りに（既存メッセージ色と合わせる） */
+.reservation-time-button:not([disabled]) .reservation-time-status {
+    color: #2f7d4f;
+}
+
+.reservation-time-button[disabled] .reservation-time-status {
+    color: #b43d3d;
+}
+
+/* 選択中は文字色を揃える */
+.reservation-time-button--selected .reservation-time-status {
+    color: #ffffff;
+}
+
+/* 無効（×）の見た目 */
+.reservation-time-button--disabled,
+.reservation-time-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+/* hover で浮かないように（disabled はhover自体効かないが念のため） */
+.reservation-time-button--disabled:hover,
+.reservation-time-button:disabled:hover {
+    background-color: #ffffff;
 }
 
 /* 選択された時間表示 */
@@ -227,6 +283,67 @@
     background-color: var(--color-accent);
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
+}
+
+/* =====================================================
+   ✅ 追加：要望対応の上書き（青チラつき防止 / hoverで薄くしない / ボタン色固定）
+   ※既存実装は残し、末尾で勝たせる
+===================================================== */
+
+/* --- カレンダー：選択日の色を最初から緑で固定（青→緑のチラつき防止） --- */
+.reservation-calendar .react-calendar__tile--active {
+    background: var(--color-main) !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.reservation-calendar .react-calendar__tile--active:enabled:hover,
+.reservation-calendar .react-calendar__tile--active:enabled:focus,
+.reservation-calendar .react-calendar__tile--active:enabled:active {
+    background: var(--color-main) !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* 選択中タイルにカーソルを乗せても薄くならない */
+.reservation-calendar .react-calendar__tile--active:enabled:hover {
+    filter: none !important;
+}
+
+/* --- 時刻ボタン：hoverで薄くしない（背景を変えず、浮かせる） --- */
+.reservation-time-button:hover {
+    background-color: #ffffff;
+    border-color: var(--color-main);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+/* ✅ 選択中の時刻：hoverでも「緑」を維持（薄くならない） */
+.reservation-time-button--selected:hover {
+    background-color: var(--color-main);
+    color: #ffffff;
+    border-color: var(--color-main);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
+/* disabled は浮かせない（見え方の安定） */
+.reservation-time-button--disabled:hover,
+.reservation-time-button:disabled:hover {
+    border-color: var(--border-color);
+    box-shadow: none;
+    transform: none;
+}
+
+/* --- 予約ボタン：最初から黄土色（accent）固定。hoverは色変更せず浮かせる --- */
+.reservation-submit-button {
+    background-color: var(--color-accent) !important;
+}
+
+.reservation-submit-button:hover {
+    background-color: var(--color-accent) !important;
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
 }
 
 /* ============================================

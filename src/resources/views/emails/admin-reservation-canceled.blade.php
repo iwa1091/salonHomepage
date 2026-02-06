@@ -6,6 +6,7 @@
     <li>日付：{{ $reservation->date }}</li>
     <li>時間：{{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}</li>
     <li>メニュー：{{ $reservation->service->name ?? '不明' }}</li>
+    <li>キャンセル理由：{{ $reservation->cancel_reason ?? '未入力' }}</li>
     <li>備考：{{ $reservation->notes ?? 'なし' }}</li>
 </ul>
 

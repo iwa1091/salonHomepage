@@ -24,6 +24,34 @@
     padding: 1.75rem 1.5rem 2.25rem;
 }
 
+/* 戻るボタン（ReservationList と同等デザイン） */
+.admin-product-back {
+    margin-bottom: 1rem;
+}
+
+.admin-product-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--color-bg-soft);
+    color: var(--salon-brown);
+    text-decoration: none;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease;
+}
+
+.admin-product-back-link:hover {
+    background-color: var(--color-bg-light);
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-1px);
+}
+
 /* ヘッダー */
 .admin-product-header {
     text-align: center;

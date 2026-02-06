@@ -49,6 +49,7 @@ Route::prefix('business-hours')->group(function () {
 use App\Http\Controllers\Admin\AdminReservationController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\AdminBlockController;
 
 Route::prefix('admin')->group(function () {
 
@@ -73,6 +74,13 @@ Route::prefix('admin')->group(function () {
     Route::get('customers/{id}', [CustomerController::class, 'apiShow']);
     Route::put('customers/{id}', [CustomerController::class, 'apiUpdate']);
     Route::delete('customers/{id}', [CustomerController::class, 'apiDestroy']);
+
+    // ============================================
+    // ⛔ 管理：ブロック枠（Timetable 用）
+    // ============================================
+    Route::post('blocks', [AdminBlockController::class, 'store']);
+    Route::put('blocks/{id}', [AdminBlockController::class, 'update']);
+    Route::delete('blocks/{id}', [AdminBlockController::class, 'destroy']);
 });
 
 
