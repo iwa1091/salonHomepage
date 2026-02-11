@@ -3,6 +3,7 @@ SHELL := /bin/bash
 COMPOSE      := docker compose
 PHP_SERVICE  := php
 NODE_SERVICE := node
+MYSQL_SERVICE := mysql
 APP_DIR      := /var/www
 
 ENV_FILE     := src/.env
@@ -12,8 +13,9 @@ UID := $(shell id -u)
 GID := $(shell id -g)
 USER_NAME := $(shell id -un)
 
-PHP_EXEC_USER  := $(COMPOSE) exec -u $(UID):$(GID) $(PHP_SERVICE)
-NODE_EXEC_USER := $(COMPOSE) exec -u $(UID):$(GID) $(NODE_SERVICE)
+# UID/GID 実行時に HOME が不定になりやすいので /tmp に固定（composer/npm の権限詰まり防止）
+PHP_EXEC_USER  := $(COMPOSE) exec -e HOME=/tmp -e COMPOSER_HOME=/tmp -u $(UID):$(GID) $(PHP_SERVICE)
+NODE_EXEC_USER := $(COMPOSE) exec -e HOME=/tmp -e npm_config_cache=/tmp/.npm -u $(UID):$(GID) $(NODE_SERVICE)
 PHP_EXEC_ROOT  := $(COMPOSE) exec -u 0:0 $(PHP_SERVICE)
 
 .DEFAULT_GOAL := help
@@ -22,31 +24,32 @@ PHP_EXEC_ROOT  := $(COMPOSE) exec -u 0:0 $(PHP_SERVICE)
 help:
 	@echo ""
 	@echo "Commands:"
-	@echo "  make doctor       Health check (Docker Desktop/WSL/compose/config)"
-	@echo "  make doctor-up    doctor -> up -> ps"
+	@echo "  make doctor         Health check (Docker Desktop/WSL/compose/config)"
+	@echo "  make doctor-up      doctor -> up -> ps"
 	@echo ""
-	@echo "  make up           Start containers (build if needed)"
-	@echo "  make down         Stop containers"
-	@echo "  make restart      Restart containers"
-	@echo "  make logs         Follow logs"
-	@echo "  make ps           Show containers"
-	@echo "  make config       Validate compose config"
+	@echo "  make up             Start containers (build if needed)"
+	@echo "  make down           Stop containers"
+	@echo "  make restart        Restart containers"
+	@echo "  make logs           Follow logs"
+	@echo "  make ps             Show containers"
+	@echo "  make config         Validate compose config"
 	@echo ""
-	@echo "  make init         First time setup (doctor/up/env/perms/install/key/migrate/link/clear)"
-	@echo "  make install      composer install + npm(ci|install)"
-	@echo "  make key          php artisan key:generate --force"
-	@echo "  make migrate      php artisan migrate"
-	@echo "  make fresh        php artisan migrate:fresh --seed"
+	@echo "  make init           First time setup (doctor/up/env/perms/install/key/wait-mysql/migrate/link/clear)"
+	@echo "  make install        composer install + npm(ci|install)"
+	@echo "  make wait-mysql     Wait for MySQL to be ready"
+	@echo "  make key            php artisan key:generate --force"
+	@echo "  make migrate        php artisan migrate (wait-mysql first)"
+	@echo "  make fresh          php artisan migrate:fresh --seed (wait-mysql first)"
 	@echo ""
-	@echo "  make php          Enter php container"
-	@echo "  make node         Enter node container"
+	@echo "  make php            Enter php container"
+	@echo "  make node           Enter node container"
 	@echo "  make artisan c='...'  Run artisan command"
 	@echo "  make composer c='...' Run composer command"
 	@echo "  make npm c='...'      Run npm command"
-	@echo "  make dev          Run Vite dev server (host=0.0.0.0)"
+	@echo "  make dev            Run Vite dev server (host=0.0.0.0)"
 	@echo ""
-	@echo "  make fix-perms    Ensure storage/bootstrap/cache perms (root)"
-	@echo "  make chown        sudo chown -R (fallback)"
+	@echo "  make fix-perms      Ensure storage/bootstrap/cache perms (root)"
+	@echo "  make chown          sudo chown -R (fallback)"
 	@echo ""
 
 # -----------------------
@@ -119,7 +122,7 @@ npm:
 # -----------------------
 # Setup / Laravel helpers
 # -----------------------
-.PHONY: env install npm-install key migrate seed fresh storage-link clear optimize fix-perms
+.PHONY: env install npm-install key migrate seed fresh storage-link clear optimize fix-perms wait-mysql
 
 env:
 	@if [ ! -f "$(ENV_FILE)" ]; then \
@@ -144,13 +147,27 @@ install:
 key:
 	@$(PHP_EXEC_USER) bash -lc "cd $(APP_DIR) && php artisan key:generate --force"
 
-migrate:
+# MySQL が ready になるまで待つ（init/migrate の安定化）
+wait-mysql:
+	@echo "== Wait MySQL =="
+	@for i in $$(seq 1 60); do \
+		if $(COMPOSE) exec -T $(MYSQL_SERVICE) bash -lc "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent" >/dev/null 2>&1; then \
+			echo "✅ MySQL is ready"; \
+			exit 0; \
+		fi; \
+		echo "… waiting MySQL ($$i/60)"; \
+		sleep 1; \
+	done; \
+	echo "❌ MySQL did not become ready in time"; \
+	exit 1
+
+migrate: wait-mysql
 	@$(PHP_EXEC_USER) bash -lc "cd $(APP_DIR) && php artisan migrate"
 
 seed:
 	@$(PHP_EXEC_USER) bash -lc "cd $(APP_DIR) && php artisan db:seed"
 
-fresh:
+fresh: wait-mysql
 	@$(PHP_EXEC_USER) bash -lc "cd $(APP_DIR) && php artisan migrate:fresh --seed"
 
 storage-link:
@@ -186,7 +203,7 @@ build:
 # First time setup
 # -----------------------
 .PHONY: init
-init: doctor up env fix-perms install key migrate storage-link clear
+init: doctor up env fix-perms install key wait-mysql migrate storage-link clear
 	@echo ""
 	@echo "🎉 Setup completed!"
 	@echo "Next (dev):"

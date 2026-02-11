@@ -80,6 +80,17 @@
                                 class="product-image store-external-image"
                             >
                         </div>
+
+                        {{-- 商品情報 --}}
+                        <div class="product-info">
+                            <h3 class="product-name">ラエッセ オンラインストア</h3>
+                            <p class="product-description">
+                                サロンで取り扱いのラエッセ商品はこちらからご購入いただけます。
+                            </p>
+                            <p class="product-description">
+                                ※こちらの商品は別途お取り扱いの店舗の会員登録をお願いしております。
+                            </p>
+                        </div>
                     </a>
                 </div>
 
