@@ -6,7 +6,7 @@
     ],
     "service": "workspace",
     "workspaceFolder": "/workspaces/lash-brow-ohana",
-    "shutdownAction": "stopCompose",
+    "shutdownAction": "stopContainer",
     "forwardPorts": [
         80,
         5173,
@@ -51,5 +51,4 @@
             }
         }
     }
-    
 }
