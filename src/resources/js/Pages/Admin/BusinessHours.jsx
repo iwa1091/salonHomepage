@@ -6,6 +6,9 @@ import { route } from "ziggy-js";
 // モジュール化した CSS をインポート
 import "../../../css/pages/admin/business-hours.css";
 
+const toFullWidth = (n) =>
+    String(n).replace(/[0-9]/g, (d) => "０１２３４５６７８９"[d]);
+
 export default function BusinessHours() {
     const now = new Date();
 
@@ -162,7 +165,7 @@ export default function BusinessHours() {
                                         : "")
                                 }
                             >
-                                第{week}週
+                                第{toFullWidth(week)}週
                             </button>
                         ))}
                     </div>

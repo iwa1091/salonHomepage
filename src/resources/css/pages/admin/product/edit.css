@@ -170,12 +170,12 @@
 
 /* 更新ボタン */
 .admin-product-edit-button--submit {
-    background-color: var(--color-accent);
+    background-color: var(--color-main);
     color: #fff;
 }
 
 .admin-product-edit-button--submit:hover {
-    background-color: #b89a52;
+    background-color: #385a47;
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
 }

@@ -129,6 +129,7 @@ export default function ServiceForm({
                     onSubmit={handleSubmit}
                     className="service-form"
                     encType="multipart/form-data"
+                    noValidate
                 >
                     {/* 名前 */}
                     <div className="service-form-field">
@@ -335,8 +336,11 @@ export default function ServiceForm({
                             name="image"
                             onChange={handleChange}
                             className="service-form-input"
-                            accept="image/*"
+                            accept="image/jpeg,image/png,image/gif,image/webp"
                         />
+                        <p className="service-form-hint">
+                            jpeg・png・gif・webp形式、1MB以内のファイルを選択してください。
+                        </p>
                         {service?.image_url && (
                             <img
                                 src={service.image_url}

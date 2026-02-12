@@ -126,8 +126,11 @@ export default function Create() {
                             type="file"
                             onChange={handleFileChange}
                             className="admin-product-create-file"
-                            accept="image/*"
+                            accept="image/jpeg,image/png,image/gif,image/webp"
                         />
+                        <p className="admin-product-create-hint">
+                            jpeg・png・gif・webp形式、1MB以内のファイルを選択してください。
+                        </p>
                         {preview && (
                             <div className="admin-product-create-preview-wrapper">
                                 <div className="admin-product-create-preview-inner">

@@ -145,9 +145,17 @@
 }
 
 .business-hours-week-button--active {
-    background-color: var(--color-main);
-    border-color: var(--color-main);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
     color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 12px rgba(205, 175, 99, 0.45);
+}
+
+.business-hours-week-button--active:hover {
+    background-color: var(--color-accent);
+    box-shadow: 0 7px 16px rgba(205, 175, 99, 0.5);
+    transform: translateY(-4px);
 }
 
 /* ================================

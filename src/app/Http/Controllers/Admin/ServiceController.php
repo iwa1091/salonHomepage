@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Models\Service;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Admin\StoreServiceRequest;
+use App\Http\Requests\Admin\UpdateServiceRequest;
 
 class ServiceController extends Controller
 {
@@ -74,21 +76,9 @@ class ServiceController extends Controller
     /**
      * サービス登録
      */
-    public function store(Request $request)
+    public function store(StoreServiceRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:services,name',
-            'description' => 'nullable|string',
-            'duration_minutes' => 'required|integer|min:1|max:480',
-            'price' => 'required|integer|min:0',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'required',
-            'is_popular' => 'nullable',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|max:10240',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-        ]);
+        $validated = $request->validated();
 
         // ✅ booleanを安全に変換（Inertiaは文字列で送るため）
         $validated['is_active'] = filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN);
@@ -136,21 +126,9 @@ class ServiceController extends Controller
     /**
      * サービス更新
      */
-    public function update(Request $request, Service $service)
+    public function update(UpdateServiceRequest $request, Service $service)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:services,name,' . $service->id,
-            'description' => 'nullable|string',
-            'duration_minutes' => 'required|integer|min:1|max:480',
-            'price' => 'required|integer|min:0',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'required',
-            'is_popular' => 'nullable',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|max:2048',
-            'features' => 'nullable|array',
-            'features.*' => 'string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $validated['is_active'] = filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN);
         $validated['is_popular'] = filter_var($request->input('is_popular'), FILTER_VALIDATE_BOOLEAN);

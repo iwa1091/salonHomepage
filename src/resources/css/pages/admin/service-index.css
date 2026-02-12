@@ -233,7 +233,7 @@
 }
 
 .service-active-toggle--active {
-    background-color: #16a34a;
+    background-color: var(--color-accent);
     color: #fff;
 }
 
