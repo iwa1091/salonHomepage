@@ -73,10 +73,18 @@
 
 /* エラーメッセージ */
 .form__error {
-    color: var(--text-default);
+    color: var(--color-error);
     font-size: 0.85rem;
     margin-top: 0.25rem;
     display: block;
+}
+
+/* エラー時の入力欄 */
+.input--error,
+.input--error:focus {
+    border-color: var(--color-error-border);
+    background-color: var(--color-error-bg);
+    box-shadow: 0 0 0 1px rgba(197, 61, 61, 0.15);
 }
 
 /* ---------- ボタン ---------- */

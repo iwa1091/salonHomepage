@@ -97,6 +97,7 @@ export default function ReservationForm({ service_id = "" }) {
         email: "",
         notes: "",
     }));
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const [services, setServices] = useState([]);
     const [businessHours, setBusinessHours] = useState([]); // 営業時間データ
@@ -271,6 +272,7 @@ export default function ReservationForm({ service_id = "" }) {
         }
 
         setFormData({ ...formData, [name]: value });
+        setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
     // 日付変更（range対応しつつ、選択時間をリセット）
@@ -284,6 +286,7 @@ export default function ReservationForm({ service_id = "" }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
+        setFieldErrors({});
 
         if (!formData.service_id) {
             setMessage("メニューが選択されていません。メニュー・料金ページから選択してください。");
@@ -334,7 +337,20 @@ export default function ReservationForm({ service_id = "" }) {
                 });
                 setAvailableSlots([]);
             } else {
-                setMessage(data.message || "⚠️ 予約に失敗しました。");
+                if (data.errors) {
+                    const errs = {};
+                    Object.keys(data.errors).forEach((key) => {
+                        errs[key] = Array.isArray(data.errors[key])
+                            ? data.errors[key][0]
+                            : data.errors[key];
+                    });
+                    setFieldErrors(errs);
+                }
+                if (data.message) {
+                    setMessage(data.message);
+                } else if (!data.errors) {
+                    setMessage("⚠️ 予約に失敗しました。");
+                }
             }
         } catch (err) {
             console.error("送信エラー:", err);
@@ -358,7 +374,7 @@ export default function ReservationForm({ service_id = "" }) {
 
             <h1 className="reservation-title">ご予約フォーム</h1>
 
-            <form onSubmit={handleSubmit} className="reservation-form-card">
+            <form onSubmit={handleSubmit} className="reservation-form-card" noValidate>
                 {/* ✅ メニュー（表示のみ：menu_price で選択済み想定） */}
                 <div className="reservation-field">
                     <label className="reservation-label">
@@ -400,9 +416,9 @@ export default function ReservationForm({ service_id = "" }) {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        required
-                        className="reservation-input"
+                        className={`reservation-input ${fieldErrors.name ? "reservation-input--error" : ""}`}
                     />
+                    {fieldErrors.name && <p className="reservation-field-error">{fieldErrors.name}</p>}
                 </div>
 
                 {/* メール */}
@@ -413,9 +429,9 @@ export default function ReservationForm({ service_id = "" }) {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        required
-                        className="reservation-input"
+                        className={`reservation-input ${fieldErrors.email ? "reservation-input--error" : ""}`}
                     />
+                    {fieldErrors.email && <p className="reservation-field-error">{fieldErrors.email}</p>}
                 </div>
 
                 {/* 電話番号 */}
@@ -426,9 +442,9 @@ export default function ReservationForm({ service_id = "" }) {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        required
-                        className="reservation-input"
+                        className={`reservation-input ${fieldErrors.phone ? "reservation-input--error" : ""}`}
                     />
+                    {fieldErrors.phone && <p className="reservation-field-error">{fieldErrors.phone}</p>}
                 </div>
 
                 {/* カレンダー */}
@@ -496,8 +512,9 @@ export default function ReservationForm({ service_id = "" }) {
                         value={formData.notes}
                         onChange={handleChange}
                         rows={3}
-                        className="reservation-textarea"
+                        className={`reservation-textarea ${fieldErrors.notes ? "reservation-input--error" : ""}`}
                     />
+                    {fieldErrors.notes && <p className="reservation-field-error">{fieldErrors.notes}</p>}
                 </div>
 
                 {/* ✅ メッセージを「予約する」ボタンの上に表示 */}

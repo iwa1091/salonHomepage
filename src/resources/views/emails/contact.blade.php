@@ -1,3 +1,25 @@
+@php
+$brand = $brand ?? [];
+
+$brandName    = $brand['name']    ?? ($appName ?? config('app.name', 'Lash Brow Ohana'));
+$brandTagline = $brand['tagline'] ?? '眉・まつげ専門サロン｜市原市';
+
+$brandFooterName = $brand['footer_name'] ?? 'Lash Brow Ohana（ラッシュブロウ オハナ）';
+$brandFooterAddr = $brand['footer_addr'] ?? '千葉県市原市';
+
+$brandLogoUrl = $brand['logo_url'] ?? null;
+
+$colors = $brand['colors'] ?? [];
+$colorMain   = $colors['main']   ?? '#2F4F3E';
+$colorAccent = $colors['accent'] ?? '#CDAF63';
+$colorBg     = $colors['bg']     ?? '#F1F1EF';
+$colorText   = $colors['text']   ?? '#3A2F29';
+$colorBoxBg  = $colors['box_bg'] ?? '#F7F6F2';
+
+$colorBorder     = $colors['border']     ?? 'rgba(0,0,0,0.10)';
+$colorSubText    = $colors['sub_text']   ?? 'rgba(0,0,0,0.60)';
+$colorSoftBorder = $colors['soft_border']?? 'rgba(0,0,0,0.06)';
+@endphp
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -35,7 +57,6 @@
     </style>
 </head>
 <body>
-@include('emails.partials.brand-config')
 
 <div class="container">
     <h2>📩 お問い合わせが届きました</h2>

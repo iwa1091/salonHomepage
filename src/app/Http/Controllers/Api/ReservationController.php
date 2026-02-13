@@ -10,6 +10,7 @@ use App\Models\BusinessHour;             // ✅ 追加：営業時間（Business
 use App\Models\Customer;                // 顧客モデル
 use App\Models\ScheduledEmail;          // 予約メールスケジュールモデル
 use App\Models\AdminBlock;              // ✅ 追加：管理者ブロック（枠2/枠3）
+use App\Http\Requests\StoreReservationRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ReservationConfirmedMail;
@@ -150,22 +151,8 @@ class ReservationController extends Controller
      * - 「重なり判定」を **開始時刻が busy に入っているか** のみに変更
      *   （busy の end も含める：12:00-13:00 の場合 13:00 開始も×）
      */
-    public function store(Request $request)
+    public function store(StoreReservationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'date'       => 'required|date_format:Y-m-d|after_or_equal:today',
-            'start_time' => 'required|date_format:H:i',
-            'service_id' => 'required|exists:services,id',
-            'name'       => 'required|string|max:255',
-            'email'      => 'required|email|max:255',
-            'phone'      => 'nullable|string|max:20',
-            'notes'      => 'nullable|string|max:1000',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         $service  = Service::find($request->service_id);
         $duration = (int) ($service->duration_minutes ?? 30);
 

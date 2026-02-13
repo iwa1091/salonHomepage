@@ -341,6 +341,22 @@
     transform: translateY(-2px);
 }
 
+/* フィールドエラーメッセージ */
+.reservation-field-error {
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--color-error);
+    line-height: 1.4;
+}
+
+/* エラー時の入力欄ボーダー */
+.reservation-input--error,
+.reservation-input--error:focus {
+    border-color: var(--color-error-border);
+    background-color: var(--color-error-bg);
+    box-shadow: 0 0 0 1px rgba(197, 61, 61, 0.15);
+}
+
 /* ============================================
    レスポンシブ
 ============================================ */

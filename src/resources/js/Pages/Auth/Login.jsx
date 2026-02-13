@@ -31,7 +31,7 @@ export default function Login() {
                                 id="email"
                                 name="email"
                                 type="email"
-                                className="input input--short"
+                                className={`input input--short ${errors.email ? "input--error" : ""}`}
                                 value={data.email}
                                 onChange={(e) => setData("email", e.target.value)}
                                 autoComplete="email"
@@ -53,7 +53,7 @@ export default function Login() {
                                 id="password"
                                 name="password"
                                 type="password"
-                                className="input input--short"
+                                className={`input input--short ${errors.password ? "input--error" : ""}`}
                                 value={data.password}
                                 onChange={(e) => setData("password", e.target.value)}
                                 autoComplete="current-password"
