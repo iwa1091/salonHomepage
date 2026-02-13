@@ -35,7 +35,6 @@ class ServiceController extends Controller
                 'is_popular' => $service->is_popular,
                 'category' => $service->category->name ?? '未分類',
                 'category_id' => $service->category_id,
-                'image_url' => $service->image ? Storage::url($service->image) : null,
                 'features' => $service->features ?? [],
             ];
         });
@@ -114,7 +113,6 @@ class ServiceController extends Controller
             'is_popular' => $service->is_popular,
             'category_id' => $service->category_id,
             'features' => $service->features ?? [],
-            'image_url' => $service->image ? Storage::url($service->image) : null,
         ];
 
         return Inertia::render('Admin/ServiceForm', [

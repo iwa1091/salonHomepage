@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Service extends Model
 {
     use HasFactory;
+
+    protected $appends = ['image_url'];
 
     /**
      * 一括割り当て可能な属性
@@ -53,5 +56,30 @@ class Service extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Category::class);
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        $fallback = asset('img/logo.jpg');
+
+        $path = $this->image;
+
+        if (!is_string($path) || $path === '' || $path === '0') {
+            return $fallback;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        try {
+            if (!Storage::disk('public')->exists($path)) {
+                return $fallback;
+            }
+            return Storage::disk('public')->url($path);
+        } catch (\Throwable $e) {
+            return $fallback;
+        }
     }
 }

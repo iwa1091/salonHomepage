@@ -19,7 +19,7 @@ export default function ForgotPassword({ status }) {
             <div className="forgot-page">
                 <div className="forgot-container">
 
-                    <form onSubmit={submit} className="forgot-form">
+                    <form onSubmit={submit} noValidate className="forgot-form">
 
                         <h1 className="forgot-title">パスワード再発行</h1>
 
@@ -37,7 +37,6 @@ export default function ForgotPassword({ status }) {
                                 type="email"
                                 value={data.email}
                                 onChange={(e) => setData("email", e.target.value)}
-                                required
                             />
 
                             {errors.email && (

@@ -1,11 +1,7 @@
 /* =========================================================
-   Ohana Salon — Online Store (products_index.css)
-   配色：ベージュ × ブラウン × ゴールド
+   管理画面ストア — 商品一覧（products_index.css）
 ========================================================= */
 
-/* --------------------------------
-   ページ全体
--------------------------------- */
 .store-page {
     background-color: var(--background);
     padding: 3rem 1rem;
@@ -16,9 +12,6 @@
     margin: 0 auto;
 }
 
-/* --------------------------------
-   ヘッダー
--------------------------------- */
 .store-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -37,9 +30,6 @@
     line-height: 1.7;
 }
 
-/* --------------------------------
-   検索 + 並び替え（改善済み）
--------------------------------- */
 .search-sort-container {
     background: var(--card-bg);
     padding: 1.8rem;
@@ -53,16 +43,13 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-
-    /* PC時は余白を広めに（修正点） */
     column-gap: 3rem;
     row-gap: 1rem;
 }
 
-/* 入力欄の幅は均等 */
 .input-group {
     flex: 1;
-    min-width: 240px;
+    min-width: 15rem;
 }
 
 .input-group input,
@@ -76,7 +63,6 @@
     color: var(--text-default);
 }
 
-/* 検索ボタン */
 .search-button {
     padding: 0.75rem 1.4rem;
     font-size: 0.95rem;
@@ -88,16 +74,13 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: background 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 
 .search-button:hover {
-    background: #bfa258;
+    opacity: 0.9;
 }
 
-/* --------------------------------
-   商品グリッド
--------------------------------- */
 .products-section {
     margin-top: 2rem;
 }
@@ -108,9 +91,6 @@
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
-/* --------------------------------
-   商品カード
--------------------------------- */
 .product-card {
     background: var(--card-bg);
     border-radius: var(--radius-large);
@@ -132,7 +112,7 @@
 
 .product-image-container {
     width: 100%;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
 }
 
@@ -142,7 +122,6 @@
     object-fit: cover;
 }
 
-/* 商品情報 */
 .product-info {
     padding: 1.2rem 1rem;
 }
@@ -171,20 +150,18 @@
     font-size: 0.85rem;
 }
 
-/* --------------------------------
-   ページネーション
--------------------------------- */
 .pagination-content {
     margin-top: 2.5rem;
     text-align: center;
 }
 
 /* --------------------------------
-   レスポンシブ
+   タブレット（〜1023px）
 -------------------------------- */
-
-/* タブレット */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
+    .store-page {
+        padding: 2.4rem 0.9rem;
+    }
 
     .search-form {
         column-gap: 1.5rem;
@@ -195,28 +172,91 @@
     }
 }
 
-/* スマホ（縦並び） */
-@media (max-width: 640px) {
+/* --------------------------------
+   スマホ（〜767px）
+-------------------------------- */
+@media (max-width: 767px) {
+    .store-page {
+        padding: 1.7rem 0.75rem;
+    }
 
-    /* 縦並びへ */
+    .store-title {
+        font-size: 1.6rem;
+    }
+
+    .store-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .search-sort-container {
+        padding: 1.2rem;
+    }
+
     .search-form {
         flex-direction: column;
         align-items: stretch;
         gap: 0.9rem;
     }
 
-    /* ★ スマホでのはみ出し防止（修正点） */
     .input-group {
-        width: 85%;
+        width: 100%;
         min-width: 0;
-        /* ← これが超重要！はみ出し完全防止 */
     }
 
     .product-grid {
         grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .product-name {
+        font-size: 1rem;
+    }
+
+    .product-description,
+    .product-stock {
+        font-size: 0.85rem;
+    }
+}
+
+/* --------------------------------
+   iPhone SE / 小型スマホ（〜375px）
+-------------------------------- */
+@media (max-width: 375px) {
+    .store-page {
+        padding: 1.2rem 0.6rem;
+    }
+
+    .search-sort-container {
+        padding: 0.85rem;
     }
 
     .store-title {
-        font-size: 1.8rem;
+        font-size: 1.35rem;
+    }
+
+    .store-subtitle {
+        font-size: 0.82rem;
+    }
+
+    .input-group {
+        width: 100%;
+    }
+
+    .input-group input,
+    .input-group select,
+    .search-button {
+        font-size: 0.82rem;
+    }
+
+    .product-info {
+        padding: 0.8rem 0.75rem;
+    }
+
+    .product-name {
+        font-size: 0.9rem;
+    }
+
+    .product-description {
+        font-size: 0.8rem;
     }
 }

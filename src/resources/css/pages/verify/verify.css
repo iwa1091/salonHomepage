@@ -84,8 +84,8 @@
    ▼ レスポンシブ最適化
 ======================================================= */
 
-/* タブレット（768px 以下） */
-@media (max-width: 768px) {
+/* タブレット（〜767px） */
+@media (max-width: 767px) {
     .verify-page {
         padding: 4rem 1rem;
     }
@@ -108,23 +108,27 @@
     }
 }
 
-/* スマホ（480px 以下） */
-@media (max-width: 480px) {
+/* iPhone SE / 小型スマホ（〜375px） */
+@media (max-width: 375px) {
+    .verify-page {
+        padding: 2.5rem 0.75rem;
+    }
+
     .verify-container {
-        padding: 1.8rem 1.25rem;
+        padding: 1.5rem 1rem;
     }
 
     .page__title {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 
     .verify-text {
-        font-size: 1rem;
+        font-size: 0.9rem;
         line-height: 1.6;
     }
 
     .btn--big {
-        font-size: 1rem;
+        font-size: 0.95rem;
         padding: 0.85rem;
     }
 }

@@ -142,13 +142,19 @@
     margin-bottom: 4rem;
 }
 
-@media (max-width: 1024px) {
+/* --------------------------------
+   タブレット（〜1023px）
+-------------------------------- */
+@media (max-width: 1023px) {
     .grid-gallery {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
-@media (max-width: 640px) {
+/* --------------------------------
+   スマホ（〜767px）
+-------------------------------- */
+@media (max-width: 767px) {
     .grid-gallery {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
@@ -174,7 +180,7 @@
     margin-bottom: 4rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .grid-reviews {
         grid-template-columns: 1fr;
     }
@@ -288,9 +294,9 @@
     color: var(--color-white);
 }
 
-/* =========================================================
-   スマホ最適化
-========================================================= */
+/* --------------------------------
+   スマホ（〜767px）
+-------------------------------- */
 @media (max-width: 767px) {
 
     .gallery-page-container {
@@ -307,5 +313,41 @@
 
     .stat-value {
         font-size: 1.6rem;
+    }
+}
+
+/* --------------------------------
+   iPhone SE / 小型スマホ（〜375px）
+-------------------------------- */
+@media (max-width: 375px) {
+    .gallery-page-container {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .header-section {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.35rem;
+    }
+
+    .grid-case {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .grid-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 1.2rem;
+    }
+
+    .card-content,
+    .card-review {
+        padding: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.4rem;
     }
 }

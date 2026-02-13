@@ -22,7 +22,7 @@ export default function ResetPassword({ email, token }) {
             <div className="reset-page">
                 <div className="reset-container">
 
-                    <form onSubmit={submit} className="reset-form">
+                    <form onSubmit={submit} noValidate className="reset-form">
 
                         <h1 className="reset-title">パスワード再設定</h1>
 

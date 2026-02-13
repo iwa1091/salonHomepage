@@ -114,14 +114,14 @@ label {
 
 /* エラー枠 */
 .is-invalid {
-    border-color: #E53E3E !important;
-    background-color: #FFF5F5;
+    border-color: var(--color-main);
+    background-color: var(--color-bg-soft);
 }
 
 /* 個別エラー文 */
 .error-text {
     font-size: 0.85rem;
-    color: #E53E3E;
+    color: var(--color-main);
     margin-top: -2px;
 }
 
@@ -134,15 +134,15 @@ label {
 }
 
 .alert-success {
-    background: #E6FFFA;
-    color: #276749;
-    border: 1px solid #B2F5EA;
+    background: var(--color-bg-soft);
+    color: var(--color-main);
+    border: 1px solid var(--border-color);
 }
 
 .alert-error {
-    background: #FFF5F5;
-    color: #C53030;
-    border: 1px solid #FED7D7;
+    background: var(--color-bg-soft);
+    color: var(--text-default);
+    border: 1px solid var(--border-color);
 }
 
 .input-field:focus,
@@ -171,7 +171,7 @@ label {
 }
 
 .submit-button:hover {
-    background: #bfa258;
+    background: var(--color-accent);
     transform: translateY(-2px);
 }
 
@@ -260,11 +260,11 @@ label {
 }
 
 .sns-button.line {
-    background: #06C755;
+    background: var(--color-main);
 }
 
 .sns-button.instagram {
-    background: #C13584;
+    background: var(--text-default);
 }
 
 .sns-icon {
@@ -321,25 +321,74 @@ label {
 }
 
 .phone-button:hover {
-    background: #bfa258;
+    background: var(--color-accent);
     transform: translateY(-2px);
 }
 
 /* --------------------------------
    スマホ
 -------------------------------- */
-@media (max-width: 1024px) {
+/* --------------------------------
+   タブレット（〜1023px）
+-------------------------------- */
+@media (max-width: 1023px) {
     .contact-layout {
         grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 640px) {
+/* --------------------------------
+   スマホ（〜767px）
+-------------------------------- */
+@media (max-width: 767px) {
+    .contact-page {
+        padding: 2rem 0.9rem;
+    }
+
     .page-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
 
     .form-grid {
         flex-direction: column;
+    }
+
+    .card {
+        padding: 1.35rem;
+    }
+}
+
+/* --------------------------------
+   iPhone SE / 小型スマホ（〜375px）
+-------------------------------- */
+@media (max-width: 375px) {
+    .contact-page {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    .input-field,
+    .select-field,
+    .textarea-field {
+        padding: 0.7rem 0.8rem;
+    }
+
+    .contact-item {
+        gap: 0.55rem;
     }
 }

@@ -284,7 +284,7 @@
 }
 
 /* ■ iPhone SE 想定（幅 375px 前後） */
-@media (max-width: 400px) {
+@media (max-width: 375px) {
     .admin-reservation-page {
         padding: 1rem 0.5rem 1.75rem;
     }

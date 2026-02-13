@@ -142,22 +142,13 @@ export default function Reservations({
         >
             <Head title="予約一覧" />
 
-            {/* 上部バー（左上：戻る） */}
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "0.75rem",
-                    marginBottom: "1rem",
-                }}
-            >
+            {/* 上部ナビゲーションバー */}
+            <div className="mypage-topbar">
                 <button
                     type="button"
                     onClick={back}
                     className="mypage-outline-button"
                     disabled={cancelForm.processing}
-                    style={{ width: "auto" }}
                 >
                     ← 戻る
                 </button>
@@ -285,7 +276,16 @@ export default function Reservations({
                 </section>
             </main>
 
-            {/* ホームへ戻る（固定） */}
+            {/* 固定ボタン：前のページに戻る（左下） */}
+            <button
+                type="button"
+                onClick={back}
+                className="mypage-back-fab"
+            >
+                ← 前のページに戻る
+            </button>
+
+            {/* 固定ボタン：ホームに戻る（右下） */}
             <a href="/" className="mypage-home-fab">
                 ⬆ ホームに戻る
             </a>

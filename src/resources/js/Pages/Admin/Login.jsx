@@ -1,4 +1,4 @@
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import "../../../css/pages/auth/authentication.css";
 
 export default function Login() {
@@ -9,97 +9,65 @@ export default function Login() {
 
     const submit = (e) => {
         e.preventDefault();
-        post("/login");
+        post("/admin/login");
     };
 
     return (
         <>
-            <Head title="ログイン" />
+            <Head title="管理者ログイン" />
 
             <div className="authentication-page">
                 <div className="authentication-container">
                     <form onSubmit={submit} noValidate className="authenticate-form">
-                        <h1 className="page__title">ログイン</h1>
+                        <h1 className="page__title">管理者ログイン</h1>
 
-                        {/* ---- メールアドレス ---- */}
+                        {/* メールアドレス */}
                         <div className="form-group">
                             <label htmlFor="email" className="entry__name">
                                 メールアドレス
                             </label>
-
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
-                                className="input input--short"
+                                className="input"
                                 value={data.email}
                                 onChange={(e) => setData("email", e.target.value)}
                                 autoComplete="email"
                                 autoFocus
                             />
-
                             {errors.email && (
                                 <span className="form__error">{errors.email}</span>
                             )}
                         </div>
 
-                        {/* ---- パスワード ---- */}
+                        {/* パスワード */}
                         <div className="form-group">
                             <label htmlFor="password" className="entry__name">
                                 パスワード
                             </label>
-
                             <input
                                 id="password"
                                 name="password"
                                 type="password"
-                                className="input input--short"
+                                className="input"
                                 value={data.password}
                                 onChange={(e) => setData("password", e.target.value)}
                                 autoComplete="current-password"
                             />
-
                             {errors.password && (
                                 <span className="form__error">{errors.password}</span>
                             )}
                         </div>
 
-                        {/* ---- ログインボタン ---- */}
+                        {/* ログインボタン */}
                         <button
                             type="submit"
                             className="btn btn--big"
                             disabled={processing}
                         >
-                            ログインする
+                            ログイン
                         </button>
-
-                        {/* ---- パスワードを忘れた方 ---- */}
-                        <div className="auth-help-block">
-                            <p className="auth-help-text">
-                                パスワードをお忘れの方は、以下のリンクから
-                                再設定メールを送信できます。
-                            </p>
-                            <Link href="/forgot-password" className="link">
-                                パスワードをお忘れの方はこちら
-                            </Link>
-                        </div>
-
-                        {/* ---- メールアドレスを忘れた方 ---- */}
-                        <div className="auth-help-block">
-                            <p className="auth-help-text">
-                                登録したメールアドレスが分からない場合は、
-                                ご本人確認のためお手数ですが、
-                                お問い合わせフォームよりご連絡ください。
-                            </p>
-                            <Link href="/contact" className="link">
-                                お問い合わせフォームへ
-                            </Link>
-                        </div>
-
-                        {/* ---- 会員登録へ ---- */}
-                        <Link href="/register" className="link">
-                            会員登録はこちら
-                        </Link>
                     </form>
                 </div>
             </div>

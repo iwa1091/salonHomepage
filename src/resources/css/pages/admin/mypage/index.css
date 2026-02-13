@@ -337,6 +337,51 @@
     box-shadow: none;
 }
 
+/* 前のページに戻る 固定ボタン（左下） */
+.mypage-back-fab {
+    position: fixed;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    z-index: var(--z-header);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 9999px;
+    border: none;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: var(--shadow-soft);
+    transition:
+        opacity 0.15s ease,
+        transform 0.1s ease,
+        box-shadow 0.15s ease;
+}
+
+.mypage-back-fab:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.mypage-back-fab:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* 上部ナビゲーションバー */
+.mypage-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+}
+
 /* ============================================
    レスポンシブ
 ============================================ */
@@ -407,10 +452,21 @@
         padding: 0.75rem 1rem;
         font-size: 0.85rem;
     }
+
+    .mypage-back-fab {
+        left: 1.1rem;
+        bottom: 1.1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .mypage-topbar {
+        padding: 0.6rem 1rem;
+    }
 }
 
 /* ■ iPhone SE 想定（〜400px） */
-@media (max-width: 400px) {
+@media (max-width: 375px) {
     .mypage-header {
         padding: 1.1rem 0.9rem;
     }
@@ -447,5 +503,17 @@
         bottom: 0.9rem;
         padding: 0.65rem 0.9rem;
         font-size: 0.8rem;
+    }
+
+    .mypage-back-fab {
+        left: 0.9rem;
+        bottom: 0.9rem;
+        padding: 0.65rem 0.9rem;
+        font-size: 0.8rem;
+    }
+
+    .mypage-topbar {
+        padding: 0.5rem 0.75rem;
+        gap: 0.5rem;
     }
 }

@@ -183,11 +183,14 @@ fix-perms:
 	@$(PHP_EXEC_ROOT) bash -lc "cd $(APP_DIR) && \
 		set -e; \
 		mkdir -p storage/framework/{views,cache,sessions} storage/logs bootstrap/cache; \
-		GROUP=$$(id -gn www-data 2>/dev/null || echo $(GID)); \
-		chown -R $(UID):$$GROUP storage bootstrap/cache; \
+		chown -R $(UID):www-data storage bootstrap/cache; \
 		chmod -R ug+rwX storage bootstrap/cache; \
 		find storage bootstrap/cache -type d -exec chmod 2775 {} \; ; \
-		touch storage/logs/laravel.log >/dev/null 2>&1 || true"
+		touch storage/logs/laravel.log >/dev/null 2>&1 || true; \
+		chown $(UID):www-data storage/logs/laravel.log || true; \
+		chmod 664 storage/logs/laravel.log || true"
+
+
 
 # -----------------------
 # Frontend (Vite)
@@ -195,7 +198,6 @@ fix-perms:
 .PHONY: dev build
 dev:
 	@$(NODE_EXEC_USER) bash -lc "cd $(APP_DIR) && npm run dev -- --host 0.0.0.0 --port 5173"
-
 build:
 	@$(NODE_EXEC_USER) bash -lc "cd $(APP_DIR) && npm run build"
 

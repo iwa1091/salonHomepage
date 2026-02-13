@@ -1,6 +1,6 @@
 /* =========================================================
    menu_price.css — Lash Brow Ohana（メニュー・料金専用）
-   テーマ変数に完全準拠 / PC・タブレット・スマホ対応
+   テーマ変数に完全準拠 / PC・タブレット・スマホ・iPhone SE 対応
 ========================================================= */
 
 /* ------------------------------
@@ -48,7 +48,6 @@
     margin-bottom: 4rem;
 }
 
-/* セクションタイトルはグリッド全体を占有 */
 .section-title {
     font-family: var(--font-heading);
     font-size: 1.6rem;
@@ -58,7 +57,6 @@
     color: var(--text-default);
 }
 
-/* カテゴリ説明文（Bladeには存在するため追加） */
 .category-description {
     color: var(--text-muted);
     font-size: 0.95rem;
@@ -67,11 +65,11 @@
 }
 
 /* =========================================================
-   ★ サービスカードを横並びにする領域
+   サービスカードを横並びにする領域
 ========================================================= */
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.6rem;
 }
 
@@ -85,6 +83,8 @@
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
     transition: transform .25s ease, box-shadow .25s ease;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu-card:hover {
@@ -92,7 +92,6 @@
     box-shadow: var(--shadow-medium);
 }
 
-/* 人気No.1バッジ */
 /* 人気No.1バッジ */
 .menu-card-popular .popular-badge {
     position: absolute;
@@ -104,8 +103,6 @@
     font-size: 0.8rem;
     border-radius: var(--radius-full);
     font-weight: 600;
-
-    /* ★ 追加：画像より前面に出す */
     z-index: 3;
 }
 
@@ -117,19 +114,7 @@
     overflow: hidden;
     margin-bottom: 0.8rem;
     position: relative;
-
-    /* ★ 追加：バッジより背面にする（保険） */
     z-index: 1;
-}
-
-/* カード画像 */
-.card-image {
-    width: 100%;
-    height: 160px;
-    border-radius: var(--radius-base);
-    overflow: hidden;
-    margin-bottom: 0.8rem;
-    position: relative;
 }
 
 .card-image img {
@@ -161,6 +146,7 @@
 ------------------------------ */
 .card-header {
     margin-bottom: 0.9rem;
+    flex: 1;
 }
 
 .card-title {
@@ -183,6 +169,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
+    margin-top: auto;
 }
 
 .card-price-info {
@@ -205,6 +192,7 @@
 
 /* 予約ボタン */
 .btn-reserve {
+    display: block;
     background-color: var(--color-accent);
     color: var(--color-white);
     text-align: center;
@@ -247,25 +235,253 @@
     box-shadow: var(--shadow-soft);
 }
 
-/* ------------------------------
-   レスポンシブ
------------------------------- */
-@media (max-width: 768px) {
-    .notes-grid {
-        grid-template-columns: 1fr;
+.note-item p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.no-service {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 0;
+    font-size: 1rem;
+}
+
+/* =========================================================
+   レスポンシブ — タブレット（768px〜1023px）
+========================================================= */
+@media (max-width: 1023px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.4rem;
+    }
+
+    .menu-page-container {
+        padding: 3rem 1.25rem;
+    }
+
+    .menu-header {
+        margin-bottom: 3rem;
+    }
+
+    .menu-section {
+        margin-bottom: 3.5rem;
     }
 }
 
-@media (max-width: 640px) {
+/* =========================================================
+   レスポンシブ — スマホ（〜767px）
+========================================================= */
+@media (max-width: 767px) {
+    .menu-page-container {
+        padding: 2rem 1rem;
+    }
+
+    .menu-header {
+        margin-bottom: 2rem;
+    }
+
     .menu-title {
         font-size: 1.6rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .menu-description {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .menu-section {
+        margin-bottom: 2.5rem;
     }
 
     .section-title {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
 
+    .category-description {
+        font-size: 0.88rem;
+    }
+
+    /* カードを1列に */
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    /* カードを横並びレイアウトに切り替え */
     .menu-card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        grid-template-rows: auto auto;
+        gap: 0 1rem;
         padding: 1rem;
+    }
+
+    .menu-card .card-image {
+        grid-row: 1 / 3;
+        grid-column: 1;
+        height: 100%;
+        min-height: 120px;
+        margin-bottom: 0;
+    }
+
+    .menu-card .card-header {
+        grid-column: 2;
+        grid-row: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-card .card-content {
+        grid-column: 2;
+        grid-row: 2;
+        gap: 0.6rem;
+    }
+
+    .card-title {
+        font-size: 1.05rem;
+    }
+
+    .card-description {
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .card-price {
+        font-size: 1.1rem;
+    }
+
+    .card-duration .duration-text {
+        font-size: 0.82rem;
+    }
+
+    .btn-reserve {
+        padding: 0.6rem 0;
+        font-size: 0.88rem;
+    }
+
+    /* 人気バッジをコンパクト化 */
+    .menu-card-popular .popular-badge {
+        top: 6px;
+        left: 6px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    /* 注意事項を1列に */
+    .notes-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .notes-title {
+        font-size: 1.2rem;
+    }
+
+    .notes-section {
+        margin-top: 2rem;
+    }
+
+    .note-item {
+        padding: 0.85rem;
+    }
+
+    .note-item p {
+        font-size: 0.82rem;
+    }
+}
+
+/* =========================================================
+   レスポンシブ — iPhone SE / 小型スマホ（〜375px）
+========================================================= */
+@media (max-width: 375px) {
+    .menu-page-container {
+        padding: 1.5rem 0.75rem;
+    }
+
+    .menu-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .menu-title {
+        font-size: 1.35rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu-description {
+        font-size: 0.82rem;
+    }
+
+    .menu-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.15rem;
+    }
+
+    .category-description {
+        font-size: 0.82rem;
+        margin: 0.4rem 0 1rem;
+    }
+
+    /* カードを縦並びレイアウトに戻す（横幅不足のため） */
+    .menu-card {
+        display: flex;
+        flex-direction: column;
+        padding: 0.85rem;
+    }
+
+    .menu-card .card-image {
+        height: 140px;
+        min-height: auto;
+        margin-bottom: 0.6rem;
+    }
+
+    .menu-card .card-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card-description {
+        font-size: 0.8rem;
+    }
+
+    .card-price {
+        font-size: 1rem;
+    }
+
+    .btn-reserve {
+        padding: 0.55rem 0;
+        font-size: 0.85rem;
+    }
+
+    /* 人気バッジ */
+    .menu-card-popular .popular-badge {
+        top: 5px;
+        left: 5px;
+        padding: 0.2rem 0.45rem;
+        font-size: 0.65rem;
+    }
+
+    .feature-badge {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.3rem;
+    }
+
+    .notes-title {
+        font-size: 1.1rem;
+    }
+
+    .note-item {
+        padding: 0.75rem;
+    }
+
+    .note-item p {
+        font-size: 0.78rem;
+        line-height: 1.6;
     }
 }

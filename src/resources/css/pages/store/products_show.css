@@ -1,14 +1,13 @@
-/* ページ全体のコンテナ */
+/* 管理画面ストア：商品詳細 */
 .all-contents {
-    max-width: 900px;
-    margin: 40px auto;
+    max-width: 56.25rem;
+    margin: 2.5rem auto;
     padding: 2rem;
-    background-color: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background-color: var(--color-white);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-soft);
 }
 
-/* 上部コンテンツ（画像とフォーム）のレイアウト */
 .top-contents {
     display: flex;
     flex-wrap: wrap;
@@ -16,21 +15,19 @@
     margin-bottom: 2rem;
 }
 
-/* 左側の画像コンテンツ */
 .left-content {
     flex: 1;
-    min-width: 300px;
+    min-width: 18.75rem;
 }
 
 .img-content {
     width: 100%;
     padding-top: 75%;
-    /* 4:3のアスペクト比を維持 */
     position: relative;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #f7fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
+    background-color: var(--color-bg-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,27 +41,25 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* 画像全体を表示 */
-    border-radius: 8px;
+    border-radius: var(--radius-base);
+    max-height: 25rem;
 }
 
-/* 右側のフォームコンテンツ */
 .right-content {
     flex: 1;
-    min-width: 300px;
+    min-width: 18.75rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* 入力フィールドとラベル */
 .name-label,
 .price-label,
 .image-label,
 .description-label {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-top: 0.5rem;
 }
 
@@ -73,36 +68,34 @@
 .image {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-base);
     font-size: 1rem;
-    color: #4a5568;
+    color: var(--text-default);
     transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
 .text:focus,
 .product-description:focus,
 .image:focus {
     outline: none;
-    border-color: var(--salon-gold);
+    border-color: var(--color-accent);
 }
 
-/* 入力エラーメッセージ */
 .input_error {
-    color: #e53e3e;
+    color: var(--text-default);
     font-size: 0.875rem;
     margin-top: -1rem;
     margin-bottom: 1rem;
 }
 
-/* 下部コンテンツ（画像入力とボタン） */
 .under-content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-/* ボタンコンテナ */
 .button-content {
     display: flex;
     justify-content: space-between;
@@ -112,39 +105,36 @@
     margin-top: 1rem;
 }
 
-/* 戻るボタン */
 .back {
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background-color: #e2e8f0;
-    color: #4a5568;
-    border-radius: 9999px;
+    background-color: var(--color-bg-soft);
+    color: var(--text-default);
+    border-radius: var(--radius-full);
     text-decoration: none;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: opacity 0.2s;
 }
 
 .back:hover {
-    background-color: #cbd5e0;
+    opacity: 0.9;
 }
 
-/* 変更を保存ボタン */
 .button-change {
     padding: 0.75rem 1.5rem;
-    background-color: var(--salon-gold);
-    color: var(--white);
+    background-color: var(--color-accent);
+    color: var(--color-white);
     border: none;
-    border-radius: 9999px;
+    border-radius: var(--radius-full);
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: opacity 0.2s;
 }
 
 .button-change:hover {
-    background-color: #a38147;
+    opacity: 0.9;
 }
 
-/* ゴミ箱ボタン */
 .trash-can-content {
     display: flex;
     align-items: center;
@@ -158,8 +148,8 @@
 }
 
 .img-trash-can {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     transition: transform 0.2s;
 }
 
@@ -167,15 +157,16 @@
     transform: scale(1.1);
 }
 
-/* パンくずリスト風のテキスト */
 .span-item {
-    color: #a0aec0;
+    color: var(--text-muted);
 }
 
-/* レスポンシブデザイン */
-@media (max-width: 768px) {
+/* --------------------------------
+   スマホ（〜767px）
+-------------------------------- */
+@media (max-width: 767px) {
     .all-contents {
-        margin: 20px auto;
+        margin: 1.25rem auto;
         padding: 1rem;
     }
 
@@ -198,5 +189,32 @@
     .button-change {
         width: 100%;
         text-align: center;
+    }
+}
+
+/* --------------------------------
+   iPhone SE / 小型スマホ（〜375px）
+-------------------------------- */
+@media (max-width: 375px) {
+    .all-contents {
+        padding: 0.75rem;
+    }
+
+    .name-label,
+    .price-label,
+    .image-label,
+    .description-label {
+        font-size: 0.85rem;
+    }
+
+    .text,
+    .product-description,
+    .image {
+        font-size: 0.82rem;
+    }
+
+    .img-content img,
+    .reader_image {
+        max-height: 11.25rem;
     }
 }

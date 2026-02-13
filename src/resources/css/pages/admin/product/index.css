@@ -415,7 +415,7 @@
 }
 
 /* ■ iPhone SE 想定（〜400px） */
-@media (max-width: 400px) {
+@media (max-width: 375px) {
     .admin-product-page {
         padding: 1.25rem 0.5rem 3rem;
     }

@@ -23,7 +23,7 @@ export default function Register() {
 
             <div className="authentication-page">
                 <div className="authentication-container">
-                    <form onSubmit={submit} className="authenticate-form">
+                    <form onSubmit={submit} noValidate className="authenticate-form">
 
                         {/* ---------- タイトル ---------- */}
                         <h1 className="page__title">会員登録</h1>
@@ -41,7 +41,6 @@ export default function Register() {
                                 className="input"
                                 value={data.name}
                                 onChange={(e) => setData("name", e.target.value)}
-                                required
                                 autoComplete="name"
                             />
 
@@ -63,7 +62,6 @@ export default function Register() {
                                 className="input"
                                 value={data.email}
                                 onChange={(e) => setData("email", e.target.value)}
-                                required
                                 autoComplete="email"
                             />
 
@@ -84,7 +82,6 @@ export default function Register() {
                                 type="tel"
                                 className="input"
                                 placeholder="例：09012345678"
-                                pattern="[0-9]{10,11}"
                                 inputMode="numeric"
                                 value={data.phone}
                                 onChange={(e) => setData("phone", e.target.value)}
@@ -110,7 +107,6 @@ export default function Register() {
                                 name="password"
                                 type="password"
                                 className="input"
-                                required
                                 autoComplete="new-password"
                                 value={data.password}
                                 onChange={(e) => setData("password", e.target.value)}
@@ -132,7 +128,6 @@ export default function Register() {
                                 name="password_confirmation"
                                 type="password"
                                 className="input"
-                                required
                                 autoComplete="new-password"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData("password_confirmation", e.target.value)}
