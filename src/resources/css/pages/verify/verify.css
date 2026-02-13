@@ -32,7 +32,7 @@
     font-size: 2rem;
     font-family: var(--font-heading);
     font-weight: bold;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.5rem;
 }
 
@@ -57,7 +57,7 @@
     border-radius: var(--radius-base);
     cursor: pointer;
     background-color: var(--color-accent);
-    color: var(--salon-white);
+    color: var(--color-white);
     transition: 0.2s ease;
     box-shadow: var(--shadow-soft);
 }

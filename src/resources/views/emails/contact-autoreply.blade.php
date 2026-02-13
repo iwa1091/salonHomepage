@@ -21,7 +21,7 @@
         h2 {
             font-size: 20px;
             margin-top: 0;
-            border-left: 4px solid #CDAF63;
+            border-left: 4px solid {{ $colorAccent }};
             padding-left: 10px;
         }
         p {
@@ -37,6 +37,7 @@
     </style>
 </head>
 <body>
+@include('emails.partials.brand-config')
 
 <div class="container">
     <h2>お問い合わせありがとうございます</h2>
@@ -44,7 +45,7 @@
     <p>{{ $data['name'] }} 様</p>
 
     <p>
-        この度は <strong>Lash Brow Ohana</strong> へお問い合わせいただき誠にありがとうございます。<br>
+        この度は <strong>{{ $brandName }}</strong> へお問い合わせいただき誠にありがとうございます。<br>
         内容を確認し、2営業日以内にご返信いたします。
     </p>
 
@@ -56,7 +57,7 @@
     </p>
 
     <p class="footer">
-        &copy; {{ date('Y') }} Lash Brow Ohana  
+        &copy; {{ date('Y') }} {{ $brandName }}  
     </p>
 </div>
 

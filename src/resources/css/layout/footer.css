@@ -1,5 +1,5 @@
 /* =====================================================
-   Ohana Salon — Footer (Deep Green × Gold Premium)
+   Site — Footer (Deep Green × Gold Premium)
    新テーマに完全準拠した高級フッターデザイン
 ===================================================== */
 
@@ -7,7 +7,7 @@
    Main Footer
 ===================================================== */
 .main-footer {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     /* 深いボタニカルグリーン */
     color: var(--color-white);
     font-family: var(--font-ui);

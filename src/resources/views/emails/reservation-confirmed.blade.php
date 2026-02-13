@@ -6,15 +6,15 @@
     <title>ご予約完了のお知らせ</title>
     <style>
         /* ===============================
-           Base Layout (Ohana Theme)
+           Base Layout (Brand Theme)
            ※ メールは theme.css のCSS変数が使えないため、色は固定値で合わせます
         =============================== */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Hiragino Mincho ProN", "Hiragino Kaku Gothic ProN", Meiryo, "Noto Serif JP", serif;
-            background-color: #F1F1EF; /* --color-bg-base */
+            background-color: {{ $colorBg }};
             margin: 0;
             padding: 0;
-            color: #3A2F29; /* --text-default */
+            color: {{ $colorText }};
             line-height: 1.8;
         }
 
@@ -29,7 +29,7 @@
         }
 
         .header {
-            background-color: #2F4F3E; /* --color-main */
+            background-color: {{ $colorMain }};
             color: #ffffff;
             text-align: center;
             padding: 18px 16px;
@@ -57,14 +57,14 @@
             padding: 14px 16px;
             border-radius: 10px;
             list-style: none;
-            background: #F7F6F2; /* --color-bg-light */
+            background: {{ $colorBoxBg }};
             border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         li {
             margin: 8px 0;
             font-size: 15px;
-            color: #3A2F29;
+            color: {{ $colorText }};
         }
 
         .note {
@@ -86,14 +86,14 @@
             width: 100%;
             max-width: 420px;
             box-sizing: border-box;
-            background-color: #CDAF63; /* --color-accent */
+            background-color: {{ $colorAccent }};
             color: #ffffff !important;
             padding: 12px 18px;
             font-size: 15px;
             font-weight: 700;
             border-radius: 9999px; /* --radius-full */
             text-decoration: none;
-            border: 1px solid #CDAF63;
+            border: 1px solid {{ $colorAccent }};
         }
 
         .btn-secondary {
@@ -102,7 +102,7 @@
             max-width: 420px;
             box-sizing: border-box;
             background-color: #ffffff;
-            color: #3A2F29 !important;
+            color: {{ $colorText }} !important;
             padding: 12px 18px;
             font-size: 15px;
             font-weight: 700;
@@ -141,15 +141,16 @@
     </style>
 </head>
 <body>
+    @include('emails.partials.brand-config')
     <div class="container">
         <div class="header">
-            <h1>Lash Brow Ohana</h1>
+            <h1>{{ $brandName }}</h1>
         </div>
 
         <div class="content">
             <p>{{ $reservation->name }} 様</p>
 
-            <p>この度は <strong>Lash Brow Ohana</strong> にご予約いただき、誠にありがとうございます。</p>
+            <p>この度は <strong>{{ $brandName }}</strong> にご予約いただき、誠にありがとうございます。</p>
 
             <p>以下の内容でご予約を承りました。</p>
 
@@ -181,11 +182,11 @@
 
             <p>ご来店を心よりお待ちしております。</p>
 
-            <p style="margin-top: 18px;">Lash Brow Ohana</p>
+            <p style="margin-top: 18px;">{{ $brandName }}</p>
         </div>
 
         <div class="footer">
-            &copy; {{ date('Y') }} Lash Brow Ohana. All rights reserved.
+            &copy; {{ date('Y') }} {{ $brandName }}. All rights reserved.
         </div>
     </div>
 </body>

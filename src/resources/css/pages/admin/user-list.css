@@ -30,7 +30,7 @@
 .page-title {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0;
     /* ヘッダー側で余白管理 */
 }
@@ -46,7 +46,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -89,7 +89,7 @@
 .search-input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.2);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.2);
 }
 
 .search-button {
@@ -98,7 +98,7 @@
     padding: 0.45rem 1.4rem;
     font-size: 0.9rem;
     font-family: var(--font-ui);
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #fff;
     cursor: pointer;
     transition:
@@ -150,7 +150,7 @@
 
 .user-table th {
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     white-space: nowrap;
 }
 
@@ -193,7 +193,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: #fff;
-    color: var(--salon-brown);
+    color: var(--text-default);
     cursor: pointer;
     font-family: var(--font-ui);
     transition:

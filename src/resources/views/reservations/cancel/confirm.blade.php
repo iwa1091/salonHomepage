@@ -5,9 +5,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'キャンセル確認 | Lash Brow Ohana' }}</title>
+    <title>{{ $title ?? 'キャンセル確認 | ' . config('app.name') }}</title>
 </head>
-<body style="margin:0; padding:0; background:#F1F1EF; color:#3A2F29; font-family:-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, Arial, sans-serif; line-height:1.7;">
+<body style="margin:0; padding:0; background:{{ $colorBg }}; color:{{ $colorText }}; font-family:-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, Arial, sans-serif; line-height:1.7;">
+@include('emails.partials.brand-config')
 
 @php
     // Controller/route から渡されても、渡されなくても動くようにフォールバック
@@ -35,8 +36,8 @@
     <div style="background:#fff; border:1px solid rgba(0,0,0,0.10); border-radius:12px; overflow:hidden; box-shadow:0 10px 20px rgba(0,0,0,0.08);">
 
         {{-- ヘッダー --}}
-        <div style="background:#2F4F3E; color:#fff; padding:16px 18px;">
-            <div style="font-weight:700; letter-spacing:.03em;">Lash Brow Ohana</div>
+        <div style="background:{{ $colorMain }}; color:#fff; padding:16px 18px;">
+            <div style="font-weight:700; letter-spacing:.03em;">{{ $brandName }}</div>
         </div>
 
         {{-- 本文 --}}
@@ -60,7 +61,7 @@
             <div style="margin-top:14px;">
                 @if ($isCanceled)
                     <a href="{{ $home }}"
-                       style="display:inline-block; padding:12px 16px; border-radius:9999px; background:#CDAF63; color:#fff; text-decoration:none; font-weight:700;">
+                       style="display:inline-block; padding:12px 16px; border-radius:9999px; background:{{ $colorAccent }}; color:#fff; text-decoration:none; font-weight:700;">
                         トップへ戻る
                     </a>
                 @else
@@ -93,7 +94,7 @@
                         </div>
 
                         <button type="submit"
-                                style="width:100%; padding:12px 16px; border-radius:9999px; background:#CDAF63; color:#fff; border:1px solid #CDAF63; font-weight:700; cursor:pointer;">
+                                style="width:100%; padding:12px 16px; border-radius:9999px; background:{{ $colorAccent }}; color:#fff; border:1px solid {{ $colorAccent }}; font-weight:700; cursor:pointer;">
                             この予約をキャンセルする
                         </button>
                     </form>
@@ -114,7 +115,7 @@
 
         {{-- フッター --}}
         <div style="padding:14px 18px; border-top:1px solid rgba(0,0,0,0.06); color:rgba(0,0,0,0.60); font-size:12px; text-align:center;">
-            &copy; {{ date('Y') }} Lash Brow Ohana
+            &copy; {{ date('Y') }} {{ $brandName }}
         </div>
     </div>
 </div>

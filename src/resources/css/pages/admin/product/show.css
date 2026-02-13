@@ -7,7 +7,7 @@
 /* ページ全体ラッパー */
 .admin-product-show-page {
     min-height: 100vh;
-    background-color: var(--salon-beige);
+    background-color: var(--color-bg-base);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -30,7 +30,7 @@
     font-family: var(--font-heading);
     font-size: 1.8rem;
     text-align: center;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.75rem;
 }
 
@@ -75,14 +75,14 @@
     font-family: var(--font-heading);
     font-size: 1rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0;
 }
 
 /* 共通値ボックス */
 .admin-product-show-value {
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     padding: 0.6rem 0.9rem;
     border-radius: 0.7rem;
     font-size: 0.95rem;
@@ -101,7 +101,7 @@
 /* 説明用テキスト */
 .admin-product-show-description {
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     padding: 0.75rem 0.95rem;
     border-radius: 0.7rem;
     font-size: 0.95rem;
@@ -141,7 +141,7 @@
 /* 一覧へ戻る */
 .admin-product-show-button--back {
     background-color: #e5e5e5;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .admin-product-show-button--back:hover {

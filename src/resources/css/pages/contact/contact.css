@@ -1,5 +1,5 @@
 /* =========================================================
-   Ohana Salon — Contact Page (contact.css)
+   Site — Contact Page (contact.css)
    ご予約フォーム + サロン情報
    配色：ベージュ × ブラウン × ゴールド（theme.css準拠）
 ========================================================= */
@@ -114,15 +114,15 @@ label {
 
 /* エラー枠 */
 .is-invalid {
-    border-color: var(--color-main);
-    background-color: var(--color-bg-soft);
+    border-color: var(--color-error-border);
+    background-color: var(--color-error-bg);
 }
 
 /* 個別エラー文 */
 .error-text {
     font-size: 0.85rem;
-    color: var(--color-main);
-    margin-top: -2px;
+    color: var(--color-error);
+    margin-top: 2px;
 }
 
 /* アラート（成功・失敗） */
@@ -134,15 +134,15 @@ label {
 }
 
 .alert-success {
-    background: var(--color-bg-soft);
-    color: var(--color-main);
-    border: 1px solid var(--border-color);
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
 }
 
 .alert-error {
-    background: var(--color-bg-soft);
-    color: var(--text-default);
-    border: 1px solid var(--border-color);
+    background: var(--color-error-bg);
+    color: var(--color-error);
+    border: 1px solid var(--color-error-border);
 }
 
 .input-field:focus,
@@ -260,7 +260,7 @@ label {
 }
 
 .sns-button.line {
-    background: var(--color-main);
+    background: var(--color-primary);
 }
 
 .sns-button.instagram {

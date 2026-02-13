@@ -50,7 +50,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -70,7 +70,7 @@
 .business-hours-title {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0 0 1.25rem 0;
 }
 
@@ -111,7 +111,7 @@
 .business-hours-month-select:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.25);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
 }
 
 /* 週タブ */
@@ -149,12 +149,12 @@
     border-color: var(--color-accent);
     color: #fff;
     transform: translateY(-3px);
-    box-shadow: 0 5px 12px rgba(205, 175, 99, 0.45);
+    box-shadow: 0 5px 12px rgba(var(--color-accent-rgb), 0.45);
 }
 
 .business-hours-week-button--active:hover {
     background-color: var(--color-accent);
-    box-shadow: 0 7px 16px rgba(205, 175, 99, 0.5);
+    box-shadow: 0 7px 16px rgba(var(--color-accent-rgb), 0.5);
     transform: translateY(-4px);
 }
 
@@ -180,7 +180,7 @@
 
 .business-hours-table thead {
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .business-hours-table th,
@@ -213,7 +213,7 @@
 /* 曜日セル */
 .business-hours-day-cell {
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* time input */
@@ -233,14 +233,14 @@
 .business-hours-time-input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.25);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
 }
 
 /* 休業日チェックボックス */
 .business-hours-closed-checkbox {
     width: 1.1rem;
     height: 1.1rem;
-    accent-color: var(--color-main);
+    accent-color: var(--color-primary);
 }
 
 /* ================================
@@ -261,7 +261,7 @@
     border: none;
     font-size: 0.95rem;
     font-family: var(--font-ui);
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #fff;
     cursor: pointer;
     transition:

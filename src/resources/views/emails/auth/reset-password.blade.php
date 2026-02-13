@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>パスワード再設定のご案内</title>
 </head>
-<body style="margin:0; padding:0; background-color:#f5f1e9;">
+<body style="margin:0; padding:0; background-color:{{ $colorBg }};">
+@include('emails.partials.brand-config')
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
         <td align="center" style="padding:24px 12px;">
@@ -13,13 +14,13 @@
                           overflow:hidden; box-shadow:0 8px 18px rgba(0,0,0,0.15);">
                 {{-- ヘッダー --}}
                 <tr>
-                    <td style="background-color:#2f4f3e; padding:18px 24px;">
+                    <td style="background-color:{{ $colorMain }}; padding:18px 24px;">
                         <h1 style="margin:0; font-size:20px; color:#fdfaf5;
                                    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;">
-                            {{ $appName ?? 'Lash Brow Ohana' }}
+                            {{ $brandName }}
                         </h1>
                         <p style="margin:4px 0 0; font-size:12px; color:#e7dac6;">
-                            眉・まつげ専門サロン｜市原市
+                            {{ $brandTagline }}
                         </p>
                     </td>
                 </tr>
@@ -34,7 +35,7 @@
                         </p>
 
                         <p style="margin:0 0 12px;">
-                            いつも「{{ $appName ?? 'Lash Brow Ohana' }}」をご利用いただき、誠にありがとうございます。
+                            いつも「{{ $brandName }}」をご利用いただき、誠にありがとうございます。
                         </p>
 
                         <p style="margin:0 0 12px;">
@@ -53,7 +54,7 @@
                                 <td align="center">
                                     <a href="{{ $url }}"
                                        style="display:inline-block; padding:12px 28px;
-                                              background-color:#cdaa63; color:#ffffff;
+                                              background-color:{{ $colorAccent }}; color:#ffffff;
                                               text-decoration:none; border-radius:999px;
                                               font-size:14px; font-weight:bold;">
                                         パスワードを再設定する
@@ -71,14 +72,14 @@
 
                 {{-- フッター --}}
                 <tr>
-                    <td style="padding:16px 24px 20px; background-color:#faf5ee;
+                    <td style="padding:16px 24px 20px; background-color:{{ $colorBoxBg }};
                                font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans JP',sans-serif;
                                font-size:11px; color:#777777;">
                         <p style="margin:0 0 4px;">
-                            Lash Brow Ohana（ラッシュブロウ オハナ）
+                            {{ $brandFooterName }}
                         </p>
                         <p style="margin:0;">
-                            千葉県市原市｜眉・まつげ専門サロン
+                            {{ $brandFooterAddr }}｜{{ $brandTagline }}
                         </p>
                     </td>
                 </tr>

@@ -21,7 +21,7 @@
         h2 {
             margin-top: 0;
             font-size: 20px;
-            border-left: 4px solid #CDAF63;
+            border-left: 4px solid {{ $colorAccent }};
             padding-left: 10px;
         }
         p, li {
@@ -35,6 +35,7 @@
     </style>
 </head>
 <body>
+@include('emails.partials.brand-config')
 
 <div class="container">
     <h2>📩 お問い合わせが届きました</h2>

@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- ページタイトル（Inertia対応） --}}
-    <title inertia>{{ config('app.name', 'Lash Brow Ohana') }}</title>
+    <title inertia>{{ config('app.name') }}</title>
 
     {{-- Ziggy：React 内で route() を使うために必要 --}}
     @routes

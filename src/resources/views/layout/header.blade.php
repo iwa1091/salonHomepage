@@ -4,7 +4,7 @@
 
                 {{-- ロゴ --}}
                 <a href="{{ route('top') }}" class="header-logo-link">
-                    <span class="site-title">LASH&BROW ohana</span>
+                    <span class="site-title">{{ config('app.name') }}</span>
                 </a>
 
                 {{-- PC：ナビ + SNS アイコングループ --}}
@@ -80,8 +80,8 @@
 
             {{-- ロゴ --}}
             <div class="mobile-logo-wrapper">
-                <img src="{{ asset('img/logo.jpg') }}" alt="lash-brow-ohana ロゴ" class="mobile-logo">
-                <span class="site-title-mobile">lash-brow-ohana</span>
+                <img src="{{ asset('img/logo.jpg') }}" alt="{{ config('app.name') }} ロゴ" class="mobile-logo">
+                <span class="site-title-mobile">{{ config('app.name') }}</span>
             </div>
 
             {{-- モバイルメニュー --}}

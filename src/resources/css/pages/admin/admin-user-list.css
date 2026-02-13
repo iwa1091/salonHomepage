@@ -44,11 +44,11 @@
 .search-input:focus {
     border-color: var(--color-accent);
     outline: none;
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.22);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.22);
 }
 
 .search-button {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
     font-weight: 600;
     padding: 0.625rem 1.125rem;
@@ -142,9 +142,9 @@
 }
 
 .pagination-link.active {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
 }
 
 .pagination-link:disabled {

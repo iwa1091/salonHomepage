@@ -20,11 +20,11 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => 'required|string|max:255',
-            'phone'   => 'nullable|regex:/^[0-9\-]+$/|max:20',
-            'email'   => 'required|email|max:255',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string|min:5',
+            'name'    => ['required', 'string', 'max:255'],
+            'phone'   => ['required', 'regex:/^[0-9\-]+$/', 'max:20'],
+            'email'   => ['required', 'email', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string', 'min:5'],
         ];
     }
 
@@ -37,6 +37,7 @@ class ContactRequest extends FormRequest
             'name.required'       => 'お名前を入力してください。',
             'name.max'            => 'お名前は255文字以内で入力してください。',
 
+            'phone.required'      => '電話番号を入力してください。',
             'phone.regex'         => '電話番号は数字とハイフンのみ使用できます。',
             'phone.max'           => '電話番号は20文字以内で入力してください。',
 

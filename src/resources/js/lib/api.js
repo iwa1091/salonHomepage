@@ -1,4 +1,3 @@
-// /home/ri309/lash-brow-ohana/src/resources/js/lib/api.js
 
 import axios from 'axios';
 

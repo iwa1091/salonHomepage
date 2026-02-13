@@ -39,7 +39,7 @@
             <div class="content-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        ohanaが選ばれる理由
+                        {{ config('app.name') }}が選ばれる理由
                     </h2>
                     <p class="section-description">
                         お客様に安心してご利用いただけるよう、こだわりのポイントをご紹介します

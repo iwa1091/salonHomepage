@@ -7,7 +7,7 @@
 /* ページ全体ラッパー */
 .admin-product-edit-page {
     min-height: 100vh;
-    background-color: var(--salon-beige);
+    background-color: var(--color-bg-base);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -30,7 +30,7 @@
     font-family: var(--font-heading);
     font-size: 1.7rem;
     text-align: center;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.5rem;
 }
 
@@ -60,7 +60,7 @@
 .admin-product-edit-label {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* 入力要素 */
@@ -81,7 +81,7 @@
 .admin-product-edit-textarea:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.2);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.2);
 }
 
 /* テキストエリア */
@@ -159,7 +159,7 @@
 /* 戻るボタン */
 .admin-product-edit-button--back {
     background-color: #e5e5e5;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .admin-product-edit-button--back:hover {
@@ -170,7 +170,7 @@
 
 /* 更新ボタン */
 .admin-product-edit-button--submit {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #fff;
 }
 

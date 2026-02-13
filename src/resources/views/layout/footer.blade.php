@@ -4,7 +4,7 @@
 
             {{-- Logo & Description --}}
             <div class="footer-logo-section">
-                <h3 class="salon-name">LASH&BROW ohana</h3>
+                <h3 class="salon-name">{{ config('app.name') }}</h3>
 
                 <p class="salon-description">
                     美しいまつげと眉で、お客様の自然な美しさを引き出すアイラッシュサロンです。
@@ -52,7 +52,7 @@
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
-                        <span class="contact-text">info@lash-brow-ohana.com</span>
+                        <span class="contact-text">{{ config('mail.from.address', 'info@example.com') }}</span>
                     </div>
 
                     <div class="contact-info-item address-item">
@@ -93,7 +93,7 @@
     <div class="footer-copyright-section">
         <div class="footer-container copyright-container">
             <div class="copyright-content">
-                <p>&copy; 2024 lash-brow-ohana. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
 
                 <div class="legal-links">
                     <a href="#" class="legal-link">プライバシーポリシー</a>

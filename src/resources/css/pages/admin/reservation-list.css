@@ -33,7 +33,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     transition:
         background-color 0.15s ease,
@@ -51,7 +51,7 @@
 .admin-reservation-title {
     font-family: var(--font-heading);
     font-size: 1.3rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.25rem;
 }
 
@@ -86,7 +86,7 @@
 
 .admin-reservation-table th {
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     white-space: nowrap;
 }
 
@@ -114,7 +114,7 @@
     padding: 0.1rem 0.5rem;
     border-radius: 9999px;
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     display: inline-block;
 }
 
@@ -147,7 +147,7 @@
 
 /* 編集ボタン */
 .admin-reservation-button--edit {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #ffffff;
 }
 
@@ -394,18 +394,18 @@
 }
 
 .admin-cal-month-tab.is-active {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
 }
 
 .admin-cal-note {
     font-size: 0.8rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     font-family: var(--font-base);
 }
 
-/* react-calendar 上書き（ohana デザイントークン適用） */
+/* react-calendar 上書き（デザイントークン適用） */
 .react-calendar {
     width: 100% !important;
     border: none !important;
@@ -431,7 +431,7 @@
 .react-calendar__month-view__weekdays {
     text-align: center;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     font-family: var(--font-base);
 }
 

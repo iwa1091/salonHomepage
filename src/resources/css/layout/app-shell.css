@@ -1,9 +1,5 @@
 /* Custom Colors and Fonts - サイト全体で使用する色とフォントを定義 */
 :root {
-    --salon-brown: #3e2723;
-    --salon-gold: #fff1b5;
-    --salon-beige: #f5f5dc;
-    --salon-pink: #fbecec;
     --white: #fff;
     --white-80: rgba(255, 255, 255, 0.8);
     --white-70: rgba(255, 255, 255, 0.7);
@@ -14,11 +10,11 @@
 /* Base Styles - 基本的なHTML要素のスタイル設定 */
 body {
     font-family: 'Zen Maru Gothic', sans-serif;
-    color: var(--salon-brown);
+    color: var(--text-default);
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: var(--salon-beige);
+    background-color: var(--color-bg-base);
 }
 
 h1,
@@ -34,7 +30,7 @@ h6 {
 
 a {
     text-decoration: none;
-    color: var(--salon-gold);
+    color: var(--color-accent);
     transition: color 0.2s ease-in-out;
 }
 
@@ -103,10 +99,10 @@ img {
     color: var(--white);
 }
 
-.bg-salon-brown {
-    background-color: var(--salon-brown);
+.bg-primary {
+    background-color: var(--text-default);
 }
 
-.text-salon-gold {
-    color: var(--salon-gold);
+.text-accent {
+    color: var(--color-accent);
 }

@@ -53,4 +53,8 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    'instagram' => [
+        'url' => env('INSTAGRAM_URL', 'https://www.instagram.com/'),
+    ],
+
 ];

@@ -42,7 +42,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -62,7 +62,7 @@
 .service-form-title {
     font-family: var(--font-heading);
     font-size: 1.7rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0 0 1.5rem 0;
 }
 
@@ -87,7 +87,7 @@
 .service-form-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* テキスト入力・セレクト共通 */
@@ -111,7 +111,7 @@
 .service-form-textarea:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.25);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
 }
 
 /* テキストエリア */
@@ -156,7 +156,7 @@
     align-items: center;
     gap: 0.35rem;
     font-size: 0.9rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .service-form-checkbox {
@@ -184,7 +184,7 @@
     border-radius: 9999px;
     background-color: var(--color-bg-soft);
     font-size: 0.8rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .service-feature-chip-remove {
@@ -228,7 +228,7 @@
     font-family: var(--font-ui);
     border-radius: 9999px;
     border: none;
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #fff;
     cursor: pointer;
     transition:

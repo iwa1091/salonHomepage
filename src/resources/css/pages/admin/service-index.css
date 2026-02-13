@@ -42,7 +42,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -71,7 +71,7 @@
 .service-page-title {
     font-family: var(--font-heading);
     font-size: 1.6rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0;
 }
 
@@ -85,7 +85,7 @@
     font-family: var(--font-ui);
     border-radius: 9999px;
     border: none;
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: #fff;
     cursor: pointer;
     text-decoration: none;
@@ -116,7 +116,7 @@
 .service-filter-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .service-filter-select {
@@ -134,7 +134,7 @@
 .service-filter-select:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.25);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
 }
 
 /* ================================
@@ -180,7 +180,7 @@
 
 .service-table th {
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     white-space: nowrap;
 }
 

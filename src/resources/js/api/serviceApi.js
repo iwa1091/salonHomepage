@@ -1,4 +1,3 @@
-// /home/ri309/lash-brow-ohana/src/resources/js/api/serviceApi.js
 
 import api from '../lib/api'; // ベースとなるAxiosインスタンスをインポート
 

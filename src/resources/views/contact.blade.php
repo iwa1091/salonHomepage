@@ -47,6 +47,13 @@
                         </div>
                     @endif
 
+                    {{-- 通信エラーメッセージ --}}
+                    @if (session('error'))
+                        <div class="alert alert-error">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="card-header">
                         <h2 class="card-title">ご予約フォーム</h2>
                         <p class="card-subtitle">
@@ -56,7 +63,7 @@
 
                     <div class="card-content">
                         {{-- ★ Laravel のバリデーションを通すフォーム ★ --}}
-                        <form action="{{ route('contact.send') }}" method="POST" class="contact-form">
+                        <form action="{{ route('contact.send') }}" method="POST" class="contact-form" novalidate>
                             @csrf
 
                             <!-- 名前 + 電話 -->
@@ -70,7 +77,6 @@
                                         class="input-field @error('name') is-invalid @enderror"
                                         value="{{ old('name') }}"
                                         placeholder="山田 太郎"
-                                        required
                                     >
                                     @error('name')
                                         <p class="error-text">{{ $message }}</p>
@@ -86,7 +92,6 @@
                                         class="input-field @error('phone') is-invalid @enderror"
                                         value="{{ old('phone') }}"
                                         placeholder="090-1234-5678"
-                                        required
                                     >
                                     @error('phone')
                                         <p class="error-text">{{ $message }}</p>
@@ -104,7 +109,6 @@
                                     class="input-field @error('email') is-invalid @enderror"
                                     value="{{ old('email') }}"
                                     placeholder="example@email.com"
-                                    required
                                 >
                                 @error('email')
                                     <p class="error-text">{{ $message }}</p>
@@ -121,7 +125,6 @@
                                     class="input-field @error('subject') is-invalid @enderror"
                                     value="{{ old('subject') }}"
                                     placeholder="お問い合わせの件名をご記入ください"
-                                    required
                                 >
                                 @error('subject')
                                     <p class="error-text">{{ $message }}</p>
@@ -137,7 +140,6 @@
                                     class="textarea-field @error('message') is-invalid @enderror"
                                     rows="4"
                                     placeholder="お問い合わせ内容をご記入ください"
-                                    required
                                 >{{ old('message') }}</textarea>
                                 @error('message')
                                     <p class="error-text">{{ $message }}</p>
@@ -224,7 +226,7 @@
                                 LINEで予約・相談
                             </a>
 
-                            <a href="https://www.instagram.com/lash_brow_ohana" target="_blank" class="sns-button instagram">
+                            <a href="{{ config('services.instagram.url', 'https://www.instagram.com/') }}" target="_blank" class="sns-button instagram">
                                 <img src="{{ asset('img/icon-instagram.svg') }}" alt="Instagram" class="sns-icon">
                                 Instagramを見る
                             </a>

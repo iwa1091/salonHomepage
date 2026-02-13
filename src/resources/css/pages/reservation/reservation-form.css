@@ -25,7 +25,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     transition:
         background-color 0.15s ease,
         box-shadow 0.15s ease,
@@ -43,7 +43,7 @@
     font-family: var(--font-heading);
     font-size: 1.5rem;
     text-align: center;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.5rem;
 }
 
@@ -56,7 +56,7 @@
 }
 
 .reservation-message--success {
-    color: var(--color-main);
+    color: var(--color-primary);
 }
 
 .reservation-message--error {
@@ -81,7 +81,7 @@
     display: block;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 0.35rem;
 }
 
@@ -103,7 +103,7 @@
 .reservation-select:focus,
 .reservation-textarea:focus {
     outline: none;
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 1px rgba(47, 79, 62, 0.15);
 }
 
@@ -136,11 +136,11 @@
 }
 
 .reservation-calendar .react-calendar__tile--now {
-    background: rgba(205, 175, 99, 0.18);
+    background: rgba(var(--color-accent-rgb), 0.18);
 }
 
 .reservation-calendar .react-calendar__tile--active {
-    background: var(--color-main);
+    background: var(--color-primary);
     color: var(--color-white);
 }
 
@@ -200,9 +200,9 @@
 
 /* ✅ 選択時刻：日付選択と同じ「緑」に統一 */
 .reservation-time-button--selected {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
 }
 
 /* =====================================================
@@ -223,7 +223,7 @@
 
 /* 有効枠は ○ を緑寄り、無効枠は × を赤寄りに（既存メッセージ色と合わせる） */
 .reservation-time-button:not([disabled]) .reservation-time-status {
-    color: var(--color-main);
+    color: var(--color-primary);
 }
 
 .reservation-time-button[disabled] .reservation-time-status {
@@ -265,7 +265,7 @@
     font-size: 0.95rem;
     font-weight: 600;
     font-family: var(--font-ui);
-    background-color: var(--salon-brown);
+    background-color: var(--text-default);
     color: var(--color-white);
     cursor: pointer;
     transition:
@@ -287,7 +287,7 @@
 
 /* --- カレンダー：選択日の色を最初から緑で固定（青→緑のチラつき防止） --- */
 .reservation-calendar .react-calendar__tile--active {
-    background: var(--color-main);
+    background: var(--color-primary);
     color: var(--color-white);
     opacity: 1;
 }
@@ -295,7 +295,7 @@
 .reservation-calendar .react-calendar__tile--active:enabled:hover,
 .reservation-calendar .react-calendar__tile--active:enabled:focus,
 .reservation-calendar .react-calendar__tile--active:enabled:active {
-    background: var(--color-main);
+    background: var(--color-primary);
     color: var(--color-white);
     opacity: 1;
 }
@@ -308,16 +308,16 @@
 /* --- 時刻ボタン：hoverで薄くしない（背景を変えず、浮かせる） --- */
 .reservation-time-button:hover {
     background-color: var(--color-white);
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
 }
 
 /* ✅ 選択中の時刻：hoverでも「緑」を維持（薄くならない） */
 .reservation-time-button--selected:hover {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
 }

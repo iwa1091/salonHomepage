@@ -1,5 +1,5 @@
 /* =====================================================
-   Ohana Salon — Header (New Theme + Responsive)
+   Site — Header (New Theme + Responsive)
    ※ theme.css のデザイントークンを100%使用
 ===================================================== */
 
@@ -293,12 +293,12 @@
 }
 
 .mobile-nav-link:hover {
-    background-color: rgba(205, 175, 99, 0.12);
+    background-color: rgba(var(--color-accent-rgb), 0.12);
     transform: translateX(2px);
 }
 
 .mobile-nav-link.is-active {
-    background-color: rgba(205, 175, 99, 0.2);
+    background-color: rgba(var(--color-accent-rgb), 0.2);
     font-weight: 600;
 }
 

@@ -37,7 +37,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     transition:
         background-color 0.15s ease,
@@ -94,8 +94,8 @@
 
 /* primary / danger */
 .admin-timetable-btn--primary {
-    background-color: var(--color-main);
-    border-color: var(--color-main);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     color: #fff;
 }
 
@@ -132,7 +132,7 @@
 .admin-timetable-date__value {
     font-family: var(--font-heading);
     font-size: 1.05rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     letter-spacing: 0.02em;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .admin-timetable-open {
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .admin-timetable-closed {
@@ -204,7 +204,7 @@
     background-color: var(--color-bg-soft);
     border: 1px solid var(--border-color);
     font-size: 0.75rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     white-space: nowrap;
 }
 
@@ -296,7 +296,7 @@
 .timetable-lane__title {
     font-size: 0.92rem;
     font-weight: 700;
-    color: var(--salon-brown);
+    color: var(--text-default);
     line-height: 1.1;
 }
 
@@ -372,13 +372,13 @@
 }
 
 .timetable-block--reservation .timetable-block__time {
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* 管理者ブロック */
 .timetable-block--admin {
-    background-color: rgba(205, 175, 99, 0.18);
-    border-color: rgba(205, 175, 99, 0.35);
+    background-color: rgba(var(--color-accent-rgb), 0.18);
+    border-color: rgba(var(--color-accent-rgb), 0.35);
     color: #1f2937;
 }
 
@@ -444,7 +444,7 @@
 .timetable-modal__title {
     font-family: var(--font-heading);
     font-size: 1.05rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .timetable-modal__close {
@@ -511,7 +511,7 @@
 .timetable-form-label {
     font-size: 0.82rem;
     font-weight: 700;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .timetable-form-input,
@@ -530,7 +530,7 @@
 .timetable-form-input:focus,
 .timetable-form-textarea:focus {
     outline: none;
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 1px rgba(47, 79, 62, 0.15);
 }
 

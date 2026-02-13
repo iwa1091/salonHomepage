@@ -1,0 +1,44 @@
+/* ==============================================
+   Structure Tokens — 全クライアント共通（変更不要）
+============================================== */
+
+:root {
+    /* Semantic Color */
+    --foreground: var(--text-default);
+    --background: var(--color-bg-base);
+    --card-bg: var(--color-white);
+    --color-white: #ffffff;
+    --color-gray: rgba(58, 47, 41, 0.82);
+    --color-light-gray: rgba(0, 0, 0, 0.06);
+    --color-white-90: rgba(255, 255, 255, 0.90);
+    --color-divider-soft: rgba(0, 0, 0, 0.06);
+
+    /* Border */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-color-strong: rgba(0, 0, 0, 0.2);
+
+    /* Radius */
+    --radius-base: 8px;
+    --radius-large: 12px;
+    --radius-full: 9999px;
+
+    /* Shadow */
+    --shadow-soft: 0 10px 20px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 15px 25px rgba(0, 0, 0, 0.12);
+
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+
+    /* Layout */
+    --container-max: 1280px;
+    --header-height: 4.5rem;
+
+    /* Z-index */
+    --z-header: 999;
+    --z-menu: 10000;
+    --z-modal: 20000;
+}

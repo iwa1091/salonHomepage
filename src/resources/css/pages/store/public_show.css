@@ -1,5 +1,5 @@
 /* =========================================================
-   Ohana Salon — Product Detail Page (public_show.css)
+   Site — Product Detail Page (public_show.css)
 ========================================================= */
 
 .product-detail-container {
@@ -91,7 +91,7 @@
 }
 
 .text-green-600 {
-    color: var(--color-main);
+    color: var(--color-primary);
 }
 
 .text-red-500 {

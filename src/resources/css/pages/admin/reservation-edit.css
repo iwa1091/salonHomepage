@@ -26,7 +26,7 @@
     border-radius: 9999px;
     border: 1px solid var(--border-color);
     background-color: var(--color-bg-soft);
-    color: var(--salon-brown);
+    color: var(--text-default);
     text-decoration: none;
     transition:
         background-color 0.15s ease,
@@ -55,7 +55,7 @@
 .admin-reservation-edit-title {
     font-family: var(--font-heading);
     font-size: 1.3rem;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin-bottom: 1.25rem;
 }
 
@@ -76,7 +76,7 @@
 .admin-reservation-edit-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* 入力要素共通 */
@@ -94,7 +94,7 @@
 
 .admin-reservation-edit-input:focus {
     outline: none;
-    border-color: var(--color-main);
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 1px rgba(47, 79, 62, 0.15);
 }
 
@@ -127,11 +127,11 @@
 }
 
 .admin-reservation-edit-calendar .react-calendar__tile--now {
-    background: rgba(205, 175, 99, 0.18);
+    background: rgba(var(--color-accent-rgb), 0.18);
 }
 
 .admin-reservation-edit-calendar .react-calendar__tile--active {
-    background: var(--color-main);
+    background: var(--color-primary);
     color: var(--color-white);
 }
 
@@ -185,9 +185,9 @@
 }
 
 .admin-reservation-edit-time-button--selected {
-    background-color: var(--salon-brown);
+    background-color: var(--text-default);
     color: var(--color-white);
-    border-color: var(--salon-brown);
+    border-color: var(--text-default);
 }
 
 /* 更新ボタン */
@@ -200,7 +200,7 @@
     font-size: 0.95rem;
     font-weight: 600;
     font-family: var(--font-ui);
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     color: var(--color-white);
     cursor: pointer;
     transition:
@@ -210,7 +210,7 @@
 }
 
 .admin-reservation-edit-submit:hover {
-    background-color: var(--color-main);
+    background-color: var(--color-primary);
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
 }

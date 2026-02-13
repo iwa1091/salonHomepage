@@ -44,7 +44,7 @@
     font-family: var(--font-heading);
     font-size: 1.15rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
     margin: 0 0 1rem 0;
 }
 
@@ -67,7 +67,7 @@
 .category-modal-label {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 /* 入力欄 */
@@ -87,7 +87,7 @@
 .category-modal-input:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 1px rgba(205, 175, 99, 0.25);
+    box-shadow: 0 0 0 1px rgba(var(--color-accent-rgb), 0.25);
 }
 
 /* エラーメッセージ */
@@ -124,7 +124,7 @@
 /* キャンセルボタン */
 .category-modal-button--cancel {
     background-color: #f3f4f6;
-    color: var(--salon-brown);
+    color: var(--text-default);
 }
 
 .category-modal-button--cancel:hover {
