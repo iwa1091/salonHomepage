@@ -24,10 +24,10 @@ export function useAdmin() {
             color: 'bg-pink-600',
         },
         {
-            title: "サービス管理",
-            description: "サロンで提供するサービス一覧の作成・編集・削除を行います。",
+            title: "メニュー・料金管理",
+            description: "公開ページ「メニュー・料金」に表示されるメニューの作成・編集・削除を行います。",
             route: 'admin.services.index',
-            icon: ShoppingCart, // 他のアイコンでも可
+            icon: ShoppingCart,
             color: 'bg-green-600',
         },
         {

@@ -192,6 +192,10 @@ export default function Timetable() {
     const [editingBlockId, setEditingBlockId] = useState(null);
     const [modalError, setModalError] = useState("");
     const [saving, setSaving] = useState(false);
+    // ドラッグリサイズ用の state / ref
+    const [dragging, setDragging] = useState(null);
+    const dragRef = useRef(null);
+    const didDragRef = useRef(false); // ドラッグ中フラグ（クリック抑制用）
 
     // ReservationForm の項目に合わせる（name / phone / email / service_id / notes）
     const [form, setForm] = useState({
@@ -224,14 +228,9 @@ export default function Timetable() {
     const timeLabelHours = useMemo(() => {
         if (openMin == null || closeMin == null) return [];
         const labels = [];
-        const startHour = Math.ceil(openMin / 60) * 60;
-        for (let t = startHour; t <= closeMin; t += 60) labels.push(t);
-
-        if (openMin % 60 === 0) {
-            const set = new Set(labels);
-            set.add(openMin);
-            return Array.from(set).sort((a, b) => a - b);
-        }
+        // 30分刻みの最初の区切り（営業開始以降で最も近い30分単位）
+        const first = Math.ceil(openMin / 30) * 30;
+        for (let t = first; t <= closeMin; t += 30) labels.push(t);
         return labels;
     }, [openMin, closeMin]);
 
@@ -476,24 +475,44 @@ export default function Timetable() {
 
             const isEdit = modalMode === "edit" && editingBlockId;
 
-            const url = isEdit ? `/admin/api/blocks/${editingBlockId}` : `/admin/api/blocks`;
+            const url = isEdit
+                ? `/admin/api/blocks/${editingBlockId}`
+                : `/admin/api/blocks`;
             const method = isEdit ? "put" : "post";
 
-            // axios がある想定（なければ fetch にフォールバック）
             let res;
             if (window.axios && typeof window.axios[method] === "function") {
                 res = await window.axios[method](url, payload);
             } else {
+                // fetch フォールバック — CSRF トークンを付与
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute("content");
+
                 res = await fetch(url, {
                     method: isEdit ? "PUT" : "POST",
-                    headers: { "Content-Type": "application/json", Accept: "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
+                    },
                     body: JSON.stringify(payload),
                 });
                 if (!res.ok) {
                     const json = await res.json().catch(() => null);
+
+                    // 419 = CSRF トークン失効 → リロードで再取得
+                    if (res.status === 419) {
+                        alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                        window.location.reload();
+                        return;
+                    }
+
                     const msg =
                         json?.message ||
-                        (json?.errors ? Object.values(json.errors).flat().join("\n") : "") ||
+                        (json?.errors
+                            ? Object.values(json.errors).flat().join("\n")
+                            : "") ||
                         "保存に失敗しました。";
                     throw new Error(msg);
                 }
@@ -507,9 +526,18 @@ export default function Timetable() {
             setModalOpen(false);
             await fetchData(date);
         } catch (e) {
+            // axios 経由の 419 エラー
+            if (e?.response?.status === 419) {
+                alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                window.location.reload();
+                return;
+            }
+
             const msg =
                 e?.response?.data?.message ||
-                (e?.response?.data?.errors ? Object.values(e.response.data.errors).flat().join("\n") : "") ||
+                (e?.response?.data?.errors
+                    ? Object.values(e.response.data.errors).flat().join("\n")
+                    : "") ||
                 e?.message ||
                 "保存に失敗しました。";
             setModalError(msg);
@@ -593,6 +621,231 @@ export default function Timetable() {
         return by;
     }, [reservations, blocks]);
 
+    /**
+     * ドラッグリサイズ開始
+     * edge: "left" | "right"
+     */
+    const onResizeStart = (e, item, edge) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const s = hhmmToMinutes(item.start_time);
+        const eTime = hhmmToMinutes(item.end_time);
+        if (s == null || eTime == null) return;
+
+        const startClamped = clamp(s, openMin, closeMin);
+        const endClamped = clamp(eTime, openMin, closeMin);
+        const startIndex = Math.floor((startClamped - openMin) / SLOT_MINUTES);
+        const span = Math.ceil((endClamped - startClamped) / SLOT_MINUTES);
+
+        const info = {
+            blockId: item.id,
+            item,
+            edge,
+            startX: e.clientX,
+            originalLeft: startIndex * SLOT_WIDTH_PX,
+            originalWidth: span * SLOT_WIDTH_PX,
+            currentLeft: startIndex * SLOT_WIDTH_PX,
+            currentWidth: span * SLOT_WIDTH_PX,
+        };
+
+        didDragRef.current = false;
+        setDragging(info);
+        dragRef.current = info;
+    };
+
+    /**
+     * ドラッグ完了 → API で時間を更新
+     */
+    const resizeBlock = async (item, newStartTime, newDuration) => {
+        try {
+            const payload = {
+                date,
+                lane: Number(item.lane),
+                start_time: newStartTime,
+                duration_minutes: newDuration,
+                name: item.name || null,
+                phone: item.phone || null,
+                email: item.email || null,
+                service_id: item.service_id ? Number(item.service_id) : null,
+                notes: item.notes || null,
+            };
+
+            if (window.axios && typeof window.axios.put === "function") {
+                await window.axios.put(`/admin/api/blocks/${item.id}`, payload);
+            } else {
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute("content");
+
+                const res = await fetch(`/admin/api/blocks/${item.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (res.status === 419) {
+                    alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                    window.location.reload();
+                    return;
+                }
+                if (!res.ok) throw new Error("更新に失敗しました。");
+            }
+
+            await fetchData(date);
+        } catch (e) {
+            alert(
+                e?.response?.data?.message ||
+                e?.message ||
+                "時間の変更に失敗しました。"
+            );
+            await fetchData(date);
+        }
+    };
+
+    /**
+     * 予約のドラッグリサイズ完了 → API で時間を更新
+     */
+    const resizeReservation = async (item, newStartTime, newDuration) => {
+        try {
+            const start = newStartTime; // "HH:mm"
+            const [h, m] = start.split(":").map(Number);
+            const endMin = h * 60 + m + newDuration;
+            const endTime = minutesToHHmm(endMin);
+
+            const payload = {
+                date,
+                start_time: start,
+                end_time: endTime,
+                duration_minutes: newDuration,
+            };
+
+            if (window.axios && typeof window.axios.put === "function") {
+                await window.axios.put(`/admin/api/reservations/${item.id}`, payload);
+            } else {
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    ?.getAttribute("content");
+
+                const res = await fetch(`/admin/api/reservations/${item.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (res.status === 419) {
+                    alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                    window.location.reload();
+                    return;
+                }
+                if (!res.ok) throw new Error("更新に失敗しました。");
+            }
+
+            await fetchData(date);
+        } catch (e) {
+            alert(
+                e?.response?.data?.message ||
+                e?.message ||
+                "時間の変更に失敗しました。"
+            );
+            await fetchData(date);
+        }
+    };
+
+    /**
+     * ドラッグ中の mousemove / mouseup をウィンドウレベルで監視
+     */
+    useEffect(() => {
+        if (!dragging) return;
+
+        const onMouseMove = (e) => {
+            const info = dragRef.current;
+            if (!info) return;
+
+            const deltaX = e.clientX - info.startX;
+            const snappedSlots = Math.round(deltaX / SLOT_WIDTH_PX);
+            const snappedPx = snappedSlots * SLOT_WIDTH_PX;
+
+            if (snappedPx !== 0) didDragRef.current = true;
+
+            let newLeft = info.originalLeft;
+            let newWidth = info.originalWidth;
+
+            if (info.edge === "right") {
+                newWidth = info.originalWidth + snappedPx;
+                const maxWidth = slotCount * SLOT_WIDTH_PX - newLeft;
+                newWidth = Math.min(newWidth, maxWidth);
+                newWidth = Math.max(newWidth, SLOT_WIDTH_PX);
+            } else {
+                newLeft = info.originalLeft + snappedPx;
+                newWidth = info.originalWidth - snappedPx;
+                if (newLeft < 0) {
+                    newWidth += newLeft;
+                    newLeft = 0;
+                }
+                if (newWidth < SLOT_WIDTH_PX) {
+                    newLeft = info.originalLeft + info.originalWidth - SLOT_WIDTH_PX;
+                    newWidth = SLOT_WIDTH_PX;
+                }
+            }
+
+            const updated = { ...info, currentLeft: newLeft, currentWidth: newWidth };
+            dragRef.current = updated;
+            setDragging(updated);
+        };
+
+        const onMouseUp = async () => {
+            const info = dragRef.current;
+            dragRef.current = null;
+            setDragging(null);
+
+            if (!info || !info.item) return;
+
+            // 変更なしならAPIを呼ばない
+            if (
+                info.currentLeft === info.originalLeft &&
+                info.currentWidth === info.originalWidth
+            ) {
+                return;
+            }
+
+            const newStartMin =
+                openMin + (info.currentLeft / SLOT_WIDTH_PX) * SLOT_MINUTES;
+            const newDuration =
+                (info.currentWidth / SLOT_WIDTH_PX) * SLOT_MINUTES;
+
+            if (info.item.type === "reservation") {
+                await resizeReservation(
+                    info.item,
+                    minutesToHHmm(newStartMin),
+                    newDuration
+                );
+            } else {
+                await resizeBlock(
+                    info.item,
+                    minutesToHHmm(newStartMin),
+                    newDuration
+                );
+            }
+        };
+
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        return () => {
+            window.removeEventListener("mousemove", onMouseMove);
+            window.removeEventListener("mouseup", onMouseUp);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dragging !== null]);
+
     const renderItemBlock = (item) => {
         if (openMin == null || closeMin == null || slotCount <= 0) return null;
 
@@ -608,15 +861,33 @@ export default function Timetable() {
         const startIndex = Math.floor((startClamped - openMin) / SLOT_MINUTES);
         const span = Math.ceil(dur / SLOT_MINUTES);
 
-        const left = startIndex * SLOT_WIDTH_PX;
-        const width = span * SLOT_WIDTH_PX;
+        let left = startIndex * SLOT_WIDTH_PX;
+        let width = span * SLOT_WIDTH_PX;
+
+        // ドラッグ中のブロックはプレビュー値を使う
+        const isDragging =
+            dragging && dragging.blockId === item.id;
+        if (isDragging) {
+            left = dragging.currentLeft;
+            width = dragging.currentWidth;
+        }
+
+        // ドラッグ中のプレビュー用の時刻ラベルを計算
+        const previewStartMin = openMin + (left / SLOT_WIDTH_PX) * SLOT_MINUTES;
+        const previewEndMin = previewStartMin + (width / SLOT_WIDTH_PX) * SLOT_MINUTES;
+        const timeLabel = isDragging
+            ? `${minutesToHHmm(previewStartMin)}〜${minutesToHHmm(previewEndMin)}`
+            : `${extractHHmm(item.start_time) || ""}〜${extractHHmm(item.end_time) || ""}`;
 
         const lines = buildDisplayLines(item, getServiceNameById);
-        const timeLabel = `${extractHHmm(item.start_time) || ""}〜${extractHHmm(item.end_time) || ""}`;
-
         const isReservation = item.type === "reservation";
 
         const onClick = () => {
+            // ドラッグ操作直後はクリックを無視する
+            if (didDragRef.current) {
+                didDragRef.current = false;
+                return;
+            }
             if (isReservation) {
                 router.get(route("admin.reservations.edit", item.id));
                 return;
@@ -629,14 +900,17 @@ export default function Timetable() {
                 key={`${item.type}-${item.id}`}
                 className={
                     "timetable-block " +
-                    (isReservation ? "timetable-block--reservation" : "timetable-block--admin")
+                    (isReservation
+                        ? "timetable-block--reservation"
+                        : "timetable-block--admin") +
+                    (isDragging ? " timetable-block--dragging" : "")
                 }
                 style={{ left: `${left}px`, width: `${width}px` }}
                 role="button"
                 tabIndex={0}
                 onClick={onClick}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") onClick();
+                onKeyDown={(ev) => {
+                    if (ev.key === "Enter") onClick();
                 }}
                 title={lines.join(" / ")}
             >
@@ -658,8 +932,8 @@ export default function Timetable() {
                     <button
                         type="button"
                         className="timetable-block__delete"
-                        onClick={(e) => {
-                            e.stopPropagation();
+                        onClick={(ev) => {
+                            ev.stopPropagation();
                             deleteReservation(item.id);
                         }}
                         aria-label="予約を削除"
@@ -668,6 +942,18 @@ export default function Timetable() {
                         ×
                     </button>
                 ) : null}
+
+                {/* リサイズハンドル（枠1・枠2共通） */}
+                <>
+                    <div
+                        className="timetable-block__handle timetable-block__handle--left"
+                        onMouseDown={(ev) => onResizeStart(ev, item, "left")}
+                    />
+                    <div
+                        className="timetable-block__handle timetable-block__handle--right"
+                        onMouseDown={(ev) => onResizeStart(ev, item, "right")}
+                    />
+                </>
             </div>
         );
     };
@@ -770,6 +1056,7 @@ export default function Timetable() {
                                         const offsetSlots = Math.round((min - openMin) / SLOT_MINUTES);
                                         const leftPx = offsetSlots * SLOT_WIDTH_PX;
                                         const hhmm = minutesToHHmm(min);
+                                        const isHour = min % 60 === 0;
 
                                         // 端（営業開始/終了）のラベルが見切れないように寄せる
                                         const isStart = min === openMin;
@@ -790,7 +1077,10 @@ export default function Timetable() {
                                         return (
                                             <div
                                                 key={min}
-                                                className="timetable-hour-label"
+                                                className={
+                                                    "timetable-hour-label" +
+                                                    (isHour ? " timetable-hour-label--hour" : " timetable-hour-label--half")
+                                                }
                                                 style={{ left: `${left}px`, transform }}
                                             >
                                                 {hhmm}
@@ -859,7 +1149,7 @@ export default function Timetable() {
                         <div className="timetable-modal__body">
                             {modalError ? <div className="timetable-modal__error">{modalError}</div> : null}
 
-                            <div className="timetable-form-grid">
+                            <form className="timetable-form-grid" noValidate onSubmit={(e) => e.preventDefault()}>
                                 <label className="timetable-form-field">
                                     <span className="timetable-form-label">レーン</span>
                                     <select
@@ -972,7 +1262,7 @@ export default function Timetable() {
                                         placeholder="必要に応じて"
                                     />
                                 </label>
-                            </div>
+                            </form>
                         </div>
 
                         <div className="timetable-modal__footer">

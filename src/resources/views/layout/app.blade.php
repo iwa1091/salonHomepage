@@ -6,6 +6,13 @@
 
     {{-- ✅ CSRF（Inertia/axios/fetch のPOST/PUT/DELETE安定化） --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- ホーム画面追加用（PWA） --}}
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#3c3228">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('img/icon-192x192.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Ohana">
 
     <title>@yield('title', config('app.name'))</title>
 

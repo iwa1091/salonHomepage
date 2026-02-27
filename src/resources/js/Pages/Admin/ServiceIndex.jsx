@@ -64,12 +64,12 @@ export default function ServiceIndex() {
 
                 {/* ヘッダー（タイトル + 新規作成） */}
                 <div className="service-page-header">
-                    <h1 className="service-page-title">サービス一覧</h1>
+                    <h1 className="service-page-title">メニュー・料金 一覧</h1>
                     <Link
                         href={route("admin.services.create")}
                         className="service-create-button"
                     >
-                        新規作成
+                        ＋ 新規メニュー作成
                     </Link>
                 </div>
 

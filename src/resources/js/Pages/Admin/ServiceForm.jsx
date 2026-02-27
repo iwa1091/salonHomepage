@@ -1,5 +1,5 @@
 // /resources/js/Pages/Admin/ServiceForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, usePage, Link, router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import CategoryModal from "./CategoryModal";
@@ -30,6 +30,18 @@ export default function ServiceForm({
     const [categories, setCategories] = useState(initialCategories);
     const [showModal, setShowModal] = useState(false);
     const [featureInput, setFeatureInput] = useState("");
+    // ✅ セッション切れ（419）検知 → 自動リロード
+    useEffect(() => {
+        const removeListener = router.on("invalid", (event) => {
+            const status = event?.detail?.response?.status;
+            if (status === 419) {
+                event.preventDefault();
+                alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                window.location.reload();
+            }
+        });
+        return () => removeListener();
+    }, []);
 
     /** ✅ カテゴリ新規作成後に即反映 */
     const handleCategoryCreated = (newCategory) => {
@@ -122,7 +134,7 @@ export default function ServiceForm({
                 </div>
 
                 <h1 className="service-form-title">
-                    {service ? "サービス編集" : "新規サービス作成"}
+                    {service ? "メニュー編集" : "新規メニュー作成"}
                 </h1>
 
                 <form
@@ -354,6 +366,11 @@ export default function ServiceForm({
                             </div>
                         )}
                     </div>
+
+                    {/* 公開ページとの関連を明示 */}
+                    <p className="service-form-hint" style={{ textAlign: "center", marginBottom: "1rem" }}>
+                        ※ ここで登録・編集した内容は公開ページ「メニュー・料金」に反映されます。
+                    </p>
 
                     {/* 保存ボタン */}
                     <button

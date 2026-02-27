@@ -1,14 +1,32 @@
 {{-- /resources/views/reservations/cancel/confirm.blade.php --}} 
 
+@php
+$brand        = $brand ?? [];
+$brandName    = $brand['name']        ?? ($appName ?? config('app.name', 'Lash Brow Ohana'));
+$brandTagline = $brand['tagline']     ?? '眉・まつげ専門サロン｜市原市';
+$brandFooterName = $brand['footer_name'] ?? 'Lash Brow Ohana（ラッシュブロウ オハナ）';
+$brandFooterAddr = $brand['footer_addr'] ?? '千葉県市原市';
+$brandLogoUrl    = $brand['logo_url']    ?? null;
+$colors       = $brand['colors'] ?? [];
+$colorMain    = $colors['main']    ?? '#2F4F3E';
+$colorAccent  = $colors['accent']  ?? '#CDAF63';
+$colorBg      = $colors['bg']      ?? '#F1F1EF';
+$colorText    = $colors['text']    ?? '#3A2F29';
+$colorBoxBg   = $colors['box_bg']  ?? '#F7F6F2';
+$colorBorder     = $colors['border']      ?? 'rgba(0,0,0,0.10)';
+$colorSubText    = $colors['sub_text']    ?? 'rgba(0,0,0,0.60)';
+$colorSoftBorder = $colors['soft_border'] ?? 'rgba(0,0,0,0.06)';
+@endphp
+
 <!doctype html>
 <html lang="ja">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'キャンセル確認 | ' . config('app.name') }}</title>
+    @vite(['resources/css/base/theme.css', 'resources/css/pages/reservations/cancel.css'])
 </head>
-<body style="margin:0; padding:0; background:{{ $colorBg }}; color:{{ $colorText }}; font-family:-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, Arial, sans-serif; line-height:1.7;">
-@include('emails.partials.brand-config')
+<body class="cancel-page">
 
 @php
     // Controller/route から渡されても、渡されなくても動くようにフォールバック
@@ -32,45 +50,45 @@
     );
 @endphp
 
-<div style="max-width:720px; margin:24px auto; padding:0 16px;">
-    <div style="background:#fff; border:1px solid rgba(0,0,0,0.10); border-radius:12px; overflow:hidden; box-shadow:0 10px 20px rgba(0,0,0,0.08);">
+<div class="cancel-wrap">
+    <div class="cancel-card">
 
         {{-- ヘッダー --}}
-        <div style="background:{{ $colorMain }}; color:#fff; padding:16px 18px;">
-            <div style="font-weight:700; letter-spacing:.03em;">{{ $brandName }}</div>
+        <div class="cancel-card-header">
+            <div class="cancel-card-brand">{{ $brandName }}</div>
         </div>
 
         {{-- 本文 --}}
-        <div style="padding:18px;">
-            <p style="margin:0 0 12px 0;">{{ $bodyMessage }}</p>
+        <div class="cancel-card-body">
+            <h1 class="cancel-page-title">予約キャンセルのご確認</h1>
+            <p class="cancel-message">{{ $bodyMessage }}</p>
 
             {{-- 予約情報 --}}
-            <div style="background:#F7F6F2; border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:14px;">
-                <div style="margin:6px 0;">
+            <div class="cancel-info-box">
+                <div class="cancel-info-row">
                     <strong>お名前：</strong>{{ $reservation->name ?? '' }}
                 </div>
-                <div style="margin:6px 0;">
+                <div class="cancel-info-row">
                     <strong>日時：</strong>{{ $displayDate }} {{ $displayTime }}
                 </div>
-                <div style="margin:6px 0;">
+                <div class="cancel-info-row">
                     <strong>メニュー：</strong>{{ $serviceName }}
                 </div>
             </div>
 
             {{-- ボタン --}}
-            <div style="margin-top:14px;">
+            <div class="cancel-buttons">
                 @if ($isCanceled)
-                    <a href="{{ $home }}"
-                       style="display:inline-block; padding:12px 16px; border-radius:9999px; background:{{ $colorAccent }}; color:#fff; text-decoration:none; font-weight:700;">
+                    <a href="{{ $home }}" class="cancel-btn-primary">
                         トップへ戻る
                     </a>
                 @else
-                    <form method="POST" action="{{ $action }}" style="margin:0;">
+                    <form method="POST" action="{{ $action }}" class="cancel-form">
                         @csrf
 
                         {{-- ✅ キャンセル理由（任意） --}}
-                        <div style="margin:0 0 10px;">
-                            <label for="cancel_reason" style="display:block; font-weight:700; margin-bottom:6px;">
+                        <div style="margin:0 0 16px 0;">
+                            <label for="cancel_reason" class="cancel-textarea-label">
                                 キャンセル理由（任意）
                             </label>
                             <textarea
@@ -79,42 +97,34 @@
                                 rows="4"
                                 maxlength="500"
                                 placeholder="例：体調不良のため／予定が変更になったため など"
-                                style="width:100%; box-sizing:border-box; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.18); background:#fff; font-family:inherit;"
+                                class="cancel-textarea"
                             >{{ old('cancel_reason') }}</textarea>
 
                             @error('cancel_reason')
-                                <div style="margin-top:6px; color:#b91c1c; font-size:13px;">
-                                    {{ $message }}
-                                </div>
+                                <div class="cancel-error">{{ $message }}</div>
                             @enderror
 
-                            <div style="margin-top:6px; color:rgba(0,0,0,0.65); font-size:12.5px;">
-                                ※ 500文字以内
-                            </div>
+                            <div class="cancel-char-limit">※ 500文字以内</div>
                         </div>
 
-                        <button type="submit"
-                                style="width:100%; padding:12px 16px; border-radius:9999px; background:{{ $colorAccent }}; color:#fff; border:1px solid {{ $colorAccent }}; font-weight:700; cursor:pointer;">
+                        <button type="submit" class="cancel-btn-primary">
                             この予約をキャンセルする
                         </button>
                     </form>
 
-                    <div style="height:10px;"></div>
-
-                    <a href="{{ $home }}"
-                       style="display:inline-block; width:100%; text-align:center; padding:12px 16px; border-radius:9999px; background:#fff; color:#3A2F29; border:1px solid rgba(0,0,0,0.18); text-decoration:none; font-weight:700;">
+                    <a href="{{ $home }}" class="cancel-btn-secondary">
                         キャンセルしない（トップへ）
                     </a>
                 @endif
             </div>
 
-            <p style="margin:14px 0 0 0; font-size:12.5px; color:rgba(0,0,0,0.65);">
+            <p class="cancel-note">
                 ※ リンクが無効の場合や操作できない場合は、お手数ですが店舗へご連絡ください。
             </p>
         </div>
 
         {{-- フッター --}}
-        <div style="padding:14px 18px; border-top:1px solid rgba(0,0,0,0.06); color:rgba(0,0,0,0.60); font-size:12px; text-align:center;">
+        <div class="cancel-card-footer">
             &copy; {{ date('Y') }} {{ $brandName }}
         </div>
     </div>

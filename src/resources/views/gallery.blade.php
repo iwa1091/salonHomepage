@@ -62,14 +62,14 @@
             施術事例・お客様の声
         </h1>
         <p class="page-description">
-            実際の施術事例とお客様からいただいた喜びの声をご紹介します。<br>
+            実際の施術事例とお客様からいただいた喜びの声をご紹介します。<br class="pc-only">
             あなたの理想の目元づくりの参考にしてください。
         </p>
     </div>
 
     {{-- Before / After --}}
-    <section class="mb-20">
-        <h2 class="page-title text-center mb-8">
+    <section class="gallery-section">
+        <h2 class="gallery-section-heading">
             ビフォー・アフター
         </h2>
 
@@ -105,15 +105,15 @@
     </section>
 
     {{-- Gallery --}}
-    <section class="mb-20">
-        <h2 class="page-title text-center mb-8">
+    <section class="gallery-section">
+        <h2 class="gallery-section-heading">
             施術事例ギャラリー
         </h2>
 
         <div class="grid-gallery">
             @foreach($galleryCards as $card)
                 <div class="card image-wrapper">
-                    <div class="relative">
+                    <div class="gallery-image-wrapper">
                         <img src="{{ asset($card['image']) }}"
                              alt="{{ $card['title'] }}"
                              class="image-card">
@@ -130,14 +130,40 @@
         </div>
     </section>
 
+    {{-- Stats --}}
+    <section class="section-stats">
+        <div class="stats-container">
+            <h2 class="section-title stats-heading">
+                Google口コミ お客様満足度
+            </h2>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">9割越え</div>
+                    <div class="stat-label">リピート率</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value">1,200+</div>
+                    <div class="stat-label">施術実績</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value">★5</div>
+                    <div class="stat-label">平均評価</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Customer Reviews --}}
-    <section class="mb-16">
-        <h2 class="page-title text-center mb-8">
+    <section class="gallery-section">
+        <h2 class="gallery-section-heading">
             お客様の声
         </h2>
 
         {{-- Googleマップ口コミ要約の注記 --}}
-        <p class="text-center review-note mb-8">
+        <p class="review-note">
             ※Googleマップなどでいただいたお声を要約して掲載しています。
         </p>
 
@@ -170,7 +196,7 @@
                     <p class="review-comment">{{ $review->comment }}</p>
 
                     <div class="review-details">
-                        <span>{{ $review->service }}</span>
+                        <a href="{{ route('menu_price') }}" class="review-service-link">{{ $review->service }}</a>
                         <span>{{ $review->date }}</span>
                     </div>
                 </div>
@@ -178,28 +204,16 @@
         </div>
     </section>
 
-    {{-- Stats --}}
-    <section class="section-stats">
-        <div class="stats-container">
-            <h2 class="section-title text-center mb-12">
-                Google口コミ お客様満足度
-            </h2>
-
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value">9割越え</div>
-                    <div class="stat-label">リピート率</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-value">1,200+</div>
-                    <div class="stat-label">施術実績</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-value">★5</div>
-                    <div class="stat-label">平均評価</div>
-                </div>
+    {{-- CTA --}}
+    <section class="gallery-cta-section">
+        <div class="gallery-cta-container">
+            <h2 class="gallery-cta-title">あなたも理想の目元を手に入れませんか？</h2>
+            <p class="gallery-cta-description">
+                お客様のご希望に合わせて、最適な施術プランをご提案いたします。お気軽にご予約ください。
+            </p>
+            <div class="gallery-cta-buttons">
+                <a href="{{ route('menu_price') }}" class="gallery-cta-button-primary">メニューを見て予約する</a>
+                <a href="{{ route('menu_price') }}" class="gallery-cta-button-secondary">メニュー・料金を見る</a>
             </div>
         </div>
     </section>

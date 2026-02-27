@@ -27,6 +27,7 @@ export default defineConfig({
                 'resources/css/base/theme.css', // 共通テーマ CSS
                 'resources/css/base/global.css', // グローバル CSS
                 'resources/js/app.jsx',          // メインの JS ファイル（React）
+                'resources/css/pages/reservations/cancel.css', // キャンセルページ専用 CSS
             ],
             refresh: true, // Blade テンプレートを変更した際に自動更新
         }),
@@ -40,6 +41,7 @@ export default defineConfig({
                 'resources/js/app.jsx',          // メインの JS ファイル
                 'resources/css/base/theme.css',  // theme.css をバンドル
                 'resources/css/base/global.css', // global.css をバンドル
+                'resources/css/pages/reservations/cancel.css', // キャンセルページ専用 CSS
             ],
         },
     },

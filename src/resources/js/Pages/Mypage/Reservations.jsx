@@ -132,14 +132,7 @@ export default function Reservations({
         "";
 
     return (
-        <div
-            className="mypage-root mypage-container"
-            style={{
-                padding: 0,
-                backgroundColor: "transparent",
-                minHeight: "auto",
-            }}
-        >
+        <div className="mypage-root mypage-container">
             <Head title="予約一覧" />
 
             {/* 上部ナビゲーションバー */}
@@ -193,7 +186,11 @@ export default function Reservations({
                             const dt = reservationToDateTime(r);
 
                             return (
-                                <div key={r.id} className="mypage-item-card">
+                                <div key={r.id} className={`mypage-item-card ${isCanceled ? "mypage-item-card--canceled" : "mypage-item-card--upcoming"}`}>
+                                    <span className={`mypage-status-badge ${isCanceled ? "mypage-status-badge--canceled" : "mypage-status-badge--upcoming"}`}>
+                                        {isCanceled ? "キャンセル済み" : "予約確定"}
+                                    </span>
+
                                     <p className="mypage-item-title">
                                         {r?.service?.name ?? "（メニュー不明）"}
                                     </p>
@@ -204,12 +201,6 @@ export default function Reservations({
                                     <p className="mypage-item-meta">
                                         開始時間：{String(r?.start_time ?? "-").slice(0, 5)}
                                     </p>
-
-                                    {isCanceled && (
-                                        <p className="mypage-empty-text">
-                                            ※ この予約はキャンセル済みです
-                                        </p>
-                                    )}
 
                                     <div className="mypage-item-actions">
                                         <Link
@@ -248,7 +239,11 @@ export default function Reservations({
                             const isCanceled = canceledSet.has(String(r?.status ?? ""));
 
                             return (
-                                <div key={r.id} className="mypage-item-card">
+                                <div key={r.id} className={`mypage-item-card ${isCanceled ? "mypage-item-card--canceled" : "mypage-item-card--past"}`}>
+                                    <span className={`mypage-status-badge ${isCanceled ? "mypage-status-badge--canceled" : "mypage-status-badge--past"}`}>
+                                        {isCanceled ? "キャンセル済み" : "来店済み"}
+                                    </span>
+
                                     <p className="mypage-item-title">
                                         {r?.service?.name ?? "（メニュー不明）"}
                                     </p>
@@ -260,13 +255,16 @@ export default function Reservations({
                                         開始時間：{String(r?.start_time ?? "-").slice(0, 5)}
                                     </p>
 
-                                    {isCanceled && (
-                                        <p className="mypage-empty-text">
-                                            ※ この予約はキャンセル済みです
-                                        </p>
+                                    {!isCanceled && (
+                                        <div className="mypage-item-actions">
+                                            <Link
+                                                href="/mypage"
+                                                className="mypage-inline-link mypage-inline-link--compact"
+                                            >
+                                                このメニューで再予約する →
+                                            </Link>
+                                        </div>
                                     )}
-
-                                    {/* 詳細ページのルートが未確定なので、この画面では無理に貼らない（不一致防止） */}
                                 </div>
                             );
                         })

@@ -268,6 +268,19 @@
     pointer-events: none;
 }
 
+/* 00分（正時）ラベル — 太字で強調 */
+.timetable-hour-label--hour {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+/* 30分ラベル — 控えめに表示 */
+.timetable-hour-label--half {
+    font-weight: 400;
+    font-size: 0.72rem;
+    color: rgba(0, 0, 0, 0.45);
+}
+
 /* ボディ */
 .timetable-body {
     display: flex;
@@ -315,8 +328,15 @@
     background-color: #fff;
     overflow: hidden;
 
-    /* 15分 grid（縦線） */
-    background-image: repeating-linear-gradient(to right,
+    /* 15分 grid（細線）+ 1時間 grid（太線）を重ねる */
+    /* --slot-width は 44px（15分）、4枠 = 176px で1時間 */
+    background-image:
+        repeating-linear-gradient(to right,
+            rgba(0, 0, 0, 0.18) 0,
+            rgba(0, 0, 0, 0.18) 2px,
+            transparent 2px,
+            transparent calc(var(--slot-width) * 4)),
+        repeating-linear-gradient(to right,
             rgba(0, 0, 0, 0.06) 0,
             rgba(0, 0, 0, 0.06) 1px,
             transparent 1px,
@@ -407,6 +427,48 @@
 
 .timetable-block__delete:hover {
     background-color: #912f2f;
+}
+
+/* ===========================
+   ドラッグリサイズ ハンドル
+=========================== */
+
+/* ハンドル共通（管理者ブロックの左端・右端） */
+.timetable-block__handle {
+    position: absolute;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.timetable-block__handle--left {
+    left: -2px;
+}
+
+.timetable-block__handle--right {
+    right: -2px;
+}
+
+/* ホバーで視覚フィードバック */
+.timetable-block__handle:hover {
+    background-color: rgba(0, 0, 0, 0.10);
+}
+
+/* ドラッグ中のブロック */
+.timetable-block--dragging {
+    opacity: 0.75;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    transition: none;
+}
+
+/* ドラッグ中はホバーエフェクトを無効化 */
+.timetable-block--dragging:hover {
+    transform: none;
 }
 
 /* ===========================

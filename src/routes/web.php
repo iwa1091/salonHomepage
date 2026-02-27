@@ -217,6 +217,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('reservations', [AdminReservationController::class, 'apiIndex']);
             Route::get('timetable', [TimetableController::class, 'getData']);
 
+            // ✅ 予約：ドラッグリサイズ用時間更新API
+            Route::put('reservations/{id}', [AdminReservationController::class, 'updateTime']);
+
             // ✅ 管理者ブロックAPI（Timetable.jsx が /admin/api/blocks を叩く想定）
             Route::post('blocks', [AdminBlockController::class, 'store']);
             Route::put('blocks/{id}', [AdminBlockController::class, 'update']);

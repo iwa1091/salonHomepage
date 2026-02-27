@@ -1,3 +1,20 @@
+@php
+$brand        = $brand ?? [];
+$brandName    = $brand['name']        ?? ($appName ?? config('app.name', 'Lash Brow Ohana'));
+$brandTagline = $brand['tagline']     ?? '眉・まつげ専門サロン｜市原市';
+$brandFooterName = $brand['footer_name'] ?? 'Lash Brow Ohana（ラッシュブロウ オハナ）';
+$brandFooterAddr = $brand['footer_addr'] ?? '千葉県市原市';
+$brandLogoUrl    = $brand['logo_url']    ?? null;
+$colors       = $brand['colors'] ?? [];
+$colorMain    = $colors['main']    ?? '#2F4F3E';
+$colorAccent  = $colors['accent']  ?? '#CDAF63';
+$colorBg      = $colors['bg']      ?? '#F1F1EF';
+$colorText    = $colors['text']    ?? '#3A2F29';
+$colorBoxBg   = $colors['box_bg']  ?? '#F7F6F2';
+$colorBorder     = $colors['border']      ?? 'rgba(0,0,0,0.10)';
+$colorSubText    = $colors['sub_text']    ?? 'rgba(0,0,0,0.60)';
+$colorSoftBorder = $colors['soft_border'] ?? 'rgba(0,0,0,0.06)';
+@endphp
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -5,7 +22,6 @@
     <title>メールアドレス確認のご案内</title>
 </head>
 <body style="margin:0; padding:0; background-color:{{ $colorBg }};">
-@include('emails.partials.brand-config')
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
         <td align="center" style="padding:24px 12px;">

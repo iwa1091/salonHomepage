@@ -55,10 +55,17 @@ export default function CategoryModal({ isOpen, onClose, onCreated }) {
             setErrors({});
             onClose?.(); // ✅ 成功したら閉じる
         } catch (err) {
-            // Laravel validation (422)
             const status = err?.response?.status;
             const data = err?.response?.data;
 
+            // ✅ セッション切れ（419）→ 自動リロード
+            if (status === 419) {
+                alert("セッションの有効期限が切れました。ページを再読み込みします。");
+                window.location.reload();
+                return;
+            }
+
+            // Laravel validation (422)
             if (status === 422 && data?.errors) {
                 // errors.name は配列のことが多い
                 const nameErr = Array.isArray(data.errors.name)

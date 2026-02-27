@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'まつげと眉の専門サロン')
+@section('title', '目元・肌・頭皮のトータルケアサロン')
 
 @section('styles')
     @vite(['resources/css/pages/home/home.css'])
@@ -8,29 +8,69 @@
 
 @section('content')
     <div class="home-page-container">
-        <section class="hero-section">
-            <div class="hero-image-overlay"></div>
-            <div class="hero-content-container">
-                <div class="hero-text-wrapper">
-                    <div class="hero-text-group">
-                        <h1 class="hero-title">
-                            <span class="nowrap-text">若々しさと<br />清潔感を纏い、</span><br />
-                            <span class="nowrap-text"><span class="highlight-text">第一印象</span>
-                            を<br />ワンランク上へ</span>
-                        </h1>
-                        <p class="hero-subtitle">
-                            市原市｜大人に選ばれるサロン<br />
-                        </p>
-                    </div>
-                    <div class="hero-buttons-wrapper">
-                        <a href="{{ route('contact.form') }}" class="button button-primary">
-                            <span class="nowrap-text">ご予約はこちら</span>
-                        </a>
-                        <a href="{{ route('menu_price') }}" class="button button-secondary">
-                            <span class="nowrap-text">メニューを見る</span>
-                        </a>
-                    </div>
+        <section class="hero-section"
+                 x-data="heroSlider()"
+                 x-init="startAutoSlide()">
+
+            {{-- スライド画像 --}}
+            <template x-for="(slide, index) in slides" :key="index">
+                <div class="hero-slide"
+                     :class="{ 'hero-slide--active': current === index }"
+                     aria-hidden="current !== index">
+                    <picture>
+                        <source :srcset="slide.sp" media="(max-width: 767px)" type="image/jpeg">
+                        <img :src="slide.pc"
+                             :alt="slide.alt"
+                             :class="'hero-slide__img hero-img-pos-' + index"
+                             loading="eager"
+                             fetchpriority="high">
+                    </picture>
                 </div>
+            </template>
+
+            {{-- グラデーションオーバーレイ --}}
+            <div class="hero-image-overlay"
+                 :class="current === 0 ? 'hero-overlay--left' : 'hero-overlay--right'"></div>
+
+            {{-- スライド1 テキスト（左配置・縦書き） --}}
+            <div class="hero-slide-content hero-slide-content--left"
+                 x-show="current === 0"
+                 x-transition.opacity.duration.500ms>
+                <div class="hero-text-vertical-group">
+                    <p class="hero-text-col">年齢とともに変化する肌、髪</p>
+                    <p class="hero-text-col">目元の印象のお悩み</p>
+                    <p class="hero-text-col hero-text-col--accent">肌、頭皮、まつ毛、眉毛<br>まるっとラクにお任せ</p>
+                </div>
+                <div class="hero-slide-buttons">
+                    <a href="{{ route('menu_price') }}" class="button button-primary">メニューを見て予約する</a>
+                    <a href="{{ route('contact.form') }}" class="button button-secondary">お問い合わせ</a>
+                </div>
+            </div>
+
+            {{-- スライド2 テキスト（右配置・縦書き） --}}
+            <div class="hero-slide-content hero-slide-content--right"
+                 x-show="current === 1"
+                 x-transition.opacity.duration.500ms>
+                <div class="hero-text-vertical-group">
+                    <p class="hero-text-col">印象は、仕事の武器になる。</p>
+                    <p class="hero-text-col">眉毛・肌・頭皮を整えるだけで、</p>
+                    <p class="hero-text-col hero-text-col--accent">「できる人」の清潔感へ。</p>
+                </div>
+                <div class="hero-slide-buttons">
+                    <a href="{{ route('menu_price') }}" class="button button-primary">メニューを見て予約する</a>
+                    <a href="{{ route('contact.form') }}" class="button button-secondary">お問い合わせ</a>
+                </div>
+            </div>
+
+            {{-- インジケーター（ドット） --}}
+            <div class="hero-indicators">
+                <template x-for="(slide, index) in slides" :key="'dot-' + index">
+                    <button class="hero-indicator"
+                            :class="{ 'hero-indicator--active': current === index }"
+                            @click="goTo(index)"
+                            :aria-label="'スライド ' + (index + 1) + ' へ移動'">
+                    </button>
+                </template>
             </div>
         </section>
 
@@ -42,7 +82,7 @@
                         {{ config('app.name') }}が選ばれる理由
                     </h2>
                     <p class="section-description">
-                        お客様に安心してご利用いただけるよう、こだわりのポイントをご紹介します
+                        肌・まつ毛・眉毛・頭皮のお悩みに、ひとつずつ丁寧に向き合います。
                     </p>
                 </div>
 
@@ -52,17 +92,17 @@
                             [
                                 'icon' => 'img/self-introduction.jpeg',
                                 'title' => '豊富な経験',
-                                'description' => "15年以上の実績を持つ経験豊富なアイリストが、\nこだわり抜いた技術と環境で360度どこから見ても麗な美まつ毛に致します"
+                                'description' => "サロン現場で15年以上、\n多くのお客様の変化に寄り添ってきました。\n\n流行ではなく、\n今のあなたにフィットするデザインを。\n自分を好きになれる印象づくりを大切にしています。"
                             ],
                             [
                                 'icon' => 'img/mens.jpeg',
                                 'title' => '丁寧なカウンセリング',
-                                'description' => "メンズもOK◎ ブロウラミネーションで理想の眉をデザイン\n男女問わずご利用いただけます"
+                                'description' => "お悩みの背景やご要望を丁寧に伺い、\nその方のペースに合わせたご提案を。\n\n無理に変えるのではなく、\n自然に印象が整うデザインを大切にしています。"
                             ],
                             [
                                 'icon' => 'img/high-quality.jpeg',
-                                'title' => '高品質な材料',
-                                'description' => "ケラチン配合×化粧品登録済みの薬剤でダメージを最小限に\nまつ毛のハリ・コシが気になる方におすすめです"
+                                'title' => '品質へのこだわり',
+                                'description' => "頭皮・肌・まつ毛の状態やお悩みに合わせて、\n負担が少なく確かな変化を感じられる\n商材と技術を厳選しています。\n\nその日だけでなく、\n1週間後・1ヶ月後と\nより実感が深まる施術を大切にしています。"
                             ]
                         ];
                     @endphp
@@ -88,7 +128,7 @@
             <div class="content-container">
                 <div class="section-header">
                     <h2 class="section-title">お客様の声</h2>
-                    <p class="section-description">Google口コミ ★5リピーター9割越え</p>
+                    <p class="section-description">Google口コミ 星5獲得 ／ リピーター率9割超え</p>
                 </div>
 
                 <div class="reviews-grid">
@@ -96,7 +136,7 @@
                         $reviews = [
                             ['name' => 'M.S様', 'rating' => 5, 'comment' => '自然な仕上がりで、毎朝のメイク時間が短縮されました。丁寧な施術で安心してお任せできます。'],
                             ['name' => 'A.T様', 'rating' => 5, 'comment' => 'カウンセリングが丁寧で、希望通りの仕上がりになりました。持ちも良く、とても満足しています。'],
-                            ['name' => 'R.K様', 'rating' => 5, 'comment' => '初めてのまつげエクステでしたが、わかりやすく説明していただき、安心して施術を受けられました。']
+                            ['name' => 'R.K様', 'rating' => 5, 'comment' => '初めての施術でしたが、丁寧に説明していただき、リラックスして受けることができました。']
                         ];
                     @endphp
 
@@ -126,12 +166,46 @@
         {{-- CTA Section --}}
         <section class="cta-section">
             <div class="content-container">
-                <h2 class="cta-title">美しい目元で毎日をもっと輝かせませんか？</h2>
+                <h2 class="cta-title">あなたらしい印象で、毎日をもっと輝かせませんか？</h2>
                 <p class="cta-description">
-                    お客様のご希望に合わせて、最適な施術プランをご提案いたします。お気軽にお問い合わせください。
+                    ご希望に合わせた施術プランをご提案します。どうぞお気軽にご相談ください。
                 </p>
-                <a href="{{ route('contact.form') }}" class="button white-button">今すぐご予約</a>
+                <a href="{{ route('menu_price') }}" class="button white-button">メニュー・料金を見る</a>
             </div>
         </section>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+    function heroSlider() {
+        return {
+            current: 0,
+            timer: null,
+            slides: [
+                {
+                    pc: "{{ asset('img/hero-slide1-pc.jpg') }}",
+                    sp: "{{ asset('img/hero-slide1-pc.jpg') }}",
+                    alt: "まつげ・眉毛サロン Lash Brow Ohana のイメージ",
+                },
+                {
+                    pc: "{{ asset('img/hero-slide2-pc.jpg') }}",
+                    sp: "{{ asset('img/hero-slide2-pc.jpg') }}",
+                    alt: "メンズ眉スタイリングのイメージ",
+                },
+            ],
+            startAutoSlide() {
+                this.timer = setInterval(() => {
+                    this.current = (this.current + 1) % this.slides.length;
+                }, 5000);
+            },
+            goTo(index) {
+                this.current = index;
+                // 手動操作時はタイマーをリセット
+                clearInterval(this.timer);
+                this.startAutoSlide();
+            },
+        };
+    }
+</script>
 @endsection

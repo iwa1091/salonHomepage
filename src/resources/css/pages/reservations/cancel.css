@@ -1,0 +1,360 @@
+/* =====================================================
+   cancel.css
+   resources/css/pages/reservations/cancel.css
+   キャンセル確認・完了ページ専用 CSS
+   ※ base/theme.css のトークンを使用
+===================================================== */
+
+/* ページ全体 */
+.cancel-page {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg-base);
+    color: var(--text-default);
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    min-height: 100vh;
+}
+
+/* ラッパー */
+.cancel-wrap {
+    max-width: 640px;
+    margin: 32px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* カード */
+.cancel-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* カードヘッダー */
+.cancel-card-header {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    padding: 18px 22px;
+    border-top: 3px solid var(--color-accent);
+}
+
+.cancel-card-brand {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+}
+
+/* カード本文 */
+.cancel-card-body {
+    padding: 22px 22px 20px;
+}
+
+/* ページタイトル */
+.cancel-page-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-default);
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+/* メッセージ */
+.cancel-message {
+    font-size: 1rem;
+    margin: 0 0 16px 0;
+    line-height: 1.75;
+}
+
+/* 予約情報ボックス */
+.cancel-info-box {
+    background-color: var(--color-bg-light);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.cancel-info-row {
+    font-size: 1rem;
+    margin: 8px 0;
+    line-height: 1.7;
+}
+
+.cancel-info-row:first-child { margin-top: 0; }
+.cancel-info-row:last-child  { margin-bottom: 0; }
+.cancel-info-row strong      { font-weight: 700; }
+
+/* フォーム */
+.cancel-form {
+    margin: 0;
+}
+
+/* テキストエリア ラベル */
+.cancel-textarea-label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* テキストエリア */
+.cancel-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.7;
+    resize: vertical;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cancel-textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb), 0.2);
+}
+
+/* エラー */
+.cancel-error {
+    margin-top: 6px;
+    color: var(--color-error, #b91c1c);
+    font-size: 0.9rem;
+}
+
+/* 文字数制限 */
+.cancel-char-limit {
+    margin-top: 6px;
+    color: rgba(0, 0, 0, 0.60);
+    font-size: 0.85rem;
+}
+
+/* ボタン群 */
+.cancel-buttons {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* プライマリボタン */
+.cancel-btn-primary {
+    display: block;
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.cancel-btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.cancel-btn-primary:active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* セカンダリボタン */
+.cancel-btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: var(--text-default);
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.cancel-btn-secondary:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+/* 注釈テキスト */
+.cancel-note {
+    margin: 16px 0 0 0;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.60);
+    line-height: 1.7;
+}
+
+/* カードフッター */
+.cancel-card-footer {
+    padding: 14px 22px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    color: rgba(0, 0, 0, 0.55);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* ============================================
+   レスポンシブ
+============================================ */
+
+/* PC（1024px〜） */
+@media (min-width: 1024px) {
+    .cancel-wrap {
+        max-width: 680px;
+        margin: 48px auto;
+    }
+
+    .cancel-card-header {
+        padding: 20px 28px;
+    }
+
+    .cancel-card-body {
+        padding: 28px 28px 24px;
+    }
+
+    .cancel-page-title {
+        font-size: 1.35rem;
+    }
+
+    .cancel-info-box {
+        padding: 18px 22px;
+    }
+
+    .cancel-card-footer {
+        padding: 16px 28px;
+    }
+}
+
+/* タブレット（768px〜1023px） */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .cancel-wrap {
+        max-width: 600px;
+        margin: 36px auto;
+        padding: 0 24px;
+    }
+
+    .cancel-card-body {
+        padding: 24px 24px 20px;
+    }
+}
+
+/* スマホ（〜767px） */
+@media (max-width: 767px) {
+    .cancel-wrap {
+        margin: 16px auto;
+        padding: 0 14px;
+    }
+
+    .cancel-card {
+        border-radius: 12px;
+    }
+
+    .cancel-card-header {
+        padding: 14px 16px;
+    }
+
+    .cancel-card-body {
+        padding: 18px 16px 16px;
+    }
+
+    .cancel-page-title {
+        font-size: 1.15rem;
+    }
+
+    .cancel-message,
+    .cancel-info-row {
+        font-size: 0.975rem;
+    }
+
+    .cancel-btn-primary,
+    .cancel-btn-secondary {
+        padding: 13px 16px;
+        font-size: 0.975rem;
+    }
+
+    .cancel-card-footer {
+        padding: 12px 16px;
+    }
+}
+
+/* iPhone SE（〜375px） */
+@media (max-width: 375px) {
+    .cancel-wrap {
+        margin: 12px auto;
+        padding: 0 10px;
+    }
+
+    .cancel-card {
+        border-radius: 10px;
+    }
+
+    .cancel-card-header {
+        padding: 12px 14px;
+    }
+
+    .cancel-card-brand {
+        font-size: 0.9rem;
+    }
+
+    .cancel-card-body {
+        padding: 14px 14px 14px;
+    }
+
+    .cancel-page-title {
+        font-size: 1.05rem;
+    }
+
+    .cancel-message,
+    .cancel-info-row {
+        font-size: 0.925rem;
+    }
+
+    .cancel-info-box {
+        padding: 12px 14px;
+    }
+
+    .cancel-textarea {
+        font-size: 16px;
+        padding: 10px 12px;
+    }
+
+    .cancel-btn-primary,
+    .cancel-btn-secondary {
+        padding: 12px 14px;
+        font-size: 0.925rem;
+    }
+
+    .cancel-note,
+    .cancel-char-limit {
+        font-size: 0.8rem;
+    }
+
+    .cancel-card-footer {
+        padding: 10px 14px;
+        font-size: 0.75rem;
+    }
+}

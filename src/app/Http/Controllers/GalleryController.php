@@ -17,7 +17,7 @@ class GalleryController extends Controller
         // データベースから各データを取得
         $beforeAfterCases = BeforeAfterCase::all();
         $galleryImages = GalleryImage::all();
-        $reviews = Review::all();
+        $reviews = Review::latest()->take(6)->get();
 
         // 取得したデータをビューに渡す
         return view('gallery', [

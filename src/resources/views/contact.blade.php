@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'ご予約・お問い合わせ')
+@section('title', 'お問い合わせ')
 
 @section('styles')
     @vite(['resources/css/pages/contact/contact.css'])
@@ -14,7 +14,7 @@
              ページヘッダー
         ============================ -->
         <div class="page-header">
-            <h1>ご予約・お問い合わせ</h1>
+            <h1>お問い合わせ</h1>
             <p>
                 眉毛の自己処理はご来店の約2週間前からお控えください。<br>
                 理想は1ヶ月ほど手を加えずにご来店いただくのがおすすめです。
@@ -55,7 +55,7 @@
                     @endif
 
                     <div class="card-header">
-                        <h2 class="card-title">ご予約フォーム</h2>
+                        <h2 class="card-title">お問い合わせフォーム</h2>
                         <p class="card-subtitle">
                             必要事項をご記入の上、送信してください。
                         </p>

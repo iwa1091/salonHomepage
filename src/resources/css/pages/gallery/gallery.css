@@ -1,17 +1,36 @@
 /* =========================================================
-   gallery.css（ギャラリー専用）
+   gallery.css（ギャラリー専用・完全レスポンシブ）
    配色：ベージュ × ゴールド × ブラウン
-   緑（--color-primary）と深緑系の文字色は一切使用しない
+   ブレークポイント：
+     PC     — 1024px〜（デフォルト）
+     tablet — 768px〜1023px
+     sp     — 376px〜767px
+     se     — 〜375px
 ========================================================= */
+
+/* --------------------------------
+   ユーティリティ
+-------------------------------- */
+.pc-only {
+    display: inline;
+}
+
+@media (max-width: 767px) {
+    .pc-only {
+        display: none;
+    }
+}
 
 /* --------------------------------
    ページ全体
 -------------------------------- */
 .gallery-page-container {
     background-color: var(--color-bg-base);
-    padding: 3rem 1.5rem;
+    padding: 3rem 2rem;
     font-family: var(--font-base);
     color: var(--text-default);
+    max-width: var(--container-max);
+    margin: 0 auto;
 }
 
 /* --------------------------------
@@ -39,6 +58,22 @@
 }
 
 /* --------------------------------
+   セクション共通（Tailwind代替）
+-------------------------------- */
+.gallery-section {
+    margin-bottom: 4rem;
+}
+
+.gallery-section-heading {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-default);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* --------------------------------
    カード共通
 -------------------------------- */
 .card {
@@ -46,7 +81,7 @@
     border-radius: var(--radius-large);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card:hover {
@@ -72,24 +107,17 @@
 }
 
 /* =========================================================
-    Before / After セクション
+   Before / After セクション
 ========================================================= */
 .grid-case {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin-bottom: 4rem;
 }
 
 .card-grid-images {
     display: flex;
     gap: 0.75rem;
-}
-
-@media (max-width: 767px) {
-    .card-grid-images {
-        flex-direction: column;
-    }
 }
 
 .image-container {
@@ -99,11 +127,11 @@
 
 .image-card {
     width: 100%;
+    aspect-ratio: 4 / 5;
     border-radius: var(--radius-base);
     display: block;
     object-fit: cover;
     object-position: top;
-    /* ← 顔が切れにくく調整 */
 }
 
 /* バッジ共通 */
@@ -117,80 +145,56 @@
     font-family: var(--font-ui);
     color: var(--color-white);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    /* ← 視認性UP */
 }
 
-/* Before → ブラウン */
 .badge-before {
     left: 0.75rem;
     background-color: var(--text-default);
 }
 
-/* After → ゴールド */
 .badge-after {
     right: 0.75rem;
     background-color: var(--color-accent);
 }
 
 /* =========================================================
-    Gallery Grid
+   Gallery Grid
 ========================================================= */
 .grid-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.8rem;
-    margin-bottom: 4rem;
 }
 
-/* --------------------------------
-   タブレット（〜1023px）
--------------------------------- */
-@media (max-width: 1023px) {
-    .grid-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
+.gallery-image-wrapper {
+    position: relative;
 }
 
-/* --------------------------------
-   スマホ（〜767px）
--------------------------------- */
-@media (max-width: 767px) {
-    .grid-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
+.gallery-image-wrapper .image-card {
+    aspect-ratio: 3 / 4;
 }
 
-/* ラッシュ → ゴールド */
 .badge-lash {
     background-color: var(--color-accent);
 }
 
-/* ブロウ → ブラウン */
 .badge-brow {
     background-color: var(--text-default);
 }
 
 /* =========================================================
-    Customer Reviews
+   Customer Reviews
 ========================================================= */
 .grid-reviews {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin-bottom: 4rem;
-}
-
-@media (max-width: 767px) {
-    .grid-reviews {
-        grid-template-columns: 1fr;
-    }
 }
 
 .card-review {
     padding: 1.6rem;
 }
 
-/* レビューヘッダー */
 .review-header {
     display: flex;
     justify-content: space-between;
@@ -209,7 +213,6 @@
     color: var(--text-muted);
 }
 
-/* 星（横並び） */
 .review-rating {
     display: flex;
     gap: 0.25rem;
@@ -242,12 +245,24 @@
     color: var(--text-muted);
 }
 
-/* 注記テキスト（Googleマップ口コミ要約） */
+.review-service-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+}
+
+.review-service-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+}
+
 .review-note {
     font-size: 0.85rem;
     color: var(--text-muted);
     max-width: 720px;
     margin: 0 auto 2rem auto;
+    text-align: center;
 }
 
 /* =========================================================
@@ -259,6 +274,7 @@
     padding: 4rem 1.5rem;
     text-align: center;
     border-radius: var(--radius-large);
+    margin-bottom: 4rem;
 }
 
 .stats-container {
@@ -271,6 +287,11 @@
     color: var(--color-white);
 }
 
+.stats-heading {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
 .stats-grid {
     display: flex;
     justify-content: space-evenly;
@@ -280,45 +301,162 @@
 
 .stat-item {
     text-align: center;
+    min-width: 140px;
 }
 
 .stat-value {
-    font-size: 2rem;
+    font-size: 2.4rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--color-accent);
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--color-white);
 }
 
-/* --------------------------------
-   スマホ（〜767px）
--------------------------------- */
-@media (max-width: 767px) {
+/* =========================================================
+   タブレット（768px〜1023px）
+========================================================= */
+@media (max-width: 1023px) {
+    .gallery-page-container {
+        padding: 2.5rem 1.5rem;
+    }
 
+    .header-section {
+        margin-bottom: 3rem;
+    }
+
+    .gallery-section-heading {
+        font-size: 1.8rem;
+    }
+
+    /* Before/After: 3列 → 2列 */
+    .grid-case {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    /* Gallery: 4列 → 3列 */
+    .grid-gallery {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    /* Reviews: 3列 → 2列 */
+    .grid-reviews {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .section-stats {
+        padding: 3rem 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+}
+
+/* =========================================================
+   スマホ（376px〜767px）
+========================================================= */
+@media (max-width: 767px) {
     .gallery-page-container {
         padding: 2rem 1rem;
+    }
+
+    .header-section {
+        margin-bottom: 2.5rem;
     }
 
     .page-title {
         font-size: 1.7rem;
     }
 
+    .page-description {
+        font-size: 0.95rem;
+    }
+
+    .gallery-section {
+        margin-bottom: 3rem;
+    }
+
+    .gallery-section-heading {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Before/After: 1列 */
+    .grid-case {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Before/After画像: 横並びを維持 */
+    .card-grid-images {
+        flex-direction: row;
+    }
+
+    /* Gallery: 2列 */
+    .grid-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+    }
+
+    /* Reviews: 1列 */
+    .grid-reviews {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
     .card-content {
         padding: 1.2rem;
     }
 
-    .stat-value {
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-description {
+        font-size: 0.9rem;
+    }
+
+    /* Stats */
+    .section-stats {
+        padding: 2.5rem 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
         font-size: 1.6rem;
+    }
+
+    .stats-heading {
+        margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+        gap: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    .review-note {
+        font-size: 0.82rem;
     }
 }
 
-/* --------------------------------
+/* =========================================================
    iPhone SE / 小型スマホ（〜375px）
--------------------------------- */
+========================================================= */
 @media (max-width: 375px) {
     .gallery-page-container {
         padding: 1.5rem 0.75rem;
@@ -332,14 +470,33 @@
         font-size: 1.35rem;
     }
 
+    .page-description {
+        font-size: 0.88rem;
+    }
+
+    .gallery-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .gallery-section-heading {
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Before/After: 1列、画像は縦並びに */
     .grid-case {
         grid-template-columns: 1fr;
         gap: 1.2rem;
     }
 
+    .card-grid-images {
+        flex-direction: column;
+    }
+
+    /* Gallery: 2列（最小幅保証） */
     .grid-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 1.2rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
 
     .card-content,
@@ -347,7 +504,179 @@
         padding: 1rem;
     }
 
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .card-description {
+        font-size: 0.85rem;
+    }
+
+    /* Stats */
+    .section-stats {
+        padding: 2rem 0.75rem;
+        border-radius: var(--radius-base);
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 1.35rem;
+    }
+
+    .stats-heading {
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .stat-item {
+        min-width: auto;
+        width: 100%;
+    }
+
     .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.82rem;
+    }
+
+    .review-comment {
+        font-size: 0.88rem;
+    }
+
+    .review-details {
+        font-size: 0.75rem;
+    }
+}
+
+/* =========================================================
+   CTA セクション
+========================================================= */
+.gallery-cta-section {
+    background-color: var(--color-bg-soft);
+    padding: 4rem 1.5rem;
+    text-align: center;
+    border-radius: var(--radius-large);
+    margin-top: 2rem;
+}
+
+.gallery-cta-container {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.gallery-cta-title {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--text-default);
+    margin-bottom: 1rem;
+}
+
+.gallery-cta-description {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.gallery-cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.gallery-cta-button-primary {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gallery-cta-button-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+}
+
+.gallery-cta-button-secondary {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--text-default);
+    color: var(--text-default);
+    background-color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gallery-cta-button-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-white);
+}
+
+/* --- CTA タブレット --- */
+@media (max-width: 1023px) {
+    .gallery-cta-section {
+        padding: 3rem 1.5rem;
+    }
+
+    .gallery-cta-title {
+        font-size: 1.6rem;
+    }
+}
+
+/* --- CTA スマホ --- */
+@media (max-width: 767px) {
+    .gallery-cta-section {
+        padding: 2.5rem 1rem;
+    }
+
+    .gallery-cta-title {
         font-size: 1.4rem;
+    }
+
+    .gallery-cta-description {
+        font-size: 0.95rem;
+    }
+}
+
+/* --- CTA iPhone SE --- */
+@media (max-width: 375px) {
+    .gallery-cta-section {
+        padding: 2rem 0.75rem;
+        border-radius: var(--radius-base);
+    }
+
+    .gallery-cta-title {
+        font-size: 1.25rem;
+    }
+
+    .gallery-cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gallery-cta-button-primary,
+    .gallery-cta-button-secondary {
+        width: 100%;
+        text-align: center;
     }
 }

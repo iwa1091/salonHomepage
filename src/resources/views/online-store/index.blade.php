@@ -85,10 +85,14 @@
                         <div class="product-info">
                             <h3 class="product-name">ラエッセ オンラインストア</h3>
                             <p class="product-description">
-                                サロンで取り扱いのラエッセ商品はこちらからご購入いただけます。
+                                当サロンは「ラエッセ特別認定サロン」です。<br>
+                                認定サロンのお客様だけがご購入いただける、<br>
+                                厳選されたプロユース商品をお取り扱いしております。<br>
+                                ラエッセ会員ポイントも貯まります。
                             </p>
-                            <p class="product-description">
-                                ※こちらの商品は別途お取り扱いの店舗の会員登録をお願いしております。
+                            <p class="product-description store-external-notice">
+                                ご購入には会員登録が必要です。<br>
+                                登録時に紹介者名「高橋恵子」をご入力ください。
                             </p>
                         </div>
                     </a>

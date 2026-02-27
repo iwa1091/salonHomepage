@@ -30,7 +30,7 @@
                     <a href="{{ route('menu_price') }}" class="footer-nav-link {{ request()->routeIs('menu_price') ? 'is-active' : '' }}">メニュー・料金</a>
                     <a href="{{ route('gallery') }}" class="footer-nav-link {{ request()->routeIs('gallery') ? 'is-active' : '' }}">施術事例・お客様の声</a>
                     <a href="{{ route('online-store.index') }}" class="footer-nav-link {{ request()->routeIs('online-store.index') ? 'is-active' : '' }}">商品販売</a>
-                    <a href="{{ route('contact.form') }}" class="footer-nav-link {{ request()->routeIs('contact.form') ? 'is-active' : '' }}">ご予約・お問い合わせ</a>
+                    <a href="{{ route('contact.form') }}" class="footer-nav-link {{ request()->routeIs('contact.form') ? 'is-active' : '' }}">お問い合わせ</a>
                 </nav>
             </div>
 
@@ -77,7 +77,7 @@
                 <div class="hours-list">
                     <div class="hours-item">
                         <span>火曜日〜土曜日</span>
-                        <span>09:00〜17:00</span>
+                        <span>09:00〜16:00</span>
                     </div>
                     <div class="hours-item">
                         <span>日曜日・月曜日（祝日等不定休あり）</span>

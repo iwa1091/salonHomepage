@@ -13,11 +13,11 @@ use Carbon\Carbon;
  *
  * 例：
  *  ┌───────────────┬──────┬───────┬──────────────┬───────────┐
- *  │ 年    │ 月  │ 週   │ 曜日   │ 営業時間      │ 休業日     │
- *  ├───────────────┼──────┼───────┼──────────────┼───────────┤
- *  │ 2025 │ 10  │ 1    │ 月     │ 09:00〜17:00 │ false      │
- *  │ 2025 │ 10  │ 1    │ 火     │ 09:00〜17:00 │ false      │
- *  │ 2025 │ 10  │ 1    │ 水     │ NULL          │ true       │
+ *  │ 年    │ 月  │ 週   │ 曜日     │ 営業時間      │ 休業日    │
+ *  ├───────────────┼──────┼─ ─────┼──────────────┼───────────┤
+ *  │ 2025 │ 10  │ 1    │ 日       │ null         │ true      │
+ *  │ 2025 │ 10  │ 1    │ 月火     │ null         │ true      │
+ *  │ 2025 │ 10  │ 1    │ 水木金   │ 09:00～16:00  │ false    │
  *  └───────────────┴──────┴───────┴──────────────┴───────────┘
  */
 class BusinessHour extends Model
@@ -89,12 +89,12 @@ class BusinessHour extends Model
     public static function defaultHours(): array
     {
         return [
-            ['day_of_week' => '月', 'open_time' => '09:00', 'close_time' => '17:00', 'is_closed' => false],
-            ['day_of_week' => '火', 'open_time' => '09:00', 'close_time' => '17:00', 'is_closed' => false],
-            ['day_of_week' => '水', 'open_time' => '09:00', 'close_time' => '17:00', 'is_closed' => false],
-            ['day_of_week' => '木', 'open_time' => '09:00', 'close_time' => '17:00', 'is_closed' => false],
-            ['day_of_week' => '金', 'open_time' => '09:00', 'close_time' => '17:00', 'is_closed' => false],
-            ['day_of_week' => '土', 'open_time' => '10:00', 'close_time' => '15:00', 'is_closed' => false],
+            ['day_of_week' => '月', 'open_time' => null, 'close_time' => null, 'is_closed' => true],
+            ['day_of_week' => '火', 'open_time' => null, 'close_time' => null, 'is_closed' => true],
+            ['day_of_week' => '水', 'open_time' => '09:00', 'close_time' => '16:00', 'is_closed' => false],
+            ['day_of_week' => '木', 'open_time' => '09:00', 'close_time' => '16:00', 'is_closed' => false],
+            ['day_of_week' => '金', 'open_time' => '09:00', 'close_time' => '16:00', 'is_closed' => false],
+            ['day_of_week' => '土', 'open_time' => '09:00', 'close_time' => '16:00', 'is_closed' => false],
             ['day_of_week' => '日', 'open_time' => null, 'close_time' => null, 'is_closed' => true],
         ];
     }

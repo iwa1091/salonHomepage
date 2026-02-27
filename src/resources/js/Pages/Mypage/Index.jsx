@@ -84,9 +84,6 @@ export default function Mypage({
     // Inertia から flash メッセージ & バリデーションエラーを取得
     const { flash, errors } = usePage().props;
 
-    // ✅ 予約一覧へのリンクは「遷移元」を渡せるように統一（予約一覧側で戻る導線を出せる）
-    const reservationsIndexHref = "/mypage/reservations?from=mypage";
-
     // 予約番号紐付けフォーム用の useForm
     const { data, setData, post, processing } = useForm({
         reservation_code: "",
@@ -112,7 +109,8 @@ export default function Mypage({
         notes: "",
     });
 
-    const [reserveOpen, setReserveOpen] = useState(false);
+    const [reserveOpen, setReserveOpen] = useState(true);
+    const [linkOpen, setLinkOpen] = useState(false);
 
     // ✅ 追加：マイページ予約の○×表示用 state
     const [bhLoading, setBhLoading] = useState(false);
@@ -156,7 +154,13 @@ export default function Mypage({
             "canceled_by_admin",
         ]);
 
-        return list.filter((r) => !canceledSet.has(String(r?.status ?? "")));
+        return list
+            .filter((r) => !canceledSet.has(String(r?.status ?? "")))
+            .sort((a, b) => {
+                const ak = `${String(a?.date ?? "")} ${String(a?.start_time ?? "").slice(0, 5)}`;
+                const bk = `${String(b?.date ?? "")} ${String(b?.start_time ?? "").slice(0, 5)}`;
+                return ak.localeCompare(bk);
+            });
     }, [upcomingReservations]);
 
     // ✅ 過去の予約：新しい日時が上（降順） + 最大5件
@@ -440,7 +444,7 @@ export default function Mypage({
                     ようこそ、{user?.name} さん
                 </h1>
                 <p className="mypage-header-subtitle">
-                    ご予約履歴やお気に入りメニューをいつでも確認できます
+                    いつもご利用いただきありがとうございます。次回のご来店をお待ちしております。
                 </p>
             </header>
 
@@ -449,68 +453,52 @@ export default function Mypage({
             ----------------------------------- */}
             <main className="mypage-main">
                 {/* ================================
-                    予約番号紐付けフォーム
+                    予約中
                 ================================= */}
                 <section className="mypage-section-card">
                     <h2 className="mypage-section-title">
-                        🔗 予約番号を紐付ける
+                        📅 予約中のメニュー
                     </h2>
 
-                    {/* 成功メッセージ */}
-                    {flash?.success && (
-                        <p className="mypage-flash-success">
-                            {flash.success}
+                    {upcomingReservationsVisible?.length ? (
+                        upcomingReservationsVisible.map((res) => (
+                            <div
+                                key={res.id}
+                                className="mypage-item-card"
+                            >
+                                <p className="mypage-item-title">
+                                    {res.service?.name}
+                                </p>
+                                <p className="mypage-item-meta">
+                                    来店日：
+                                    {res.date
+                                        ? new Date(
+                                            res.date
+                                        ).toLocaleDateString()
+                                        : "-"}
+                                </p>
+                                <p className="mypage-item-meta">
+                                    開始時間：{res.start_time ? String(res.start_time).slice(0, 5) : "-"}
+                                </p>
+
+                                {/* ✅ キャンセル導線（予約中カード内） */}
+                                <div className="mypage-item-actions">
+                                    <button
+                                        type="button"
+                                        className="mypage-danger-button"
+                                        onClick={() => handleCancel(res.id)}
+                                        disabled={cancelForm.processing}
+                                    >
+                                        {cancelForm.processing ? "処理中..." : "キャンセルする"}
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="mypage-empty-text">
+                            現在予約はありません。
                         </p>
                     )}
-
-                    {/* ✅ キャンセル等の汎用メッセージ（UserReservationController の with('message') 対応） */}
-                    {flash?.message && (
-                        <p className="mypage-flash-info">
-                            {flash.message}
-                        </p>
-                    )}
-
-                    {/* バリデーションエラー（予約番号） */}
-                    {errors?.reservation_code && (
-                        <p className="mypage-flash-error">
-                            {firstErrorText(errors.reservation_code)}
-                        </p>
-                    )}
-
-                    <form
-                        onSubmit={handleLinkSubmit}
-                        className="mypage-link-form"
-                    >
-                        <input
-                            type="text"
-                            name="reservation_code"
-                            value={data.reservation_code}
-                            onChange={(e) =>
-                                setData("reservation_code", e.target.value)
-                            }
-                            placeholder="予約番号を入力してください"
-                            className="mypage-input"
-                            required
-                        />
-
-                        <button
-                            type="submit"
-                            className="mypage-primary-button"
-                            disabled={processing}
-                        >
-                            予約を紐付ける
-                        </button>
-                    </form>
-
-                    {/* ✅ 予約一覧（メール内ボタンの遷移先と合わせる） */}
-                    <div className="mypage-section-actions">
-                        <Link
-                            href={reservationsIndexHref}
-                            className="mypage-outline-button"
-                        >
-                            予約一覧を開く →
-                        </Link>
-                    </div>
                 </section>
 
                 {/* ================================
@@ -553,6 +541,7 @@ export default function Mypage({
                                 className="mypage-link-form mypage-link-form--reserve"
                             >
                                 {/* メニュー */}
+                                <label className="mypage-form-label">メニュー（必須）</label>
                                 <select
                                     className="mypage-input"
                                     value={reserveForm.data.service_id}
@@ -583,6 +572,7 @@ export default function Mypage({
                                 )}
 
                                 {/* 日付（押しやすさ改善：クラス追加 + showPicker） */}
+                                <label className="mypage-form-label">ご来店日（必須）</label>
                                 <input
                                     type="date"
                                     className="mypage-input mypage-date"
@@ -595,6 +585,7 @@ export default function Mypage({
                                 />
 
                                 {/* ✅ 時間：○×グリッド（営業時間 + 空き枠 + 12時間ルール） */}
+                                <label className="mypage-form-label">ご希望の時間（必須）</label>
                                 <div className="reservation-time-wrapper">
                                     {!reserveForm.data.service_id ? (
                                         <p className="reservation-time-note">
@@ -653,23 +644,28 @@ export default function Mypage({
                                 </div>
 
                                 {/* 電話番号 */}
+                                <label className="mypage-form-label">
+                                    電話番号（必須）
+                                    <span className="mypage-form-label-note">予約確定後のご連絡先となります</span>
+                                </label>
                                 <input
                                     type="tel"
                                     className="mypage-input"
                                     value={reserveForm.data.phone}
                                     onChange={(e) => handleReserveChange("phone", e.target.value)}
-                                    placeholder="電話番号"
+                                    placeholder="例：090-1234-5678"
                                     required
                                     disabled={reserveForm.processing}
                                 />
 
                                 {/* 備考 */}
+                                <label className="mypage-form-label">備考（任意）</label>
                                 <input
                                     type="text"
                                     className="mypage-input"
                                     value={reserveForm.data.notes}
                                     onChange={(e) => handleReserveChange("notes", e.target.value)}
-                                    placeholder="備考（任意）"
+                                    placeholder="ご要望・アレルギーなどがあればご記入ください"
                                     disabled={reserveForm.processing}
                                 />
 
@@ -686,72 +682,6 @@ export default function Mypage({
                                 ※ この予約は <strong>自動でマイページに紐づく</strong>ため、予約番号の入力は不要です。
                             </p>
                         </>
-                    )}
-                </section>
-
-                {/* ================================
-                    予約中
-                ================================= */}
-                <section className="mypage-section-card">
-                    <div className="mypage-section-head">
-                        <h2 className="mypage-section-title">
-                            📅 予約中のメニュー
-                        </h2>
-
-                        {/* ✅ 予約一覧へのショートカット */}
-                        <Link
-                            href={reservationsIndexHref}
-                            className="mypage-inline-link mypage-inline-link--compact"
-                        >
-                            予約一覧 →
-                        </Link>
-                    </div>
-
-                    {upcomingReservationsVisible?.length ? (
-                        upcomingReservationsVisible.map((res) => (
-                            <div
-                                key={res.id}
-                                className="mypage-item-card"
-                            >
-                                <p className="mypage-item-title">
-                                    {res.service?.name}
-                                </p>
-                                <p className="mypage-item-meta">
-                                    来店日：
-                                    {res.date
-                                        ? new Date(
-                                            res.date
-                                        ).toLocaleDateString()
-                                        : "-"}
-                                </p>
-                                <p className="mypage-item-meta">
-                                    開始時間：{res.start_time ?? "-"}
-                                </p>
-
-                                {/* ✅ キャンセル導線（予約中カード内） */}
-                                <div className="mypage-item-actions">
-                                    <Link
-                                        href={reservationsIndexHref}
-                                        className="mypage-inline-link mypage-inline-link--compact"
-                                    >
-                                        詳細/一覧で確認 →
-                                    </Link>
-
-                                    <button
-                                        type="button"
-                                        className="mypage-danger-button"
-                                        onClick={() => handleCancel(res.id)}
-                                        disabled={cancelForm.processing}
-                                    >
-                                        {cancelForm.processing ? "処理中..." : "キャンセルする"}
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="mypage-empty-text">
-                            現在予約はありません。
-                        </p>
                     )}
                 </section>
 
@@ -844,6 +774,75 @@ export default function Mypage({
                         <p className="mypage-empty-text">
                             購入履歴はありません。
                         </p>
+                    )}
+                </section>
+
+                {/* ================================
+                    予約番号紐付けフォーム（折りたたみ）
+                ================================= */}
+                <section className="mypage-section-card">
+                    <div className="mypage-section-head">
+                        <h2 className="mypage-section-title">
+                            🔗 予約番号を紐付ける
+                        </h2>
+                        <button
+                            type="button"
+                            className="mypage-inline-link mypage-inline-link--compact"
+                            onClick={() => setLinkOpen((v) => !v)}
+                        >
+                            {linkOpen ? "閉じる" : "開く"} →
+                        </button>
+                    </div>
+
+                    {linkOpen && (
+                        <>
+                            {/* 成功メッセージ */}
+                            {flash?.success && (
+                                <p className="mypage-flash-success">
+                                    {flash.success}
+                                </p>
+                            )}
+
+                            {/* ✅ キャンセル等の汎用メッセージ（UserReservationController の with('message') 対応） */}
+                            {flash?.message && (
+                                <p className="mypage-flash-info">
+                                    {flash.message}
+                                </p>
+                            )}
+
+                            {/* バリデーションエラー（予約番号） */}
+                            {errors?.reservation_code && (
+                                <p className="mypage-flash-error">
+                                    {firstErrorText(errors.reservation_code)}
+                                </p>
+                            )}
+
+                            <form
+                                onSubmit={handleLinkSubmit}
+                                className="mypage-link-form"
+                            >
+                                <input
+                                    type="text"
+                                    name="reservation_code"
+                                    value={data.reservation_code}
+                                    onChange={(e) =>
+                                        setData("reservation_code", e.target.value)
+                                    }
+                                    placeholder="予約番号を入力してください"
+                                    className="mypage-input"
+                                    required
+                                />
+
+                                <button
+                                    type="submit"
+                                    className="mypage-primary-button"
+                                    disabled={processing}
+                                >
+                                    予約を紐付ける
+                                </button>
+                            </form>
+
+                        </>
                     )}
                 </section>
             </main>

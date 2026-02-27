@@ -279,4 +279,41 @@ class AdminReservationController extends Controller
             ->route('admin.reservations.index')
             ->with('success', '予約を削除しました');
     }
+
+    /**
+     * -------------------------------------------------------------
+     * ドラッグリサイズ用：時間のみ更新
+     * PUT /admin/api/reservations/{id}
+     * -------------------------------------------------------------
+     */
+    public function updateTime(Request $request, $id)
+    {
+        $reservation = Reservation::findOrFail($id);
+
+        $v = $request->validate([
+            'date'             => ['required', 'date'],
+            'start_time'       => ['required', 'date_format:H:i'],
+            'duration_minutes' => ['required', 'integer', 'min:15', 'max:600'],
+        ]);
+
+        if ($v['duration_minutes'] % 15 !== 0) {
+            return response()->json(['message' => 'duration_minutes は15分刻みで指定してください'], 422);
+        }
+
+        $start = Carbon::createFromFormat('Y-m-d H:i', $v['date'] . ' ' . $v['start_time']);
+        $end   = (clone $start)->addMinutes((int) $v['duration_minutes']);
+
+        $reservation->update([
+            'date'       => $v['date'],
+            'start_time' => $start->format('H:i:s'),
+            'end_time'   => $end->format('H:i:s'),
+        ]);
+
+        return response()->json([
+            'id'         => $reservation->id,
+            'date'       => $reservation->date,
+            'start_time' => $reservation->start_time,
+            'end_time'   => $reservation->end_time,
+        ]);
+    }
 }
